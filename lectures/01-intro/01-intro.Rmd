@@ -1,0 +1,219 @@
+---
+title: "MKT615: Data Storytelling for Marketers"
+subtitle: "Lecture 1: Introduction"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+date: "08/25/2021" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(hrbrthemes)
+library(fontawesome)
+```
+
+# <!-- class: center, middle -->
+# 
+# <!-- # xaringan -->
+# 
+# <!-- ### /ʃaː.'riŋ.ɡan/ -->
+# 
+# <!-- class: inverse, center, middle -->
+# 
+# <!-- # Get Started -->
+
+---
+# Introduction
+
+### About me
+
+`r fa('graduation-cap')` Assistant Professor of Marketing
+
+`r fa('address-book')` [Davide Proserpio](https://dadepro.github.io/)
+
+`r fa('envelope')` [proserpi@marshall.usc.edu](proserpi@marshall.usc.edu)
+
+
+### About you
+
+Names, what you are interest in, etc.
+
+---
+
+class: inverse, center, middle
+
+ # Course overview
+
+---
+
+# Course: Data Storytelling for Marketing
+
+I will teach the first seven weeks (then Dinesh will take over)
+
+--
+
+All the material is available at https://github.com/dadepro/mkt-615
+
+We are going to use Git and GitHub to download course material and upload homeworks, assigments, and presentations
+
+--
+
+What will we learn?
+
+- We will focus on practical skill and tools that will benfit your research process
+  1. Project management
+  2. Version control (Git and GitHub)
+  3. Accessing computing resources at USC (Shell)
+  3. Data manipulation, cleaning, visualization (R)
+  4. Data storage (MySQL)
+
+--
+
+> *"In short, we will cover things that I wish someone had taught me when I was starting out in graduate
+school."*
+
+--
+
+Please bring your laptops to class. This will be a very hands-on course. We'll be working through lecture notes together in class and youll be running code on your own laptops
+
+---
+
+# Grading (first half only)
+
+| Component                           | Weight |
+|:-|-:|
+| 2 × homework assignments (25% each) | 50% |
+| 1 × project 		| 40% |
+| 1 x short presentation | 10% |
+
+The project involves the analysis of a dataset of your choice using R and Rstudio
+- You will present your data analysis on **Ocober 6**
+- Where can I find datasets? 
+  - [Google dataset search engine](https://datasetsearch.research.google.com/)
+  - [Kaggle](https://www.kaggle.com/competitions)
+  - All Marketing Science papers come with replication code and data
+  - You can scrape it yourself (advanced, we won't have time to cover scraping)
+  - Me (Airbnb, Yelp, Expedia)
+
+- Short presentation of a R package related to the lecture (I will provide a list among which to choose)
+
+---
+class: inverse, center, middle
+
+ # Questions?
+
+---
+# Setting up your laptops for the class
+
+### Mshresearch (Server that I manage and that you can use)
+Characteristics: Ubuntu OS, 64 cores, 0.5TB of RAM
+
+All of you should have received an email to setup your mshresearch.marshall.usc account
+
+Software installed
+- Rstudio sever: http://mshresearch.marshall.usc.edu:8787/ (you can access with the mshresearch user and pwd)
+- Stata 16 
+- Matlab 2021
+- Python 3.7
+- MySQL
+
+---
+
+# Setting up your laptops for the class (cont.)
+
+### R and Rstudio
+Download the latest version of [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/products/rstudio/)
+
+Installing useful packages:
+```
+# Package names
+packages <- c("sjmisc", "RMySQL", "stargazer", "fixest", "ggthemes" , "zoo", "data.table", "lfe", "ggplot2", "readxl", "dplyr", "tidyr", "ggfortify", 
+              "DT", "reshape2", "knitr", "lubridate", "pwr", "psy", "car", "doBy", "imputeMissings", "RcmdrMisc", "questionr", 
+              "vcd", "multcomp", "KappaGUI", "rcompanion", "FactoMineR", "factoextra", "corrplot", "ltm", "goeveg", "corrplot", 
+              "FSA", "MASS", "scales", "nlme", "psych", "ordinal", "lmtest", "ggpubr", "dslabs", "stringr", "assist", "ggstatsplot", 
+              "forcats", "styler", "remedy", "snakecaser", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
+              "funModeling", "pander", "cluster", "abind")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+```
+
+---
+
+# Setting up your laptops for the class (cont.)
+
+### MySQL Client
+
+**Mac:** [Sequel Pro](https://www.sequelpro.com/)
+
+**Windows:** [MySQL Workbench](https://www.mysql.com/products/workbench/)
+
+---
+
+# Setting up your laptops for the class (cont.)
+
+### Git and GitHub
+
+Download [Git](https://git-scm.com/downloads) (Windows users might also need [Git for Windows](https://gitforwindows.org/) so that they have a Bash shell)
+
+Create a [GitHub](https://github.com/) account
+
+Let me know if you need help, one place to start is https://happygitwithr.com/
+
+---
+
+# Setting up your laptops for the class (cont.)
+
+### Some OS-specific extras
+
+**Windows:** Install RTools
+
+**Mac:** Install Homebrew
+
+**Linux:** You should be good to go
+
+---
+
+# Checklist
+
+1. Do you have the most recent version of R and Rstudio?
+  - Check R version from RStudio: 
+      
+      `version$version.string`
+  
+  - Check RStudio version: 
+    
+      `RStudio.Version()$version`
+  
+2. Update all R Packages: 
+      
+      `update.packages(ask = FALSE, checkBuilt = TRUE)`
+      
+---
+
+# Checklist (cont.)
+
+Open the Bash [Shell](https://happygitwithr.com/shell.html#shell)
+- Check Git version: 
+
+  `git --version`
+  
+- Configure Git information (substitue in your details):
+  ```
+  git config --global user.name 'Davide Proserpio'
+  git config --global user.email 'proserpi@marshall.usc.edu'
+  git config --global --list
+  ```
+
+- Did you create a GitHub account?
