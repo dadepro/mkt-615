@@ -13,24 +13,12 @@ output:
       countIncrementalSlides: false
 
 ---
-
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(hrbrthemes)
 library(fontawesome)
 ```
 
-# <!-- class: center, middle -->
-# 
-# <!-- # xaringan -->
-# 
-# <!-- ### /ʃaː.'riŋ.ɡan/ -->
-# 
-# <!-- class: inverse, center, middle -->
-# 
-# <!-- # Get Started -->
-
----
 # Introduction
 
 ### About me
@@ -133,13 +121,13 @@ Software installed
 Download the latest version of [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/products/rstudio/)
 
 Installing useful packages:
-```{r, cache=FALSE}
+```{r eval=FALSE, cache=FALSE}
 # Package names
 packages <- c("sjmisc", "RMySQL", "stargazer", "fixest", "ggthemes" , "zoo", "data.table", "lfe", "ggplot2", "readxl", "dplyr", "tidyr", "ggfortify", 
               "DT", "reshape2", "knitr", "lubridate", "pwr", "psy", "car", "doBy", "imputeMissings", "RcmdrMisc", "questionr", 
               "vcd", "multcomp", "KappaGUI", "rcompanion", "FactoMineR", "factoextra", "corrplot", "ltm", "goeveg", "corrplot", 
               "FSA", "MASS", "scales", "nlme", "psych", "ordinal", "lmtest", "ggpubr", "dslabs", "stringr", "assist", "ggstatsplot", 
-              "forcats", "styler", "remedy", "snakecaser", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
+              "forcats", "styler", "remedy", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
               "funModeling", "pander", "cluster", "abind")
 
 # Install packages not yet installed
@@ -177,11 +165,11 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 
 ### Some OS-specific extras
 
-**Windows:** Install RTools
+- **Windows:** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/). I also recommend that you install [Chocolately](https://chocolatey.org/).
 
-**Mac:** Install Homebrew
+- **Mac:** Install [Homebrew](https://brew.sh/). I also recommend that you configure/open your C++ toolchain (see [here](https://github.com/rmacoslib/r-macos-rtools#installer-package-for-macos-r-toolchain-).)
 
-**Linux:** You should be good to go
+- **Linux:** None (you should be good to go).
 
 ---
 

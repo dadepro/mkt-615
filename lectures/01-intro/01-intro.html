@@ -23,18 +23,6 @@ class: center, middle, inverse, title-slide
 
 
 
-
-# &lt;!-- class: center, middle --&gt;
-# 
-# &lt;!-- # xaringan --&gt;
-# 
-# &lt;!-- ### /ʃaː.'riŋ.ɡan/ --&gt;
-# 
-# &lt;!-- class: inverse, center, middle --&gt;
-# 
-# &lt;!-- # Get Started --&gt;
-
----
 # Introduction
 
 ### About me
@@ -144,7 +132,7 @@ packages &lt;- c("sjmisc", "RMySQL", "stargazer", "fixest", "ggthemes" , "zoo", 
               "DT", "reshape2", "knitr", "lubridate", "pwr", "psy", "car", "doBy", "imputeMissings", "RcmdrMisc", "questionr", 
               "vcd", "multcomp", "KappaGUI", "rcompanion", "FactoMineR", "factoextra", "corrplot", "ltm", "goeveg", "corrplot", 
               "FSA", "MASS", "scales", "nlme", "psych", "ordinal", "lmtest", "ggpubr", "dslabs", "stringr", "assist", "ggstatsplot", 
-              "forcats", "styler", "remedy", "snakecaser", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
+              "forcats", "styler", "remedy", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
               "funModeling", "pander", "cluster", "abind")
 
 # Install packages not yet installed
@@ -152,15 +140,6 @@ installed_packages &lt;- packages %in% rownames(installed.packages())
 if (any(installed_packages == FALSE)) {
   install.packages(packages[!installed_packages])
 }
-```
-
-```
-## Warning in install.packages :
-##   package 'snakecaser' is not available for this version of R
-## 
-## A version of this package for your version of R might be available elsewhere,
-## see the ideas at
-## https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages
 ```
 
 ---
@@ -191,11 +170,11 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 
 ### Some OS-specific extras
 
-**Windows:** Install RTools
+- **Windows:** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/). I also recommend that you install [Chocolately](https://chocolatey.org/).
 
-**Mac:** Install Homebrew
+- **Mac:** Install [Homebrew](https://brew.sh/). I also recommend that you configure/open your C++ toolchain (see [here](https://github.com/rmacoslib/r-macos-rtools#installer-package-for-macos-r-toolchain-).)
 
-**Linux:** You should be good to go
+- **Linux:** None (you should be good to go).
 
 ---
 
