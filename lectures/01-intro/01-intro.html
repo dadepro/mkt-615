@@ -198,22 +198,24 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 # Checklist (cont.)
 
 Open the Bash [Shell](https://happygitwithr.com/shell.html#shell)
-- Check Git version: 
-
-  `git --version`
+- Check Git version: `git --version`
   
 - Configure Git information (substitue in your details):
-  ```
+  
+  ```r
   git config --global user.name 'Davide Proserpio'
   git config --global user.email 'proserpi@marshall.usc.edu'
   git config --global --list
   ```
+  
+  or 
+  
+  `git config --global --edit` and use [vim](https://www.vim.org/) to modify the file
 
 - Did you create a GitHub account?
 
 - Recently GitHub updated its security requirements and now uses 2FA. This means that to access Git via Shell you need a token
   - Create a [GitHub access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-  
   - **Save it somewhere**, you'll need it to authenticate using the Shell
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
