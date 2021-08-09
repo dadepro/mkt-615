@@ -43,7 +43,7 @@ Names, what you are interest in, etc.
 class: inverse, center, middle
 
  # Course overview
-
+###(All this info is available in the [syllabus](https://github.com/dadepro/mkt-615/blob/main/syllabus/mkt-615-syllabus.pdf))
 ---
 
 # Course: Data Storytelling for Marketing
@@ -74,7 +74,26 @@ school."*
 
 --
 
-Please bring your laptops to class. This will be a very hands-on course. We'll be working through lecture notes together in class and youll be running code on your own laptops
+Please bring your laptops to class. This will be a very hands-on course. We'll be working through lecture notes together in class and you'll be running code on your own laptops
+
+---
+# Why R and SQL?
+
+![](01-intro_files/figure-html/indeeddotcom-1.svg)&lt;!-- --&gt;
+---
+
+# Why R and SQL? (cont.)
+
+### R
+- Along with Python, R has become the standard language for data science
+- Open-source (free!)
+- R has all the statistics and econometrics packages that you'll ever need 
+
+### MySQl
+- Manages large amount of data
+- Data manipulation
+- Quick access to data
+- Fundamental skill for every data scientist
 
 ---
 
@@ -86,8 +105,8 @@ Please bring your laptops to class. This will be a very hands-on course. We'll b
 | 1 × project 		| 40% |
 | 1 x short presentation | 10% |
 
-The project involves the analysis of a dataset of your choice using R and Rstudio
-- You will present your data analysis on **Ocober 6**
+The project involves the analysis of a dataset of your choice using the tools we learned in class
+- You will present your data analysis on **October 6**
 - Where can I find datasets? 
   - [Google dataset search engine](https://datasetsearch.research.google.com/)
   - [Kaggle](https://www.kaggle.com/competitions)
@@ -95,7 +114,25 @@ The project involves the analysis of a dataset of your choice using R and Rstudi
   - You can scrape it yourself (advanced, we won't have time to cover scraping)
   - Me (Airbnb, Yelp, Expedia)
 
-- Short presentation of a R package related to the lecture (I will provide a list among which to choose)
+- Short presentation of a R package/tool related to the lectures (I will provide a list among which to choose)
+
+---
+
+# Grading (first half only, cont.)
+
+Other points:
+- You will be submitting all of your assignments as R Markdown documents.
+- My lecture slides and notes are all written in R Markdown too. (E.g. This slide deck is built using the [**xaringan**](https://github.com/yihui/xaringan/wiki))
+
+Resources:
+- Website: https://rmarkdown.rstudio.com
+- Cheatsheat: 
+  - https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf
+  - https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+- Book: [*R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown) (Yihui Xie, JJ Allaire, and Garrett Grolemund)
+
+
+---
 
 ---
 class: inverse, center, middle
@@ -170,7 +207,7 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 
 ### Some OS-specific extras
 
-- **Windows:** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/). I also recommend that you install [Chocolately](https://chocolatey.org/).
+- **Windows:** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
 
 - **Mac:** Install [Homebrew](https://brew.sh/). I also recommend that you configure/open your C++ toolchain (see [here](https://github.com/rmacoslib/r-macos-rtools#installer-package-for-macos-r-toolchain-).)
 
@@ -183,15 +220,21 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 1. Do you have the most recent version of R and Rstudio?
   - Check R version from RStudio: 
       
-      `version$version.string`
-  
+      ```r
+      version$version.string
+      ```
   - Check RStudio version: 
-    
-      `RStudio.Version()$version`
+      
+      ```r
+        RStudio.Version()$version
+        #Requires an interactive session but should return something like "[1] 1.4.1106"
+      ```
   
 2. Update all R Packages: 
       
-      `update.packages(ask = FALSE, checkBuilt = TRUE)`
+      ```r
+      update.packages(ask = FALSE, checkBuilt = TRUE)
+      ```
       
 ---
 
@@ -200,7 +243,7 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 Open the Bash [Shell](https://happygitwithr.com/shell.html#shell)
 - Check Git version: `git --version`
   
-- Configure Git information (substitue in your details):
+- Configure Git information using the Shell (substitute in your details):
   
   ```r
   git config --global user.name 'Davide Proserpio'
@@ -217,6 +260,63 @@ Open the Bash [Shell](https://happygitwithr.com/shell.html#shell)
 - Recently GitHub updated its security requirements and now uses 2FA. This means that to access Git via Shell you need a token
   - Create a [GitHub access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
   - **Save it somewhere**, you'll need it to authenticate using the Shell
+  
+---
+class: inverse, center, middle
+
+# Let's begin
+
+---
+
+# Research Workflow
+
+### Organization is key for several reasons
+1. Research projects last a long time
+
+--
+
+2. Collaboration with co-authors
+
+--
+
+3. Replicability 
+
+&lt;!-- -- --&gt;
+
+&lt;!-- ### What we are going to learn in this class will help you improve your research workflow --&gt;
+
+---
+
+# Research Workflow (cont.)
+
+&lt;div align="center"&gt;
+&lt;img src="http://phdcomics.com/comics/archive/phd101212s.gif" height=400&gt;
+&lt;br&gt;
+&lt;br&gt;
+(A version control software such as Git helps a lot with this issue)
+&lt;/div&gt;
+
+---
+
+# Research Workflow (cont.)
+
+### How I keep things organized
+- Example of a project folder: 
+&lt;div align="center"&gt;
+&lt;img src="01-intro_files/figure-html/folders.png" height=200&gt;
+&lt;/div&gt;
+
+- Plus version control software (SVN or Git) that allows me to both track versions and changes (Dropbox does not track changes!)
+---
+
+# Research Workflow (cont.)
+
+Once I submit to a journal, I create a README file clearly describing each script and what it produces
+- this is extremely important and will help you creating the replication files that many journals ask for
+
+&lt;div align="center"&gt;
+&lt;img src="01-intro_files/figure-html/readme-example.png" height=350&gt;
+&lt;/div&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
