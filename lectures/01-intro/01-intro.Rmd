@@ -334,7 +334,25 @@ class: inverse, center, middle
 
 Once I submit to a journal, I create a README file clearly describing each script and what it produces
 - this is extremely important and will help you creating the replication files that many journals ask for
-
 <div align="center">
 <img src="01-intro_files/figure-html/readme-example.png" height=350>
 </div>
+
+---
+
+
+# Research Worklfow (cont.)
+
+### Software/tools
+
+- R, Rstudio: Preliminary analysis, plotting
+- MySQL: Where I store all my datasets
+- Python: "Advanced" analysis/data manipulation
+- Latex: Write papers (sorry, no MS Word allowed in this class!)
+
+### Text Editor
+- [Sublime](https://www.sublimetext.com/)
+  - Can be used for everything, from Latex to R
+  - Connects directly to a server so you can work on "remote" files
+
+- [Visual Studio Code](https://code.visualstudio.com/) also very good!
