@@ -159,8 +159,6 @@ Resources:
 
 
 ---
-
----
 class: inverse, center, middle
 
  # Questions?
@@ -324,7 +322,7 @@ class: inverse, center, middle
 ### How I keep things organized
 - Example of a project folder: 
 <div align="center">
-<img src="01-intro_files/figure-html/folders.png" height=200>
+<img src="01-intro-files/figures/folders.png" height=200>
 </div>
 
 - Plus version control software (SVN or Git) that allows me to both track versions and changes (Dropbox does not track changes!)
@@ -334,8 +332,9 @@ class: inverse, center, middle
 
 Once I submit to a journal, I create a README file clearly describing each script and what it produces
 - this is extremely important and will help you creating the replication files that many journals ask for
+
 <div align="center">
-<img src="01-intro_files/figure-html/readme-example.png" height=350>
+<img src="01-intro-files/figures/readme-example.png" height=350>
 </div>
 
 ---
