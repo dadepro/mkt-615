@@ -27,6 +27,8 @@ class: center, middle, inverse, title-slide
 
 2. [Bash shell basics](#basics)
 
+3. [SSH](#remote)
+
 3. [Files and directories](#files)
 
 4. [Working with text files](#text)
@@ -37,7 +39,13 @@ class: center, middle, inverse, title-slide
 
 7. [User roles and file permissions](#permissions)
 
-8. [Appendix (Windows users only)](#windows)
+8. [Vim](#vim)
+
+9. [Running scripts](#running)
+
+10. [Monitor resources](#monitor)
+
+11. [Appendix (Windows users only)](#windows)
 
 ---
 
@@ -59,22 +67,6 @@ name: intro
 
 # Introduction
 &lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
-
----
-
-# The Unix philosophy
-
-The shell tools that we're going to be using today have their roots in the [Unix](https://en.wikipedia.org/wiki/Unix) family of operating systems originally developed at Bells Labs in the 1970s.
-
-Besides paying homage, acknowledging the Unix lineage is important because these tools still embody the "[Unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy)":
-
-&gt; **Do One Thing And Do It Well** 
---
-
-By pairing and chaining well-designed individual components, we can build powerful and much more complex larger systems.
-- You can see why the Unix philosophy is also referred to as "minimalist and modular".
-  
-Again, this philosophy is very clearly expressed in the design and functionality of the Unix shell.
 
 ---
 
@@ -105,10 +97,13 @@ There are many shell variants, but we're going to focus on [**Bash**](https://ww
 1. Power
   - Both for executing commands and for fixing problems. There are some things you just can't do in an IDE or GUI.
   &lt;!-- - It also avoids memory complications associated with certain applications and/or IDEs. We'll get to this issue later in the course. --&gt;
+
 2. Reproducibility
  - Scripting is reproducible, while clicking is not.
+
 3. Interacting with servers and high-performance computers
   - The shell is often the only option for high performance computing. We'll get to this later in the course.
+
 4. Automating workflow and analysis pipelines
   - Easily track and reproduce an entire project (e.g. use a Makefile to combine multiple programs, scripts, etc.)
 
@@ -116,11 +111,17 @@ There are many shell variants, but we're going to focus on [**Bash**](https://ww
 # What do I use the shell for?
 
 - Git/SVN
+
 - Running scripts (Python, Bash scripts, R, etc.)
+
 - Managing mshresearch (creating users, monitoring resources, etc.)
+
 - Installing software
+
 - Schedule tasks ([Crontab](https://crontab.guru/))
+
 - File management (renaming, moving, etc.)
+
 - Probably more things I am forgetting about
 
 
@@ -755,6 +756,34 @@ $ cheat ls
 ## ls -d .*/ */
 ```
 
+
+---
+class: inverse, center, middle
+name: remote
+
+# Connect to a remote machine
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+# SSH (Secure shell)
+
+### Definition
+Cryptographic network protocol for operating network services securely over an unsecured network
+
+
+You will be using it to connect to computing resources (e.g., `mshresearch`), let's try:
+```
+# Note that you need to be on a USC network or USC VPN
+ssh username@mshreserch.marshall.usc.edu
+```
+Once you are logged in, you are in your home, check it with `pwd` 
+
+You should not save research projects in your home, instead use:
+1. `/data/research/  (868G available)
+2. `/data-2/research/ (6.9TB available)
+
+As you don't have superuser permission (more on this later), you need to tell me to create a project dir for you
+
 ---
 class: inverse, center, middle
 name: files
@@ -831,13 +860,15 @@ ls -lh examples
 ```
 
 ```
-## total 272
-## drwxr-xr-x@ 3 dproserp  staff    96B Aug 10 19:05 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 10 19:05 copies
+## total 288
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 11 11:35 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 11 11:35 copies
 ## -rw-r--r--@ 1 dproserp  staff   149B Aug  2 09:45 hello.R
 ## -rwxr-xr-x@ 1 dproserp  staff    37B Aug  2 09:45 hello.sh
+## -rwxr-xr-x  1 dproserp  staff    73B Aug 11 10:49 loop.sh
 ## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
 ## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
+## -rw-r--r--  1 dproserp  staff   1.8K Aug 11 10:51 output.txt
 ## -rwxr-xr-x@ 1 dproserp  staff   153B Aug  2 09:45 reps.txt
 ## -rw-r--r--@ 1 dproserp  staff   117K Aug  2 09:45 sonnets.txt
 ```
@@ -1057,10 +1088,6 @@ find . -iname "*.txt" ## must use "." to indicate pwd
 ```
 
 ```
-## ./03-shell-files/examples/ABC/abc.txt
-## ./03-shell-files/examples/sonnets.txt
-## ./03-shell-files/examples/reps.txt
-## ./03-shell-files/examples/nursery.txt
 ## ./testing/test1.txt
 ## ./testing/test2.txt
 ## ./testing/test3.txt
@@ -1069,6 +1096,7 @@ find . -iname "*.txt" ## must use "." to indicate pwd
 ## ./examples/reps.txt
 ## ./examples/nursery.txt
 ## ./examples/copies/reps2.txt
+## ./examples/output.txt
 ```
 
 ---
@@ -1216,7 +1244,7 @@ find . -type f | wc -l
 ```
 
 ```
-##       43
+##       34
 ```
 ---
 class: inverse, center, middle
@@ -1369,6 +1397,7 @@ class: inverse, center, middle
 # Editing files using terminal
 
 ---
+name:vim 
 
 # [Vim](https://www.vim.org/)
 
@@ -1391,16 +1420,141 @@ vim examples/hello.sh
 - Commands start with colons and can by quite complicated, e.g.:
   `%s/Hello/Ciao/g`
 ---
+name: running
 
+#(More on) Running Scripts
+
+- Let create a new script called `loop.sh` under the `examples` folder that runs a for loop from 1 to 100, printing `Loop iteration i` ** at each iteration and wait (sleep) a second between each iteration
+  
+  ```bash
+  vim examples/loop.sh
+  ```
+
+  Try to do it yourself
+
+--
+  
+  ```bash
+  #!/bin/bash
+  for i in {1..100}
+  do
+        echo "Loop iteration $i"
+        sleep 1
+  done
+  
+  ```
+- Now, try to run the script:
+  
+  ```bash
+  dadeusc:examples dproserp$ ./loop.sh
+  ```
+---
+#(More on) Running Scripts
+
+- Does the script run? Why?
+
+--
+
+- Let's set the right permissions, e.g.:
+  
+  ```bash
+  chmod 755 loop.sh
+  ```
+--
+
+- Now run the script. 
+
+- Now, let's stop it: `crtl c` (it literally kills the script)
+
+--
+
+- Start it again
+
+--
+
+- **Pause** the script: `ctrl z`
+  - Restart it in the background: `bg 1`
+  - Can you kill it? (No, you need to bring it to the foreground first: `fg 1` )
+
+
+---
+
+#(More on) Running Scripts
+
+- Start a script in background: Add `&amp;` after the script name (with a space in between): 
+  
+  ```bash
+  # Note that I redicrect the output to a file
+  loop.sh &gt; output.txt &amp; 
+  ```
+- You should see something like this:
+  
+  ```bash
+  dadeusc:examples dproserp$ ./loop.sh &gt; output.txt &amp;
+  [1] 43073
+  ```
+  43073 is the process id of the script you just run. Very useful to **kill** and **disown** processes:
+  
+  `kill -9 pid` (-9 is a sort of *force kill*)
+  
+  `disown pid` (very useful in cases in which you run a script on the server)
+  
+---
+
+#(More on) Running Scripts
+
+Check whether your script is running using `ps`:
+
+- Run the script in the background again (`./loop.sh &gt; output.txt &amp;`)
+- Check it is running: `ps x | grep loop.sh`:
+  
+  ```bash
+  (base) dadeusc:examples dproserp$ ps x | grep loop.sh
+  43678 s000  S      0:00.01 /bin/bash ./loop.sh
+  43690 s000  S+     0:00.00 grep loop.sh
+  ```
+
+- If you learn more abou ps: `man ps`
+
+---
+# Crontab
+
+What if you want to run a script every hour, or every other week, or on a specific schedule? (I use it a lot to setup scrapers)
+
+[Crontab](https://man7.org/linux/man-pages/man5/crontab.5.html) is your friend!
+
+&lt;div align="center"&gt;
+&lt;img src="03-shell-files/figures/crontab.png" height=400&gt;
+&lt;/div&gt;
+
+---
+
+# Crontab (cont)
+Open crontab: `crontab -e` (and use vim to edit it)
+
+Example (run everyday at 5 o'clock):
+```
+0 5 * * * /Users/dproserp/phd/teaching/mkt-615/lectures/03-shell/examples/loop.sh &gt; output.txt
+```
+
+---
+name: monitor
+# Monitor resources
+
+### Top
+
+&lt;div align="center"&gt;
+&lt;img src="03-shell-files/figures/top.png" height=400&gt;
+&lt;/div&gt;
 ---
 
 # Disclaimer
 
-*This next section is tailored towards Unix-based operating systems, like Linux or MacOS, which is why I have saved it for the end. &lt;b&gt;Windows users:&lt;/b&gt; Don't be surprised if some commands don't work, especially if you haven't installed the [WSL](#windows)...* 
+This next section is tailored towards Unix-based operating systems, like Linux or MacOS, which is why I have saved it for the end. &lt;b&gt;Windows users:&lt;/b&gt; Don't be surprised if some commands don't work, especially if you haven't installed the [WSL](#windows)... 
 
 &lt;br&gt;
 
-*Regardless, the things we learn here will become relevant to everyone (even Windows users) once we start interacting with Linux servers*
+Regardless, the things we learn here will become relevant to everyone (even Windows users) once we start interacting with Linux servers
 
 ---
 

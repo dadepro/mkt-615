@@ -20,7 +20,23 @@ class: center, middle, inverse, title-slide
 ---
 
 
+# Table of contents
 
+1. [Introduction](#intro)
+
+2. [Git(Hub) + RStudio](#rstudio)
+
+3. [Git from the shell](#shell)
+
+4. [Merge conflicts](#merge)
+
+5. [Branches and forking](#branches)
+
+6. [Tips](#tips)
+
+7. [Summary](#summary)
+---
+name:intro
 # Why even bother?
 
 &lt;div align="center"&gt;
@@ -76,7 +92,7 @@ One of the (many) great features of RStudio is how well it integrates version co
 
 --
 
-I also want to bookmark a general point that we'll revisit many times during this course: 
+I also want to restate a general point that we'll revisit many times during this course: 
 - The tools that we're using all form part of a coherent data science ecosystem
 - Greatly reduces the cognitive overhead ("aggregation") associated with traditional workflows, where you have juggle multiple programs and languages at the same time
 
@@ -121,7 +137,7 @@ See my GIF walkthrough on the next slide...
 # Make some local changes 
 
 &lt;div align="center"&gt;
-&lt;img src="02-git-files/figure-html/git-local-change.gif" height=500&gt;
+&lt;img src="02-git-files/figures/git-local-change.gif" height=500&gt;
 &lt;/div&gt;
 
 ---
@@ -130,7 +146,7 @@ See my GIF walkthrough on the next slide...
 
 Now that you've cloned your first repo and made some local changes, it's time to learn the four main Git operations
 
-1. **Stage** (or "add")
+1. **Stage** (or **Add**)
   - Tell Git that you want to add changes to the repo history (file edits, additions, deletions, etc.)
 2. **Commit**
   - Tell Git that, yes, you are sure these changes should be part of the repo history
@@ -141,30 +157,22 @@ Now that you've cloned your first repo and made some local changes, it's time to
 
 --
 
-For the moment, it will be useful to group the first two operations and last two operations together. (They are often combined in practice too, although you'll soon get a sense of when and why they should be split up.)
-
---
-
-Ready for more GIFs?
+&lt;!-- For the moment, it will be useful to group the first two operations and last two operations together. (They are often combined in practice too, although you'll soon get a sense of when and why they should be split up.) --&gt;
 
 ---
 
 # Stage and Commit
 
 &lt;div align="center"&gt;
-&lt;img src="02-git-files/figure-html/git-stage-commit.gif" height=500&gt;
+&lt;img src="02-git-files/figures/git-stage-commit.gif" height=500&gt;
 &lt;/div&gt;
-
---
-
-Note the helpful commit message to ourselves
 
 ---
 
 # Push and Pull
 
 &lt;div align="center"&gt;
-&lt;img src="02-git-files/figure-html/git-push-pull.gif" height=500&gt;
+&lt;img src="02-git-files/figures/git-push-pull.gif" height=500&gt;
 &lt;/div&gt;
 
 --
@@ -218,9 +226,8 @@ name: shell
 
 The GitHub + RStudio Project combo is ideal for new users
 - RStudio's Git integration and built-in GUI cover all the major operations
-- RStudio Projects FTW
 
-However, I want to go over Git &lt;a href="http://happygitwithr.com/ssh-keys.html#shell" target="_blank"&gt;shell&lt;/a&gt; commands so that you can internalise the basics
+However, I want to go over Git &lt;a href="http://happygitwithr.com/ssh-keys.html#shell" target="_blank"&gt;shell&lt;/a&gt; commands so that you can internalize the basics
 - The shell is more powerful and flexible. Does some things that the RStudio Git GUI can't
 - Potentially more appropriate for projects that aren't primarily based in R. (Although, no real harm in using RStudio Projects to clone a non-R repo)
 
@@ -294,7 +301,7 @@ class: inverse, center, middle
 name: merge
 
 # Merge conflicts
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
 
@@ -461,7 +468,7 @@ Caveats
 During your collaboration, you may have encountered a situation where Git is highlighting differences on seemingly unchanged sentences
 - If that is the case, check whether your partner is using a different OS to you
 
-The "culprit" is the fact that Git evaluates an invisible character at the end of every line. This is how Git tracks changes. (More info [here](https://help.github.com/articles/dealing-with-line-endings/) and [here](https://en.wikipedia.org/wiki/Newline).)
+The problem is that Git evaluates an invisible character at the end of every line. This is how Git tracks changes. (More info [here](https://help.github.com/articles/dealing-with-line-endings/) and [here](https://en.wikipedia.org/wiki/Newline).)
 - For Linux and MacOS, that ending is "LF"
 - For Windows, that ending is "CRLF"
 
@@ -482,18 +489,20 @@ class: inverse, center, middle
 name: branches
 
 # Branches and forking
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
 
 # What are branches and why use them?
 
 Branches are one of Git's coolest features
-- Allow you to take a snapshot of your existing repo and try out a whole new idea *without affecting* your main (i.e. "master") branch
+- Allow you to take a snapshot of your existing repo and try out a whole new idea *without affecting* your main (i.e., "master" or "main") branch
+
 - Only once you (and your collaborators) are 100% satisfied, would you merge it back into the master branch
   - This is how most new features in modern software and apps are developed
   - It is also how bugs are caught and fixed
   - But researchers can easily — and should! — use it to try out new ideas and analysis (e.g. robustness checks, revisions, etc.)
+
 - If you aren't happy, then you can just delete the experimental branch and continue as if nothing happened
 
 ---
@@ -501,7 +510,7 @@ Branches are one of Git's coolest features
 # Create a new branch in RStudio
 
 &lt;div align="center"&gt;
-&lt;img src="02-git-files/figure-html/git-new-branch.gif" height=500&gt;
+&lt;img src="02-git-files/figures/git-new-branch.gif" height=500&gt;
 &lt;/div&gt;
 
 ---
@@ -578,7 +587,7 @@ See instructions &lt;a href="https://help.github.com/articles/creating-a-pull-re
 # Your first pull request (cont.)
 
 &lt;div align="center"&gt;
-&lt;img src="02-git-files/figure-html/git-pr.gif" height=500&gt;
+&lt;img src="02-git-files/figures/git-pr.gif" height=500&gt;
 &lt;/div&gt;
 
 ---
@@ -606,7 +615,7 @@ Creating forks is super easy as we've just seen. However, maintaining them invol
 
 ---
 class: inverse, center, middle
-name: other
+name: tips
 
 # Other tips
 &lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
