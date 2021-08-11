@@ -721,8 +721,6 @@ class: inverse, center, middle
 name: faq
 
 # Appendix: FAQ
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-
 ---
 
 # FAQ

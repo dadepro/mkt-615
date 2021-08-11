@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT615: Data Storytelling for Marketers</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# MKT615: Data Storytelling for Marketers
+## Lecture 2: Version control with Git &amp; GitHub
+### Davide Proserpio
+### Marshall School of Business
+
+---
+
+
+# Table of contents
+
+
+1. [Introduction](#intro)
+
+2. [Bash shell basics](#basics)
+
+3. [Files and directories](#files)
+
+4. [Working with text files](#text)
+
+5. [Redirecting and pipes](#pipes)
+
+6. [Scripting](#scripting)
+
+7. [User roles and file permissions](#permissions)
+
+8. [Appendix (Windows users only)](#windows)
+
+---
+
+name:start
+# Checklist
+
+☑ Have you cloned the [course repo](https://github.com/dadepro/mkt-615) to your local machine?
+
+☑ Do you have Bash-compatible shell? You should be ok with Mac and Linux, **Windows** users: see [here](#windows) before continuing (or you can decide to use **mshresearch** and [RStudio Server](http://mshresearch.marshall.usc.edu:8787/) ready for your to use)
+
+
+&lt;/br&gt;
+
+(This lecture is the last detour before we get back to data analyis with R and RStudio.)
+
+---
+class: inverse, center, middle
+name: intro
+
+# Introduction
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# The Unix philosophy
+
+The shell tools that we're going to be using today have their roots in the [Unix](https://en.wikipedia.org/wiki/Unix) family of operating systems originally developed at Bells Labs in the 1970s.
+
+Besides paying homage, acknowledging the Unix lineage is important because these tools still embody the "[Unix philosophy](https://en.wikipedia.org/wiki/Unix_philosophy)":
+
+&gt; **Do One Thing And Do It Well** 
+--
+
+By pairing and chaining well-designed individual components, we can build powerful and much more complex larger systems.
+- You can see why the Unix philosophy is also referred to as "minimalist and modular".
+  
+Again, this philosophy is very clearly expressed in the design and functionality of the Unix shell.
+
+---
+
+# Definitions
+
+Don't be thrown off by terminology: *shell*, *terminal*, *tty*, *command prompt*, etc. 
+- These are all basically just different names for the same thing.&lt;sup&gt;1&lt;/sup&gt;
+- They are all referring to a **command line interface** (CLI).
+
+.footnote[
+&lt;sup&gt;1&lt;/sup&gt; [Truth be told](https://unix.stackexchange.com/questions/4126/what-is-the-exact-difference-between-a-terminal-a-shell-a-tty-and-a-con), there are some subtle and sometimes important differences, as well as some interesting history behind the names. But we can safely ignore these here.
+]
+
+--
+
+There are many shell variants, but we're going to focus on [**Bash**](https://www.gnu.org/software/bash/) (i.e. **B**ourne **a**gain **sh**ell).
+- Included by default on Linux and MacOS.
+- Windows users need to install a Bash-compatible shell first (again, see [here](#windows)).
+
+--
+
+(For the record, MacOS default shell is now [zsh](https://ohmyz.sh/) (i.e. the "Z shell"). As a result, my shell might look slightly different to yours during live coding sessions. The commands will stay the same, though.)
+
+---
+
+# Why even bother with the shell?
+
+1. Power
+  - Both for executing commands and for fixing problems. There are some things you just can't do in an IDE or GUI.
+  &lt;!-- - It also avoids memory complications associated with certain applications and/or IDEs. We'll get to this issue later in the course. --&gt;
+2. Reproducibility
+ - Scripting is reproducible, while clicking is not.
+3. Interacting with servers and high-performance computers
+  - The shell is often the only option for high performance computing. We'll get to this later in the course.
+4. Automating workflow and analysis pipelines
+  - Easily track and reproduce an entire project (e.g. use a Makefile to combine multiple programs, scripts, etc.)
+
+---
+# What do I use the shell for?
+
+- Git/SVN
+- Running scripts (Python, Bash scripts, R, etc.)
+- Managing mshresearch (creating users, monitoring resources, etc.)
+- Installing software
+- Schedule tasks ([Crontab](https://crontab.guru/))
+- File management (renaming, moving, etc.)
+- Probably more things I am forgetting about
+
+
+---
+class: inverse, center, middle
+name: basics
+
+# Bash shell basics
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# First look
+
+Let's open up our Bash shell. 
+
+- [Linux](https://www.wikihow.com/Open-a-Terminal-Window-in-Ubuntu)
+- [Mac](https://www.techwalla.com/articles/how-to-open-terminal-on-a-macbook)
+- [Windows](https://www.howtogeek.com/265900/everything-you-can-do-with-windows-10s-new-bash-shell/)
+
+You can also use RStudio if you prefer:
+- [RStudio's built-in Terminal](https://support.rstudio.com/hc/en-us/articles/115010737148-Using-the-RStudio-Terminal).
+
+---
+
+# First look (cont.)
+
+You should see something like:
+
+```bash
+ username@hostname:~$
+```
+
+This is shell-speak for: "Who am I and where am I?"
+
+--
+
+- `username` denotes a specific user (one of potentially many on this computer). 
+
+--
+
+- `@hostname` denotes the name of the computer or server.
+
+--
+
+- `:~` denotes the directory path (where `~` signifies the user's home directory).
+
+--
+
+- `$` denotes the start of the command prompt.
+  - We'll get to this later, but for a special "superuser" called root, the dollar sign will change to a `#`.
+
+---
+
+# Useful keyboard shortcuts
+
+- `Tab` completion.
+
+- Use the `↑` (and `↓`) keys to scroll through previous commands.
+
+- `Ctrl`+`→` (and `Ctrl`+`←`) to skip whole words at a time.
+
+- `Ctrl`+`a` moves the cursor to the beginning of the line.
+
+- `Ctrl`+`e` moves the cursor to the end of the line.
+
+- `Ctrl`+`k` deletes everything to the right of the cursor.
+
+- `Ctrl`+`u` deletes everything to the left of the cursor.
+
+- `Ctrl`+`Shift`+`c` to copy and `Ctrl`+`Shift`+`v` to paste (I think `shift` is optional)
+
+- `clear` to clear your terminal.
+
+---
+
+# Syntax
+
+All Bash commands have the same basic syntax:
+
+**&lt;center&gt;command option(s) argument(s)&lt;/center&gt;**
+
+Examples:
+
+  ```bash
+  $ ls -lh ~/Documents/
+  ```
+  ```bash
+  $ sort -u myfile.txt
+  ```
+
+---
+count: false
+
+# Syntax
+
+All Bash commands have the same basic syntax:
+
+**&lt;center&gt;&lt;span style='background: #ffff88;'&gt;command&lt;/span&gt; option(s) argument(s)&lt;/center&gt;**
+
+Examples:
+
+  ```bash
+  $ `ls` -lh ~/Documents/
+  ```
+  ```bash
+  $ `sort` -u myfile.txt
+  ```
+
+---
+count: false
+
+# Syntax
+
+All Bash commands have the same basic syntax:
+
+**&lt;center&gt;command &lt;span style='background: #ffff88;'&gt;option(s)&lt;/span&gt; argument(s)&lt;/center&gt;**
+
+Examples:
+
+  ```bash
+  $ ls `-lh` ~/Documents/
+  ```
+  ```bash
+  $ sort `-u` myfile.txt
+  ```
+
+
+---
+count: false
+
+# Syntax
+
+All Bash commands have the same basic syntax:
+
+**&lt;center&gt;command option(s) &lt;span style='background: #ffff88;'&gt;argument(s)&lt;/span&gt;&lt;/center&gt;**
+
+Examples:
+
+  ```bash
+  $ ls -lh `~/Documents/`
+  ```
+  ```bash
+  $ sort -u `myfile.txt`
+  ```
+
+---
+
+# Syntax
+
+All Bash commands have the same basic syntax:
+
+**&lt;center&gt;command option(s) argument(s)&lt;/center&gt;**
+
+Examples:
+
+  ```bash
+  $ ls -lh ~/Documents/
+  ```
+  ```bash
+  $ sort -u myfile.txt
+  ```
+
+&lt;/br&gt;
+
+**commands**
+- You don't always need options or arguments. (E.g. `$ ls ~/Documents/` and `$ ls -lh` are both valid commands that will yield output.)
+- However, you always need a command.
+
+---
+
+# Syntax (cont.)
+
+**options** (also called **flags**)
+- Start with a dash.
+- Usually one letter.
+- Multiple options can be chained together under a single dash.
+  ```bash
+  $ ls -l -a -h /var/log ## This works
+  $ ls -lah /var/log ## So does this
+  ```
+- An exception is with (rarer) options requiring two dashes.
+  ```bash
+  $ ls --group-directories-first --human-readable /var/log
+  ```
+
+**arguments**
+- Tell the command *what* to operate on.
+- Usually a file, path, or a set of files and folders.
+
+---
+
+# Help: man
+
+The `man` command ("manual pages") is your friend if you ever need help.
+- Tip: Hit spacebar to scroll down a page at a time, "h" to see the help notes of the `man` command itself and "q" to quit.
+
+
+```bash
+man ls
+```
+
+```
+## 
+## LS(1)                     BSD General Commands Manual                    LS(1)
+## 
+## NNAAMMEE
+##      llss -- list directory contents
+## 
+## SSYYNNOOPPSSIISS
+##      llss [--AABBCCFFGGHHLLOOPPRRSSTTUUWW@@aabbccddeeffgghhiikkllmmnnooppqqrrssttuuwwxx11%%] [_f_i_l_e _._._.]
+## 
+## DDEESSCCRRIIPPTTIIOONN
+##      For each operand that names a _f_i_l_e of a type other than directory, llss
+##      displays its name as well as any requested, associated information.  For
+##      each operand that names a _f_i_l_e of type directory, llss displays the names
+##      of files contained within that directory, as well as any requested, asso-
+##      ciated information.
+## 
+##      If no operands are given, the contents of the current directory are dis-
+##      played.  If more than one operand is given, non-directory operands are
+##      displayed first; directory and non-directory operands are sorted sepa-
+##      rately and in lexicographical order.
+## 
+##      The following options are available:
+## 
+##      --@@      Display extended attribute keys and sizes in long (--ll) output.
+## 
+##      --11      (The numeric digit ``one''.)  Force output to be one entry per
+##              line.  This is the default when output is not to a terminal.
+## 
+##      --AA      List all entries except for _. and _._..  Always set for the super-
+##              user.
+## 
+##      --aa      Include directory entries whose names begin with a dot (_.).
+## 
+##      --BB      Force printing of non-printable characters (as defined by
+##              ctype(3) and current locale settings) in file names as \_x_x_x,
+##              where _x_x_x is the numeric value of the character in octal.
+## 
+##      --bb      As --BB, but use C escape codes whenever possible.
+## 
+##      --CC      Force multi-column output; this is the default when output is to
+##              a terminal.
+## 
+##      --cc      Use time when file status was last changed for sorting (--tt) or
+##              long printing (--ll).
+## 
+##      --dd      Directories are listed as plain files (not searched recursively).
+## 
+##      --ee      Print the Access Control List (ACL) associated with the file, if
+##              present, in long (--ll) output.
+## 
+##      --FF      Display a slash (`/') immediately after each pathname that is a
+##              directory, an asterisk (`*') after each that is executable, an at
+##              sign (`@') after each symbolic link, an equals sign (`=') after
+##              each socket, a percent sign (`%') after each whiteout, and a ver-
+##              tical bar (`|') after each that is a FIFO.
+## 
+##      --ff      Output is not sorted.  This option turns on the --aa option.
+## 
+##      --GG      Enable colorized output.  This option is equivalent to defining
+##              CLICOLOR in the environment.  (See below.)
+## 
+##      --gg      This option is only available for compatibility with POSIX; it is
+##              used to display the group name in the long (--ll) format output
+##              (the owner name is suppressed).
+## 
+##      --HH      Symbolic links on the command line are followed.  This option is
+##              assumed if none of the --FF, --dd, or --ll options are specified.
+## 
+##      --hh      When used with the --ll option, use unit suffixes: Byte, Kilobyte,
+##              Megabyte, Gigabyte, Terabyte and Petabyte in order to reduce the
+##              number of digits to three or less using base 2 for sizes.
+## 
+##      --ii      For each file, print the file's file serial number (inode num-
+##              ber).
+## 
+##      --kk      If the --ss option is specified, print the file size allocation in
+##              kilobytes, not blocks.  This option overrides the environment
+##              variable BLOCKSIZE.
+## 
+##      --LL      Follow all symbolic links to final target and list the file or
+##              directory the link references rather than the link itself.  This
+##              option cancels the --PP option.
+## 
+##      --ll      (The lowercase letter ``ell''.)  List in long format.  (See
+##              below.)  A total sum for all the file sizes is output on a line
+##              before the long listing.
+## 
+##      --mm      Stream output format; list files across the page, separated by
+##              commas.
+## 
+##      --nn      Display user and group IDs numerically, rather than converting to
+##              a user or group name in a long (--ll) output.  This option turns on
+##              the --ll option.
+## 
+##      --OO      Include the file flags in a long (--ll) output.
+## 
+##      --oo      List in long format, but omit the group id.
+## 
+##      --PP      If argument is a symbolic link, list the link itself rather than
+##              the object the link references.  This option cancels the --HH and
+##              --LL options.
+## 
+##      --pp      Write a slash (`/') after each filename if that file is a direc-
+##              tory.
+## 
+##      --qq      Force printing of non-graphic characters in file names as the
+##              character `?'; this is the default when output is to a terminal.
+## 
+##      --RR      Recursively list subdirectories encountered.
+## 
+##      --rr      Reverse the order of the sort to get reverse lexicographical
+##              order or the oldest entries first (or largest files last, if com-
+##              bined with sort by size
+## 
+##      --SS      Sort files by size
+## 
+##      --ss      Display the number of file system blocks actually used by each
+##              file, in units of 512 bytes, where partial units are rounded up
+##              to the next integer value.  If the output is to a terminal, a
+##              total sum for all the file sizes is output on a line before the
+##              listing.  The environment variable BLOCKSIZE overrides the unit
+##              size of 512 bytes.
+## 
+##      --TT      When used with the --ll (lowercase letter ``ell'') option, display
+##              complete time information for the file, including month, day,
+##              hour, minute, second, and year.
+## 
+##      --tt      Sort by time modified (most recently modified first) before sort-
+##              ing the operands by lexicographical order.
+## 
+##      --uu      Use time of last access, instead of last modification of the file
+##              for sorting (--tt) or long printing (--ll).
+## 
+##      --UU      Use time of file creation, instead of last modification for sort-
+##              ing (--tt) or long output (--ll).
+## 
+##      --vv      Force unedited printing of non-graphic characters; this is the
+##              default when output is not to a terminal.
+## 
+##      --WW      Display whiteouts when scanning directories.  (--SS) flag).
+## 
+##      --ww      Force raw printing of non-printable characters.  This is the
+##              default when output is not to a terminal.
+## 
+##      --xx      The same as --CC, except that the multi-column output is produced
+##              with entries sorted across, rather than down, the columns.
+## 
+##      --%%      Distinguish dataless files and directories with a '%' character
+##              in long (--ll) output, and don't materialize dataless directories
+##              when listing them.
+## 
+##      The --11, --CC, --xx, and --ll options all override each other; the last one
+##      specified determines the format used.
+## 
+##      The --cc and --uu options override each other; the last one specified deter-
+##      mines the file time used.
+## 
+##      The --BB, --bb, --ww, and --qq options all override each other; the last one
+##      specified determines the format used for non-printable characters.
+## 
+##      The --HH, --LL and --PP options all override each other (either partially or
+##      fully); they are applied in the order specified.
+## 
+##      By default, llss lists one entry per line to standard output; the excep-
+##      tions are to terminals or when the --CC or --xx options are specified.
+## 
+##      File information is displayed with one or more &lt;blank&gt;s separating the
+##      information associated with the --ii, --ss, and --ll options.
+## 
+##    TThhee LLoonngg FFoorrmmaatt
+##      If the --ll option is given, the following information is displayed for
+##      each file: file mode, number of links, owner name, group name, number of
+##      bytes in the file, abbreviated month, day-of-month file was last modi-
+##      fied, hour file last modified, minute file last modified, and the path-
+##      name.  In addition, for each directory whose contents are displayed, the
+##      total number of 512-byte blocks used by the files in the directory is
+##      displayed on a line by itself, immediately before the information for the
+##      files in the directory.  If the file or directory has extended
+##      attributes, the permissions field printed by the --ll option is followed by
+##      a '@' character.  Otherwise, if the file or directory has extended secu-
+##      rity information (such as an access control list), the permissions field
+##      printed by the --ll option is followed by a '+' character.  If the --%%
+##      option is given, a '%' character follows the permissions field for data-
+##      less files and directories, possibly replacing the '@' or '+' character.
+## 
+##      If the modification time of the file is more than 6 months in the past or
+##      future, then the year of the last modification is displayed in place of
+##      the hour and minute fields.
+## 
+##      If the owner or group names are not a known user or group name, or the --nn
+##      option is given, the numeric ID's are displayed.
+## 
+##      If the file is a character special or block special file, the major and
+##      minor device numbers for the file are displayed in the size field.  If
+##      the file is a symbolic link, the pathname of the linked-to file is pre-
+##      ceded by ``-&gt;''.
+## 
+##      The file mode printed under the --ll option consists of the entry type,
+##      owner permissions, and group permissions.  The entry type character
+##      describes the type of file, as follows:
+## 
+##            bb     Block special file.
+##            cc     Character special file.
+##            dd     Directory.
+##            ll     Symbolic link.
+##            ss     Socket link.
+##            pp     FIFO.
+##            --     Regular file.
+## 
+##      The next three fields are three characters each: owner permissions, group
+##      permissions, and other permissions.  Each field has three character posi-
+##      tions:
+## 
+##            1.   If rr, the file is readable; if --, it is not readable.
+## 
+##            2.   If ww, the file is writable; if --, it is not writable.
+## 
+##            3.   The first of the following that applies:
+## 
+##                       SS     If in the owner permissions, the file is not exe-
+##                             cutable and set-user-ID mode is set.  If in the
+##                             group permissions, the file is not executable and
+##                             set-group-ID mode is set.
+## 
+##                       ss     If in the owner permissions, the file is exe-
+##                             cutable and set-user-ID mode is set.  If in the
+##                             group permissions, the file is executable and set-
+##                             group-ID mode is set.
+## 
+##                       xx     The file is executable or the directory is search-
+##                             able.
+## 
+##                       --     The file is neither readable, writable, exe-
+##                             cutable, nor set-user-ID nor set-group-ID mode,
+##                             nor sticky.  (See below.)
+## 
+##                 These next two apply only to the third character in the last
+##                 group (other permissions).
+## 
+##                       TT     The sticky bit is set (mode 1000), but not execute
+##                             or search permission.  (See chmod(1) or
+##                             sticky(8).)
+## 
+##                       tt     The sticky bit is set (mode 1000), and is search-
+##                             able or executable.  (See chmod(1) or sticky(8).)
+## 
+## EEXXAAMMPPLLEESS
+##      The following is how to do an llss listing sorted by increasing size
+## 
+##            ls -lrS
+## 
+## DDIIAAGGNNOOSSTTIICCSS
+##      The llss utility exits 0 on success, and &gt;0 if an error occurs.
+## 
+## EENNVVIIRROONNMMEENNTT
+##      The following environment variables affect the execution of llss:
+## 
+##      BLOCKSIZE       If the environment variable BLOCKSIZE is set, the block
+##                      counts (see --ss) will be displayed in units of that size
+##                      block.
+## 
+##      CLICOLOR        Use ANSI color sequences to distinguish file types.  See
+##                      LSCOLORS below.  In addition to the file types mentioned
+##                      in the --FF option some extra attributes (setuid bit set,
+##                      etc.) are also displayed.  The colorization is dependent
+##                      on a terminal type with the proper termcap(5) capabili-
+##                      ties.  The default ``cons25'' console has the proper
+##                      capabilities, but to display the colors in an xterm(1),
+##                      for example, the TERM variable must be set to
+##                      ``xterm-color''.  Other terminal types may require simi-
+##                      lar adjustments.  Colorization is silently disabled if
+##                      the output isn't directed to a terminal unless the
+##                      CLICOLOR_FORCE variable is defined.
+## 
+##      CLICOLOR_FORCE  Color sequences are normally disabled if the output isn't
+##                      directed to a terminal.  This can be overridden by set-
+##                      ting this flag.  The TERM variable still needs to refer-
+##                      ence a color capable terminal however otherwise it is not
+##                      possible to determine which color sequences to use.
+## 
+##      COLUMNS         If this variable contains a string representing a decimal
+##                      integer, it is used as the column position width for dis-
+##                      playing multiple-text-column output.  The llss utility cal-
+##                      culates how many pathname text columns to display based
+##                      on the width provided.  (See --CC and --xx.)
+## 
+##      LANG            The locale to use when determining the order of day and
+##                      month in the long --ll format output.  See environ(7) for
+##                      more information.
+## 
+##      LSCOLORS        The value of this variable describes what color to use
+##                      for which attribute when colors are enabled with
+##                      CLICOLOR.  This string is a concatenation of pairs of the
+##                      format _f_b, where _f is the foreground color and _b is the
+##                      background color.
+## 
+##                      The color designators are as follows:
+## 
+##                            aa     black
+##                            bb     red
+##                            cc     green
+##                            dd     brown
+##                            ee     blue
+##                            ff     magenta
+##                            gg     cyan
+##                            hh     light grey
+##                            AA     bold black, usually shows up as dark grey
+##                            BB     bold red
+##                            CC     bold green
+##                            DD     bold brown, usually shows up as yellow
+##                            EE     bold blue
+##                            FF     bold magenta
+##                            GG     bold cyan
+##                            HH     bold light grey; looks like bright white
+##                            xx     default foreground or background
+## 
+##                      Note that the above are standard ANSI colors.  The actual
+##                      display may differ depending on the color capabilities of
+##                      the terminal in use.
+## 
+##                      The order of the attributes are as follows:
+## 
+##                            1.   directory
+##                            2.   symbolic link
+##                            3.   socket
+##                            4.   pipe
+##                            5.   executable
+##                            6.   block special
+##                            7.   character special
+##                            8.   executable with setuid bit set
+##                            9.   executable with setgid bit set
+##                            10.  directory writable to others, with sticky bit
+##                            11.  directory writable to others, without sticky
+##                                 bit
+## 
+##                      The default is "exfxcxdxbxegedabagacad", i.e. blue fore-
+##                      ground and default background for regular directories,
+##                      black foreground and red background for setuid executa-
+##                      bles, etc.
+## 
+##      LS_COLWIDTHS    If this variable is set, it is considered to be a colon-
+##                      delimited list of minimum column widths.  Unreasonable
+##                      and insufficient widths are ignored (thus zero signifies
+##                      a dynamically sized column).  Not all columns have
+##                      changeable widths.  The fields are, in order: inode,
+##                      block count, number of links, user name, group name,
+##                      flags, file size, file name.
+## 
+##      TERM            The CLICOLOR functionality depends on a terminal type
+##                      with color capabilities.
+## 
+##      TZ              The timezone to use when displaying dates.  See
+##                      environ(7) for more information.
+## 
+## CCOOMMPPAATTIIBBIILLIITTYY
+##      The group field is now automatically included in the long listing for
+##      files in order to be compatible with the IEEE Std 1003.2 (``POSIX.2'')
+##      specification.
+## 
+## LLEEGGAACCYY DDEESSCCRRIIPPTTIIOONN
+##      In legacy mode, the --ff option does not turn on the --aa option and the --gg,
+##      --nn, and --oo options do not turn on the --ll option.
+## 
+##      Also, the --oo option causes the file flags to be included in a long (-l)
+##      output; there is no --OO option.
+## 
+##      When --HH is specified (and not overridden by --LL or --PP) and a file argument
+##      is a symlink that resolves to a non-directory file, the output will
+##      reflect the nature of the link, rather than that of the file.  In legacy
+##      operation, the output will describe the file.
+## 
+##      For more information about legacy mode, see compat(5).
+## 
+## SSEEEE AALLSSOO
+##      chflags(1), chmod(1), sort(1), xterm(1), compat(5), termcap(5),
+##      symlink(7), sticky(8)
+## 
+## SSTTAANNDDAARRDDSS
+##      The llss utility conforms to IEEE Std 1003.1-2001 (``POSIX.1'').
+## 
+## HHIISSTTOORRYY
+##      An llss command appeared in Version 1 AT&amp;T UNIX.
+## 
+## BBUUGGSS
+##      To maintain backward compatibility, the relationships between the many
+##      options are quite complex.
+## 
+## BSD                              May 19, 2002                              BSD
+```
+
+---
+
+# Help: man (cont.)
+
+A useful feature of `man` is quick pattern searching with "/pattern".
+- Try this now by running `$ man ls` again and then typing "/human" and hitting the return key. 
+- To continue on to the next case, hit `n`. (It won't work here because the pattern "human" only occurs once in the manual file.)
+
+--
+
+&lt;/br&gt;
+
+Again, this and other `man` tricks tricks are detailed in the help pages (hit "h").
+
+---
+
+# Help: cheat
+
+I also like the [cheat](https://github.com/chrisallenlane/cheat) utility, which provides a more readable summary / cheatsheet of various command. You'll need to install it first. (Linux and MacOS only.)
+
+```
+$ cheat ls
+## # Displays everything in the target directory
+## ls path/to/the/target/directory
+## 
+## # Displays everything including hidden files
+## ls -a
+## 
+## # Displays all files, along with the size (with unit suffixes) and timestamp
+## ls -lh 
+## 
+## # Display files, sorted by size
+## ls -S
+## 
+## # Display directories only
+## ls -d */
+## 
+## # Display directories only, include hidden
+## ls -d .*/ */
+```
+
+---
+class: inverse, center, middle
+name: files
+
+# Files and directories
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# Navigation
+
+Key navigation commands:
+
+- `pwd` to print (the current) working directory.
+
+- `cd` to change directory.
+
+
+```bash
+pwd
+```
+
+```
+## /Users/dproserp/phd/teaching/mkt-615/lectures/03-shell
+```
+
+--
+
+You can use absolute paths, but it's better to use relative paths and invoke special symbols for a user's home folder (`~`), current directory (`.`), and parent directory (`..`) as needed. 
+
+
+```bash
+cd examples ## Move into the "examples" sub-directory of this lecture directory.
+cd ../.. ## Now go back up two directories.
+pwd
+```
+
+```
+## /Users/dproserp/phd/teaching/mkt-615/lectures
+```
+
+---
+
+# Navigation (cont.)
+
+Beware of directory names that contain spaces. Say you have a directory called "My Documents". (I'm looking at you, Windows.)
+
+- Why won't `$ cd My Documents` work?
+
+--
+
+**Answer:** Bash syntax is super pedantic about spaces and ordering. Here it thinks that "My" and "Documents" are separate arguments.
+
+--
+Solutions:
+  - Use quotation marks: `$ cd "My Documents"`.
+
+  - Use Tab completion to automatically "escape" the space: `$ cd My\ Documents`. 
+  
+  - **Don't use spaces in file and folder names**
+
+---
+
+# Listing files and their properties
+
+We're about to go into more depth about the `ls` command.
+- To do this effectively, it will be helpful if we're all working off the same group of files and folders.
+- Navigate to the directory containing these lecture notes (i.e. `03-shell`). Now list the contents of the  `examples/` sub-directory with the `-lh` option ("long format", "human readable").
+
+
+```bash
+# cd PathWhereYouClonedThisRepo/lectures/03-shell ## change as needed
+ls -lh examples
+```
+
+```
+## total 272
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 10 19:03 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 10 19:03 copies
+## -rw-r--r--@ 1 dproserp  staff   149B Aug  2 09:45 hello.R
+## -rwxr-xr-x@ 1 dproserp  staff    37B Aug  2 09:45 hello.sh
+## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
+## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
+## -rwxr-xr-x@ 1 dproserp  staff   153B Aug  2 09:45 reps.txt
+## -rw-r--r--@ 1 dproserp  staff   117K Aug  2 09:45 sonnets.txt
+```
+
+---
+
+# Listing files and their properties (cont.)
+
+What does this all mean? Let's focus on the top line.
+
+```bash
+drwxr-xr-x 2 dproserp staff 4.0K Jan 12 22:12 ABC
+```
+
+---
+count:false
+
+# Listing files and their properties (cont.)
+
+What does this all mean? Let's focus on the top line.
+
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;
+&lt;span style='background: #ffff88;'&gt;d&lt;/span&gt;rwxr-xr-x 2 grant users 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+
+- The first column denotes the object type:
+  - `d` (directory or folder), `l` (link), or `-` (file)
+
+---
+
+count:false
+
+# Listing files and their properties (cont.)
+
+What does this all mean? Let's focus on the top line.
+
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;d&lt;span style='background: #ffff88;'&gt;&lt;span style='color: #e41a1c;'&gt;rwx&lt;/span&gt;&lt;span style='color: #377eb8;'&gt;r-x&lt;/span&gt;&lt;span style='color: #4daf4a;'&gt;r-x&lt;/span&gt;&lt;/span&gt; 2 grant users 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+
+- &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
+  - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
+- Next, we see the permissions associated with the object's three possible user types: 1) &lt;span style='color: #e41a1c;'&gt;owner&lt;/span&gt;, 2) &lt;span style='color: #377eb8;'&gt;the owner's group&lt;/span&gt;, and 3) &lt;span style='color: #4daf4a;'&gt;all other users&lt;/span&gt;.
+  - Permissions reflect `r` (read), `w` (write), or `x` (execute) access.
+  - &lt;b&gt;`-`&lt;/b&gt; denotes missing permissions for a class of operations.
+
+---
+count:false
+
+# Listing files and their properties (cont.)
+
+What does this all mean? Let's focus on the top line.
+
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x &lt;span style='background: #ffff88;'&gt;2&lt;/span&gt; grant users 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+
+- &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
+  - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
+- &lt;span style='color: #A9A9A9;'&gt;Next, we see the permissions associated with the object's three possible user types: 1) owner, 2) the owner's group, and 3) all other users.
+  - Permissions reflect `r` (read), `w` (write), or `x` (execute) access.
+  - &lt;b&gt;`-`&lt;/b&gt; denotes missing permissions for a class of operations.&lt;/span&gt;
+- The number of [hard links](http://www.giannistsakiris.com/2011/04/15/counting-and-listing-hard-links-on-linux/) to the object.
+
+---
+
+count:false
+
+# Listing files and their properties (cont.)
+
+What does this all mean? Let's focus on the top line.
+
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x 2 &lt;span style='background: #ffff88;'&gt;&lt;span style='color: #e41a1c;'&gt;grant&lt;/span&gt; &lt;span style='color: #377eb8;'&gt;users&lt;/span&gt;&lt;/span&gt; 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+
+- &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
+  - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
+- &lt;span style='color: #A9A9A9;'&gt;Next, we see the permissions associated with the object's three possible user types: 1) owner, 2) the owner's group, and 3) all other users.
+  - Permissions reflect `r` (read), `w` (write), or `x` (execute) access.
+  - &lt;b&gt;`-`&lt;/b&gt; denotes missing permissions for a class of operations.&lt;/span&gt;
+- &lt;span style='color: #A9A9A9;'&gt;The number of hard links to the object.&lt;/span&gt;
+- We also see the identity of the object's &lt;span style='color: #e41a1c;'&gt;owner&lt;/span&gt; and their &lt;span style='color: #377eb8;'&gt;group&lt;/span&gt;.
+
+---
+count:false
+
+# Listing files and their properties (cont.)
+
+What does this all mean? Let's focus on the top line.
+
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x 2 grant users &lt;span style='background: #ffff88;'&gt;4.0K Jan 12 22:12 ABC&lt;/span&gt;&lt;/span&gt;
+
+- &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
+  - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
+- &lt;span style='color: #A9A9A9;'&gt;Next, we see the permissions associated with the object's three possible user types: 1) owner, 2) the owner's group, and 3) all other users.
+  - Permissions reflect `r` (read), `w` (write), or `x` (execute) access.
+  - &lt;b&gt;`-`&lt;/b&gt; denotes missing permissions for a class of operations.&lt;/span&gt;
+- &lt;span style='color: #A9A9A9;'&gt;The number of hard links to the object.&lt;/span&gt;
+- &lt;span style='color: #A9A9A9;'&gt;We also see the identity of the object's owner and their group.&lt;/span&gt;
+- Finally, we see some descriptive elements about the object: 
+  - Size, date and time of creation, and the object name.
+
+---
+
+# Create: touch and mkdir
+
+One of the most common shell tasks is object creation (files, directories, etc.)
+
+We use `mkdir` to create directories. E.g. To create a new "testing" directory:
+
+```bash
+rm -fR testing
+mkdir testing
+```
+
+We use `touch` to create (empty) files. E.g. To add some files to our new directory:
+
+```bash
+# remove if file exist before creating it
+rm -f testing/test1.txt testing/test2.txt testing/test3.txt
+touch testing/test1.txt testing/test2.txt testing/test3.txt
+```
+
+--
+
+Check that it worked:
+
+```bash
+ls testing
+```
+
+```
+## test1.txt
+## test2.txt
+## test3.txt
+```
+
+---
+
+# Copy: cp
+
+The syntax for copying is `$ cp object path/copyname`
+- If you don't provide a new name for the copied object, it will just take the old name.
+- However, if there is already an object with the same name in the target destination, then you'll have to use `-f` to force an overwrite.
+
+
+```bash
+## Create new "copies" sub-directory
+mkdir examples/copies
+## Now copy across a file (with a new name)
+cp examples/reps.txt examples/copies/reps-copy.txt
+## Show that we were successful
+ls examples/copies
+```
+
+```
+## mkdir: examples/copies: File exists
+## reps-copy.txt
+## reps2.txt
+```
+
+--
+
+You can use `cp` to copy directories, although you'll need the `-r` (or `-R`) flag if you want to recursively copy over everything inside of it to. 
+- Try this by copying over the `meals/` sub-directory to `copies/`.
+
+---
+
+# Move (and rename): mv 
+
+The syntax for moving is `$ mv object path/newobjectname` 
+
+
+```bash
+ ## Move the abc.txt file and show that it worked
+mv examples/ABC/abc.txt examples
+ls examples/ABC ## empty
+```
+
+```bash
+## Move it back again
+mv examples/abc.txt examples/ABC
+ls examples/ABC ## not empty
+```
+
+```
+## abc.txt
+```
+
+--
+
+Note that "moving" an object within the same directory, but with the (newobjectname) option, is effectively the same as renaming it.
+
+
+```bash
+ ## Rename reps-copy to reps2 by "moving" it with a new name
+mv examples/copies/reps-copy.txt examples/copies/reps2.txt
+ls examples/copies
+```
+
+```
+## reps2.txt
+```
+---
+
+# Find (files)
+
+The last command that I want to mention w.r.t. navigation is `find`.
+- This can be used to locate files and directories based on a variety of criteria; from pattern matching to object properties.
+
+
+```bash
+find examples -iname "monday.csv" ## will automatically do recursive
+```
+
+```
+## examples/meals/monday.csv
+```
+
+
+```bash
+find . -iname "*.txt" ## must use "." to indicate pwd
+```
+
+```
+## ./03-shell-files/examples/ABC/abc.txt
+## ./03-shell-files/examples/sonnets.txt
+## ./03-shell-files/examples/reps.txt
+## ./03-shell-files/examples/nursery.txt
+## ./testing/test1.txt
+## ./testing/test2.txt
+## ./testing/test3.txt
+## ./examples/ABC/abc.txt
+## ./examples/sonnets.txt
+## ./examples/reps.txt
+## ./examples/nursery.txt
+## ./examples/copies/reps2.txt
+```
+
+---
+class: inverse, center, middle
+name: text
+
+# Working with text files
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# Counting text: wc
+
+You can use the `wc` command to count: 1) lines of text, 2) the number of words, and 3) the number of characters.
+
+Let's demonstrate with a text file containing all of Shakespeare's Sonnets.&lt;sup&gt;1&lt;/sup&gt;
+
+
+```bash
+wc examples/sonnets.txt
+```
+
+```
+##     3029   20701  119751 examples/sonnets.txt
+```
+
+.footnote[
+&lt;sup&gt;1&lt;/sup&gt; Courtesy of [Project Gutenburg](http://www.gutenberg.org/cache/epub/1041/pg1041.txt).
+]
+
+---
+
+# Find patterns: grep
+
+To find patterns in text, we can use regular expression-type matching with `grep`. 
+
+For example, say we want to find the famous opening line to Shakespeare's [Sonnet 18](https://en.wikipedia.org/wiki/Sonnet_18).
+- I'm going to include the `-n` ("number") flag to get the line that it occurs on. 
+
+
+```bash
+grep -n "Shall I compare thee" examples/sonnets.txt
+```
+
+```
+## 336:  Shall I compare thee to a summer's day?
+```
+
+--
+
+By default, `grep` returns all matching patterns. 
+- What happens if you run `$ grep -n "summer" examples/sonnets.txt`?
+- Or, for that matter, `$ grep -n "the" examples/sonnets.txt`?
+
+
+---
+
+# Find patterns: grep (cont.)
+
+Note that `grep` can be used to identify patterns in a group files (e.g. within a directory) too.
+ - This is particularly useful if you are trying to identify a file that contain, say, a function name. 
+ 
+Here's a simple example: Which days will I eat pasta this week? 
+ - I'm using the `R` (recursive) and `l` (just list the files; don't print the output) flags.
+
+
+```bash
+grep -Rl "pasta" examples/meals
+```
+
+```
+## examples/meals/monday.csv
+```
+
+---
+class: inverse, center, middle
+name: pipes
+
+# Redirecting and pipes
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# Redirect: &gt;
+
+You can send output from the shell to a file using the redirect operator `&gt;`
+
+For example, let's print a message to the shell using the `echo` command.
+
+
+```bash
+echo "At first, I was afraid, I was petrified"
+```
+
+```
+## At first, I was afraid, I was petrified
+```
+
+--
+
+If you wanted to save this output to a file, you need simply redirect it to the filename of choice.
+
+
+```bash
+echo "At first, I was afraid, I was petrified" &gt; survive.txt
+find survive.txt ## Show that it now exists
+```
+
+```
+## survive.txt
+```
+
+---
+
+# Redirect: &gt; (cont.)
+
+If you want to *append* text to an existing file, then you should use `&gt;&gt;`.
+- Using `&gt;` will try to overwrite the existing file contents.
+
+
+```bash
+echo "'Kept thinking I could never live without you by my side" &gt;&gt; survive.txt
+cat survive.txt
+```
+
+```
+## At first, I was afraid, I was petrified
+## 'Kept thinking I could never live without you by my side
+```
+
+
+
+---
+
+
+# Pipes: |
+
+The pipe operator `|` lets you send (i.e. "pipe") intermediate output to another command.
+- In other words, it allows us to chain together a sequence of simple operations and thereby implement a more complex operation. (Remember the Unix philosophy!)
+
+Let me demonstrate using a very simple example:
+
+```bash
+find . -type f | wc -l
+```
+
+```
+##       43
+```
+---
+class: inverse, center, middle
+name: scripting
+
+# Scripting
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# Hello World!
+
+Writing code and commands interactively in the shell makes a lot of sense when you are exploring data, file structures, etc.
+
+However, it's also possible (and often desirable) to write reproducible shell scripts that combine a sequence of commands.
+- These scripts are demarcated by their `.sh` file extension.
+
+--
+
+Let's look at the contents of a short shell script that I've included in the examples folder.
+
+
+```bash
+cat examples/hello.sh
+```
+
+```
+## #!/bin/sh
+## echo -e "\nHello World!\n"
+```
+
+--
+
+I'm sure that you already have a good idea of what this script is meant to do, but it will prove useful to quickly go through some things together.
+
+---
+
+# Hello World! (cont.)
+
+```bash
+*#!/bin/sh
+echo -e "\nHello World!\n"
+```
+
+- `#!/bin/sh` is a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix), indicating which program to run the command with (here: any Bash-compatible shell). However, it is typically ignored (note that it begins with the hash comment character.)
+
+---
+count: false
+
+# Hello World! (cont.)
+
+```bash
+#!/bin/sh
+*echo -e "\nHello World!\n"
+```
+
+- `#!/bin/sh` is a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix), indicating which program to run the command with (here: any Bash-compatible shell). However, it is typically ignored (note that it begins with the hash comment character.)
+- `echo -e "\nHello World!\n"` is the actual command that we want to run.
+
+---
+count: false
+
+# Hello World! (cont.)
+
+```bash
+#!/bin/sh
+echo -e "\nHello World!\n"
+```
+
+- `#!/bin/sh` is a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix), indicating which program to run the command with (here: any Bash-compatible shell). However, it is typically ignored (note that it begins with the hash comment character.)
+- `echo -e "\nHello World!\n"` is the actual command that we want to run. The `-e` flag tells bash that we want to evaluate an expression rather than a file.
+
+To run this simple script, you can just type in the file name and press enter.
+
+
+```bash
+examples/hello.sh
+# bash examples/hello.sh ## Also works
+```
+
+```
+## -e 
+## Hello World!
+```
+
+---
+name: rscript
+
+# Rscript
+
+It's important to realise that we aren't limited to running shell scripts in the shell. The exact same principles carry over to other programs and files.
+
+The most relevant case for this class is the [`Rscript`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html) command for (you guessed it) executing R scripts and expressions. For example:
+
+
+```bash
+Rscript -e "cat('Hello World, from R!')"
+```
+
+```
+## Hello World, from R!
+```
+
+--
+
+Of course, the more typical `Rscript` use case is to execute full length R scripts. An optional, but very useful feature here is the ability to pass extra arguments from the shell to your R script. Consider the `hello.R` script that I've bundled in the examples folder.
+
+
+```bash
+cat examples/hello.R
+```
+
+```
+## args = commandArgs(trailingOnly = TRUE)
+## i = args[1]; j = args[2]
+## 
+## cat('Hello World, from R!\n', 
+##      i, '+', j, '=', as.integer(i) + as.integer(j))
+```
+
+---
+
+# Rscript (cont.)
+
+The key step for using additional `Rscript` arguments is held within the top two lines.
+
+```r
+args = commandArgs(trailingOnly = TRUE)
+i = args[1]; j = args[2]
+```
+These tell Rscript to capture any trailing arguments (i.e. after the file name) and then pass them on as objects that can be used within R. 
+
+--
+
+Let's run the script to see it in action.
+
+
+```bash
+Rscript examples/hello.R 12 9
+```
+
+```
+## Hello World, from R!
+##  12 + 9 = 21
+```
+
+---
+class: inverse, center, middle
+
+# Editing files using terminal
+
+---
+
+# [Vim](https://www.vim.org/)
+
+- Text editor that works on the terminal
+- Steep curve to learn (I will give you just a brief intro here)
+
+Open a file:
+
+```bash
+vim examples/hello.sh
+```
+
+- Exit: `q` (exit w/o saving changes: `q!`)
+- Save: `w` (save and exit: `wq`)
+- To start writing (insert): `i`
+- Exit from current status: Escape
+- Search: `/pattern` (`n` for next occurrence)
+- Delete line: `dd`
+- Copy and paste line: `yyp`
+- Commands start with colons and can by quite complicated, e.g.:
+  `%s/Hello/Ciao/g`
+---
+
+---
+
+# Disclaimer
+
+*This next section is tailored towards Unix-based operating systems, like Linux or MacOS, which is why I have saved it for the end. &lt;b&gt;Windows users:&lt;/b&gt; Don't be surprised if some commands don't work, especially if you haven't installed the [WSL](#windows)...* 
+
+&lt;br&gt;
+
+*Regardless, the things we learn here will become relevant to everyone (even Windows users) once we start interacting with Linux servers*
+
+---
+
+# The superuser: root, sudo, etc.
+
+There are two main user roles on a Linux system:   
+1. Normal users 
+2. A superuser (AKA "root")
+
+Difference is one of priviledge. 
+- Superusers can make system changes, install software, browse through different users' home folders, etc. Normal users are much more restricted in what they can do.
+- Explains why Unix-based OS's are much more resilient to security threats like viruses. Need superuser priviledges to install (potentially malicious) software.
+
+---
+
+# The superuser: root, sudo, etc. (cont.)
+
+
+- On `mshresearch` you don't have superuser privileges
+
+- You **cannot** install packages/software *globally* but you can do so *locally*
+  - e.g., you can install your own Python version
+
+
+- You should have root access on your laptop and you can become superuser by typing: `sudo -s`
+
+
+- We are going to see how to change files and directories permissions. Note that on `mshresearch`, you can do so only for files that you own
+
+- If you are working on *mshresearch* you don't need to worry too much about permission (at best you might need to set a script as executable)
+
+- Still, it is very useful to see how permissions work
+
+
+---
+
+
+# Changing permissions and ownership
+
+Let's think back to the `ABC/` directory that we saw previously while exploring the ls command.
+
+```bash
+drwxr-xr-x@ 3 dproserp  staff    96B Aug 10 18:57 ABC
+```
+
+We can change the permissions and ownership of this folder with the `chmod` and `chown` commands, respectively. We'll now review these in turn.
+- Note that I'm going to use the "recursive" option (i.e. `-R`) in the examples that follow, but only because `ABC/` is a directory. You can drop that when modifying individual files.
+
+--
+
+PS — I'm going to skip writing out the full path for this next section to save on typing. Now is a a good time to move into the `examples/` directory if you want to follow along with my commands literally.
+
+
+```bash
+cd examples
+```
+
+---
+
+# chmod
+
+Changing permissions using `chmod` depends on how those permissions are represented. 
+
+There are two options: 1) Octal notation and 2) Symbolic notation. 
+- We'll go into more detail on the next slide, but let's see some examples first.
+- (Test the results yourself using the `ls -lh` command afterwards.)
+
+--
+
+**Example 1: rwxrwxrwx.** Read, write and execute permission for all users.
+- Octal: `$ chmod -R 777 ABC`
+- Symbolic: `$ chmod -R a=rwx ABC`
+
+--
+
+**Example 2: rwxr-xr-x.** Read, write and execute permission for the main user (i.e. owner) of the file. For all other users, read and execute permission only.
+- Octal: `$ chmod -R 755 ABC`
+- Symbolic: `$ chmod -R u=rwx,g=rx,o=rx ABC`
+
+--
+
+Now that we've seen some examples, let's get into the logic behind them.
+
+---
+
+# chmod (cont.)
+
+### Octal notation
+
+Takes advantage of the fact that `4` (for "read"), `2` (for "write"), and `1` (for "execute") can be combined in unambiguous ways.
+- 7 (= 4 + 2 + 1) means read, write and execute permission.
+- 5 (= 4 + 0 + 1) means read and execute permission, but not write permission.
+- etc. 
+- Note that Octal notation requires a number for each of the three user types: owner, owner's group, and all others. E.g. `$ chmod 777 myfile.txt`
+
+---
+
+# chmod (cont.)
+
+### Symbolic notation
+
+Links permissions to different symbols (i.e. abbreviations).
+- Users: `u` ("User/owner"), `g` ("Group"), `o` ("Others""), `a` ("All")
+- Permissions: `r` ("read"), `w` ("write"), `x` ("execute")
+- Changes: `+` ("add permissions"), `-` ("remove permissions"), `=` ("set new permissions") 
+
+---
+
+# chmod (cont.)
+
+Here's a quick comparison table with some common permission levels.
+
+| Octal value | Symbolic value    | Permission level |
+|:-----------:|:-----------------:|:----------------:|
+| 777         | a+rwx             | rwxrwxrwx        |
+| 770         | u+rwx,g+rwx,o-rwx | rwxrwx---        |
+| 755         | a+rwx,g=rw,o=rw   | rwxrwxrwx        |
+| 700         | u+rwx,g-rwx,o-rwx | rwx------        |
+| 644         | u=rw,g=r,o=r      | rw-r--r--        |
+
+
+--
+
+&lt;/br&gt; 
+
+PS — Note the Symbolic method allows for relative changes, which means that you don't necessarily need to write out the whole entry in the table above. E.g. To go from the first line to the second line, you'd only need `$ chmod o-rwx myfile`.
+
+---
+
+# chown
+
+Changing file ownership is somewhat easier than changing permissions, because you don't have to remember the different Octal and Symbolic notation mappings. 
+- E.g. Say there is another user on your computer called "alice", then you could just assign her ownership of the ABC subfolder using:
+ ```bash
+ $ chown -R alice ABC
+ ```
+
+Things get a little more interesting when we want to add new users and groups, or change an existing users group.
+- I'll save that for a later lecture on cloud servers, though.
+
+---
+
+# More resources
+
+- [The Unix Shell](http://swcarpentry.github.io/shell-novice/) (Software Carpentery)
+- [The Unix Workbench](https://seankross.com/the-unix-workbench/) (Sean Kross)
+- [Data Science at the Command Line](https://www.datascienceatthecommandline.com/) (Jeroen Janssens)
+&lt;!-- - [Using AWK and R to parse 25tb](https://livefreeordichotomize.com/2019/06/04/using_awk_and_r_to_parse_25tb/) (Nick Strayer) --&gt;
+
+
+
+---
+name: windows
+# Bash on Windows
+
+Windows users have two options:
+
+### 1. [Git Bash](https://gitforwindows.org/)
+
+- **Pros:** You should already have installed this as part of the previous lecture.
+- **Cons:** Functionality is limited to Git-related commands, so various things that we're going to practice today won't work.
+
+### 2. [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+
+- **Pros:** A self-contained Linux image (terminal) that allows full Bash functionality. 
+- **Cons:** Must be installed first and only available to Windows 10 users.
+
+I recommend option 2 (WSL) if available to you. It's more overhead, but I think worth it. See the next two slides for instructions and tips
+
+
+.footnote[(Back to [start](#start).)]
+
+---
+name:wsl
+
+# WSL
+
+The basic WSL installation guide is [**here**](https://docs.microsoft.com/en-us/windows/wsl/install-win10). 
+- Follow the guide to install your preferred Linux distro. [Ubuntu](https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6) is a good choice. 
+- Then, once you've restarted your PC, come back to these slides.
+
+After installing your chosen WSL, you need to navigate to today's lecture directory to run the examples. You have two options:
+
+#### Option (i) Access WSL through RStudio (*recommended*)
+
+If you access WSL through RStudio, then it will conveniently configure your path to the present working directory. So, here's how to make WSL your default [RStudio Terminal](https://support.rstudio.com/hc/en-us/articles/115010737148-Using-the-RStudio-Terminal):
+- In RStudio, navigate to: *Tools &gt; Terminal &gt; Terminal Options...*. \[[Screenshot](03-shell-files/figureswsl-rstudio-1.png).\]
+- Click on the dropdown menu for *New terminals open with* and select "Bash (Windows Subsystem for Linux)", Then click *OK*. \[[Screenshot](03-shell-files/figureswsl-rstudio-2.png).\]
+- Refresh your RStudio terminal (`Alt+Shift+R`). \[[Screenshot](03-shell-files/figureswsl-rstudio-3.png).\]
+- You should see the WSL Bash environment with the path automatically configured to the present working director, mount point and all. \[[Screenshot](03-shell-files/figureswsl-rstudio-4.png).\]
+
+---
+name: wsl-rstudio
+
+# WSL (cont.)
+
+#### Option (ii) Go directly through the WSL 
+
+Presumably, you've cloned the course repo somewhere on your C drive. 
+- The way this work is that Windows drives are mounted on the WSL's `mnt` directory. (More [here](https://www.howtogeek.com/261383/how-to-access-your-ubuntu-bash-files-in-windows-and-your-windows-system-drive-in-bash/).)
+- Say you cloned the repo to "C:\\Users\\Davide\\Desktop\\mkt-615".
+- The WSL equivalent is "/mnt/c/Users/Davide/Desktop\\mkt-615".
+- So, then you can navigate to today's lecture through the WSL with: `$ cd /mnt/c/Users/Davide/Desktop/mkt-615/03-shell`. Adjust as needed.
+
+
+.footnote[(Back to [start](#start).)]
+
+--
+
+### Which option to choose?
+
+Both are fine, but I recommend option **(i)**. As a Windows user, being able to access a true Bash shell (i.e. terminal) conveniently from RStudio will make things *much* easier for you in my class. You can always revert back to a different shell later if you want. 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
