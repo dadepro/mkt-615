@@ -1,0 +1,367 @@
+---
+title: "MKT615: Data Storytelling for Marketers"
+subtitle: "Lecture 4: R Basics"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+# date: "08/25/2021" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(hrbrthemes)
+library(fontawesome)
+library(xaringan)
+options(htmltools.dir.version = FALSE)
+library(knitr)
+opts_chunk$set(
+  fig.align="center", #fig.width=6, fig.height=4.5, 
+  # out.width="748px", #out.length="520.75px",
+  dpi=300, #fig.path='Figs/',
+  cache=F#, echo=F, warning=F, message=F
+  )
+```
+
+class: inverse, center, middle
+name: intro
+
+# Introduction to R
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
+
+---
+
+# Agenda
+
+This lecture is going to be very hands on to get you comfortable with R, so launch RStudio and be prepared to code
+
+### Packages that you will need for today.
+
+We're going to work almost exclusively in **base** R today but very briefly to learn some useful notations and operators. What I want you to learn very well is **tidyverse** and **data.table** which are the subjects of the next two lectures.
+
+- I'll also use the [**dplyr**](https://dplyr.tidyverse.org/) package, but only to demonstrate a few additional considerations for working with non-base libraries. Install/update it now, either through RStudio (recommended) or from your R console (`install.packages("dplyr"), dependencies = TRUE`). 
+
+- If it is already installed, just load it: 
+`library(dplyr)`
+
+---
+
+# Some useful operators
+
+- Not or Negate: `!`
+
+- Value matching: `%in%`
+
+- Evaluation (of equality): `==`
+
+- Assignment: either `<-` or `=` 
+  - I use `=`, you can use whichever you prefer but be consistent
+  
+- Find missing values (`NA` in R): `is.na()`
+
+- Help with commands/functions: `?` followed by the command/function name
+
+- Commenting code: `#`
+
+- Code examples: `example()`
+
+- Vignettes: `vignette()` 
+
+--
+
+Let's try all these operators
+
+---
+
+# Moere about R
+
+- It is an object [object-oriented programming language](https://en.wikipedia.org/wiki/Object-oriented_programming)
+
+- Everything is an **object**
+
+### What are objects? 
+
+It's important to emphasize that there are many different *types* (or *classes*) of objects. 
+
+We'll revisit the issue of "type" vs "class" in a slide or two. For the moment, it is helpful simply to name some objects that we'll be working with regularly:
+- vectors
+- matrices
+- data frames
+- lists
+- functions
+- etc.
+
+---
+
+# What are objects? (cont.)
+Each object class has its own set of rules ("methods") for determining valid operations
+- For example, you can perform many of the same operations on matrices and data frames, but not all
+- At the same time, you can (usually) convert an object from one type to another.
+
+```{r d}
+## Create a small data frame called "d".
+d = data.frame(x = 1:2, y = 3:4) 
+d
+```
+
+```{r m}
+## Convert it to (i.e. create) a matrix call "m".
+m = as.matrix(d)
+m
+```
+
+---
+
+# Object class, type, and structure
+
+Use the `class`, `typeof`, and `str` commands if you want understand more about a particular object.
+
+```{r}
+# d = data.frame(x = 1:2, y = 3:4) ## Create a small data frame called "d".
+class(d) ## Evaluate its class.
+typeof(d) ## Evaluate its type.
+str(d) ## Show its structure.
+```
+
+--
+
+PS: Confused by the fact that `typeof(d)` returns "list"? See [here](https://stackoverflow.com/questions/45396538/typeofdata-frame-shows-list-in-r).
+
+---
+
+# Object class, type, and structure (cont.)
+
+Of course, you can always just inspect/print an object directly in the console.
+- E.g. Type `d` and hit Enter.
+
+
+The `View()` function is also very helpful. This is the same as clicking on the object in your RStudio *Environment* pane. (Try both methods now.)
+- E.g. `View(d)`.
+
+---
+
+# Reserved words
+
+We've seen that we can assign objects to different names. However, there are a number of special words that are "reserved" in R.
+- These are are fundamental commands, operators and relations in base R that you cannot (re)assign, even if you wanted to.
+- We already encountered examples with the logical operators.
+
+See [here](http://stat.ethz.ch/R-manual/R-devel/library/base/html/Reserved.html) for a full list, including (but not limited to):
+
+```R
+if 
+else 
+while 
+function 
+for
+TRUE 
+FALSE 
+NULL 
+Inf 
+NaN 
+NA 
+```
+
+---
+
+# Semi-reserved words
+
+In addition to the list of strictly reserved words, there is a class of words and strings that I am going to call "semi-reserved".
+- These are named functions or constants (e.g. `pi`) that you can re-assign if you really wanted to... but already come with important meanings from base R.
+
+Arguably the most important semi-reserved character is `c()`, which we use for concatenation; i.e. creating vectors and binding different objects together.
+
+```{r}
+my_vector = c(1, 2, 5)
+my_vector
+```
+
+Try re-assign `pi` for example...
+
+--
+
+**Bottom line:** Don't use (semi-)reserved characters!
+
+---
+
+# Namespace conflicts
+
+A similar issue crops up when we load two packages, which have functions that share the same name. E.g. Look what happens we load the `dplyr` package.
+```{r}
+library(dplyr)
+```
+
+--
+
+The messages that you see about some object being *masked from 'package:X'* are warning you about a namespace conflict.
+- E.g. Both `dplyr` and the `stats` package (which gets loaded automatically when you start R) have functions named "filter" and "lag".
+
+---
+
+# Namespace conflicts (cont.)
+
+The potential for namespace conflicts is a result of the OOP approach.<sup>1</sup>
+- Also reflects the fundamental open-source nature of R and the use of external packages. People are free to call their functions whatever they want, so some overlap is only to be expected.
+
+.footnote[
+<sup>1</sup> Similar problems arise in virtually every other programming language (Python, C, etc.)
+]
+
+--
+
+Whenever a namespace conflict arises, the most recently loaded package will gain preference. So the `filter()` function now refers specifically to the `dplyr` variant.
+
+But what if we want the `stats` variant? Well, we have two options:
+1. Temporarily use `stats::filter()`
+2. Permanently assign `filter = stats::filter`
+
+---
+
+# Solving namespace conflicts
+
+### 1. Use `package::function()`
+
+We can explicitly call a conflicted function from a particular package using the `package::function()` syntax. For example:
+```{r}
+stats::filter(1:10, rep(1, 2))
+```
+
+--
+
+The `::` syntax also means that we can call functions without loading package first. E.g. As long as `dplyr` is installed on our system, then `dplyr::filter(iris, Species=="virginica")` will work.
+  
+---
+
+# Solving namespace conflicts (cont.)
+
+### 2. Assign `function = package::function`
+  
+A more permanent solution is to assign a conflicted function name to a particular package. This will hold for the remainder of your current R session, or until you change it back. E.g.
+```{r, eval=F}
+filter = stats::filter ## Note the lack of parentheses.
+filter = dplyr::filter ## Change it back again.
+```
+
+---
+
+# General advice
+
+I would generally advocate for the temporary `package::function()` solution. 
+
+Load your most important packages last. (E.g. Load the tidyverse after you've already loaded any other packages.)
+  
+Other than that, simply pay attention to any warnings when loading a new package and `?` is your friend if you're ever unsure. (E.g. `?filter` will tell you which variant is being used.)
+- Problematic namespace conflicts are rare. But it's good to be aware of them. 
+  
+---
+
+# User-side namespace conflicts
+
+A final thing to say about namespace conflicts is that they don't only arise from loading packages. They can arise when users create their own functions with a conflicting name.
+- E.g. If I was naive enough to create a new function called `c()`.
+
+--
+
+</br>
+
+In a similar vein, one of the most common and confusing errors that even experienced R programmers run into is related to the habit of calling objects "df" or "data"... both of which are functions in base R!
+- See for yourself by typing `?df` or `?data`.
+
+Again, R will figure out what you mean if you are clear/lucky enough. But, much the same as with `c()`, it's relatively easy to run into problems.
+- Case in point: Triggering the infamous "object of type closure is not subsettable" error message. (See from 1:45 [here](https://rstudio.com/resources/rstudioconf-2020/object-of-type-closure-is-not-subsettable/).)
+
+---
+
+# Indexing
+
+Indexing in R starts at 1 (not 0 as in many PLs such as Python, C, C++, etc.)
+
+Example: Create a vector of 10 numbers using `seq` (use `?` to learn what it does):
+  ```{r, eval=FALSE}
+  x = seq(1,10,1)
+  ```
+  - `x[i]` will select the ith element (try it yourself)
+  
+--
+  
+  - Indexes can be negative, why?
+  
+--
+  
+  - You can also select multiple consecutive elements: `x[begin : end]`
+
+---
+
+# The `$` Operator
+
+Let's create a small data.frame: 
+```{r, eval = F}
+# Create data.frame
+dd = data.frame(x = seq(1,100,10), y = seq(1, 200, 20), z = seq(1,300,30))
+# View the data.frame
+dd
+```
+
+`$` allows you to select df columns:
+
+- `dd$x` will select column `x`
+--
+- Of course, once you select a column, you can select part of it by using indexes...
+
+--
+
+- but you can also use indexes to select columns, how?
+
+---
+
+# More operators
+
+https://www.tutorialspoint.com/r/r_operators.htm
+
+(let's play with them for a few minutes to get familiar with them)
+
+---
+class: inverse, center, middle
+name: intro
+
+# More useful things
+
+---
+# Build-in datasets 
+
+- R comes with a lot of (build-in datasets](http://www.sthda.com/english/wiki/r-built-in-data-sets). See also [here](https://stackoverflow.com/questions/33797666/how-do-i-get-a-list-of-built-in-data-sets-in-r) to learn how to get a list of these datasets
+
+- Some packages like **dplyr** also have build-in datasets (mpg, starwars, etc.)
+
+---
+
+# Application Programming Interface (API)
+
+There are tons of very useful API available for R
+  - [Census data](https://cran.r-project.org/web/packages/censusapi/vignettes/getting-started.html)
+  - [Twitter](https://www.earthdatascience.org/courses/earth-analytics/get-data-using-apis/use-twitter-api-r/)
+  - etc.
+---
+
+# Reading data files
+
+- There are several functions to read any type of data in R, from Excel files to Stata file to csv...
+
+- But the fastest and easy and fastest way to read almost any file (even compressed ones) is [fread](https://www.rdocumentation.org/packages/data.table/versions/1.14.0/topics/fread)
+  - Usually, the only argument needed is the file name, `fread` will automatically figure out which file you are trying to load!
+
+
+---
+
+# Rstudio tips
+
+- RStudio is a pretty powerful text editor with a lot of nice features
+
+- For some tips see: https://appsilon.com/rstudio-shortcuts-and-tips/)
