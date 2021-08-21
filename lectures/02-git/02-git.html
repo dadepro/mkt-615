@@ -237,6 +237,16 @@ However, I want to go over Git &lt;a href="http://happygitwithr.com/ssh-keys.htm
 
 ---
 
+# Authentication 
+
+Recall that I tolde you that recently GitHub updated its security requirements and now uses 2FA. This means that to access Git via Shell you need a token.
+
+Two steps:
+  1. Create a [GitHub access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+  2.  **Save it somewhere** and use it to authtenticate (isntead of the password) in the shell
+  3. Note that the git password is probably saved so you need to tell git to ask for the password again. Some help can be found [here](https://stackoverflow.com/questions/68775869/support-for-password-authentication-was-removed-please-use-a-personal-access-to))
+
+---
 # Main Git shell commands
 
 Clone a repo.
