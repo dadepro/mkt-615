@@ -196,8 +196,8 @@ Using them can dramatically improve the experience of reading and writing code. 
 
 ```r
 ## These next two lines of code do exactly the same thing.
-mpg %&gt;% filter(manufacturer=="audi") %&gt;% group_by(model) %&gt;% summarise(hwy_mean = mean(hwy))
-summarise(group_by(filter(mpg, manufacturer=="audi"), model), hwy_mean = mean(hwy))
+mpg %&gt;% filter(manufacturer=="audi") %&gt;% group_by(model) %&gt;% summarize(hwy_mean = mean(hwy))
+summarize(group_by(filter(mpg, manufacturer=="audi"), model), hwy_mean = mean(hwy))
 ```
 
 --
@@ -219,11 +219,11 @@ The piped version of the code is even more readable if we write it over several 
 mpg %&gt;% 
   filter(manufacturer=="audi") %&gt;% 
   group_by(model) %&gt;% 
-  summarise(hwy_mean = mean(hwy))
+  summarize(hwy_mean = mean(hwy))
 ```
 
 ```
-## # A tibble: 3 x 2
+## # A tibble: 3 × 2
 ##   model      hwy_mean
 ##   &lt;chr&gt;         &lt;dbl&gt;
 ## 1 a4             28.3
@@ -253,7 +253,7 @@ packageVersion('dplyr')
 ```
 
 ```
-## [1] '1.0.6'
+## [1] '1.0.7'
 ```
 
 ```r
@@ -265,7 +265,7 @@ packageVersion('dplyr')
 *Note:* **dplyr** 1.0.0 also notifies you about grouping variables every time you do operations on or with them. If you prefer not to see these messages, [switch them off](https://twitter.com/MattCowgill/status/1278463099272491008).
 
 ```r
-options(dplyr.summarise.inform = FALSE) ## Add to .Rprofile to make permanent
+options(dplyr.summarize.inform = FALSE) ## Add to .Rprofile to make permanent
 ```
 
 
@@ -283,7 +283,7 @@ There are five key dplyr verbs that you need to learn.
 
 4. `mutate`: Create new columns.
 
-5. `summarise`: Collapse multiple rows into a single summary value.&lt;sup&gt;1&lt;/sup&gt;
+5. `summarize`: Collapse multiple rows into a single summary value.&lt;sup&gt;1&lt;/sup&gt;
 
 .footnote[
 &lt;sup&gt;1&lt;/sup&gt; `summarize` with a "z" works too.
@@ -323,7 +323,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 4 x 14
+## # A tibble: 4 × 14
 ##   name                height  mass hair_color skin_color eye_color birth_year sex   gender    homeworld species films     vehicles  starships
 ##   &lt;chr&gt;                &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
 ## 1 Darth Vader            202   136 none       white      yellow          41.9 male  masculine Tatooine  Human   &lt;chr [4]&gt; &lt;chr [0]&gt; &lt;chr [1]&gt;
@@ -347,7 +347,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 3 x 14
+## # A tibble: 3 × 14
 ##   name             height  mass hair_color skin_color eye_color birth_year sex    gender    homeworld species films     vehicles  starships
 ##   &lt;chr&gt;             &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
 ## 1 Luke Skywalker      172    77 blond      fair       blue            19   male   masculine Tatooine  Human   &lt;chr [5]&gt; &lt;chr [2]&gt; &lt;chr [2]&gt;
@@ -370,7 +370,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 6 x 14
+## # A tibble: 6 × 14
 ##   name           height  mass hair_color skin_color eye_color birth_year sex    gender    homeworld species films     vehicles  starships
 ##   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
 ## 1 Arvel Crynyd       NA    NA brown      fair       brown             NA male   masculine &lt;NA&gt;      Human   &lt;chr [1]&gt; &lt;chr [0]&gt; &lt;chr [1]&gt;
@@ -403,7 +403,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 14
+## # A tibble: 87 × 14
 ##    name                  height  mass hair_color skin_color eye_color birth_year sex    gender    homeworld species films     vehicles  starships
 ##    &lt;chr&gt;                  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
 ##  1 Wicket Systri Warrick     88  20   brown      brown      brown            8   male   masculine Endor     Ewok    &lt;chr [1]&gt; &lt;chr [0]&gt; &lt;chr [0]&gt;
@@ -435,19 +435,19 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 14
-##    name               height  mass hair_color skin_color      eye_color birth_year sex          gender   homeworld species      films    vehicles starships
-##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;   &lt;list&gt;   &lt;list&gt;   
-##  1 Yoda                   66    17 white      green           brown            896 male         masculi… &lt;NA&gt;      Yoda's spec… &lt;chr [5… &lt;chr [0… &lt;chr [0]&gt;
-##  2 Jabba Desilijic T…    175  1358 &lt;NA&gt;       green-tan, bro… orange           600 hermaphrodi… masculi… Nal Hutta Hutt         &lt;chr [3… &lt;chr [0… &lt;chr [0]&gt;
-##  3 Chewbacca             228   112 brown      unknown         blue             200 male         masculi… Kashyyyk  Wookiee      &lt;chr [5… &lt;chr [1… &lt;chr [2]&gt;
-##  4 C-3PO                 167    75 &lt;NA&gt;       gold            yellow           112 none         masculi… Tatooine  Droid        &lt;chr [6… &lt;chr [0… &lt;chr [0]&gt;
-##  5 Dooku                 193    80 white      fair            brown            102 male         masculi… Serenno   Human        &lt;chr [2… &lt;chr [1… &lt;chr [0]&gt;
-##  6 Qui-Gon Jinn          193    89 brown      fair            blue              92 male         masculi… &lt;NA&gt;      Human        &lt;chr [1… &lt;chr [1… &lt;chr [0]&gt;
-##  7 Ki-Adi-Mundi          198    82 white      pale            yellow            92 male         masculi… Cerea     Cerean       &lt;chr [3… &lt;chr [0… &lt;chr [0]&gt;
-##  8 Finis Valorum         170    NA blond      fair            blue              91 male         masculi… Coruscant Human        &lt;chr [1… &lt;chr [0… &lt;chr [0]&gt;
-##  9 Palpatine             170    75 grey       pale            yellow            82 male         masculi… Naboo     Human        &lt;chr [5… &lt;chr [0… &lt;chr [0]&gt;
-## 10 Cliegg Lars           183    NA brown      fair            blue              82 male         masculi… Tatooine  Human        &lt;chr [1… &lt;chr [0… &lt;chr [0]&gt;
+## # A tibble: 87 × 14
+##    name                  height  mass hair_color skin_color       eye_color birth_year sex            gender    homeworld species films vehicles starships
+##    &lt;chr&gt;                  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;            &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;lis&gt; &lt;list&gt;   &lt;list&gt;   
+##  1 Yoda                      66    17 white      green            brown            896 male           masculine &lt;NA&gt;      Yoda's… &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
+##  2 Jabba Desilijic Tiure    175  1358 &lt;NA&gt;       green-tan, brown orange           600 hermaphroditic masculine Nal Hutta Hutt    &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
+##  3 Chewbacca                228   112 brown      unknown          blue             200 male           masculine Kashyyyk  Wookiee &lt;chr… &lt;chr [1… &lt;chr [2]&gt;
+##  4 C-3PO                    167    75 &lt;NA&gt;       gold             yellow           112 none           masculine Tatooine  Droid   &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
+##  5 Dooku                    193    80 white      fair             brown            102 male           masculine Serenno   Human   &lt;chr… &lt;chr [1… &lt;chr [0]&gt;
+##  6 Qui-Gon Jinn             193    89 brown      fair             blue              92 male           masculine &lt;NA&gt;      Human   &lt;chr… &lt;chr [1… &lt;chr [0]&gt;
+##  7 Ki-Adi-Mundi             198    82 white      pale             yellow            92 male           masculine Cerea     Cerean  &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
+##  8 Finis Valorum            170    NA blond      fair             blue              91 male           masculine Coruscant Human   &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
+##  9 Palpatine                170    75 grey       pale             yellow            82 male           masculine Naboo     Human   &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
+## 10 Cliegg Lars              183    NA brown      fair             blue              82 male           masculine Tatooine  Human   &lt;chr… &lt;chr [0… &lt;chr [0]&gt;
 ## # … with 77 more rows
 ```
 
@@ -469,7 +469,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 5
+## # A tibble: 87 × 5
 ##    name                mass hair_color    skin_color  species
 ##    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;  
 ##  1 Luke Skywalker        77 blond         fair        Human  
@@ -497,7 +497,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 3
+## # A tibble: 87 × 3
 ##    alias              crib     sex      
 ##    &lt;chr&gt;              &lt;chr&gt;    &lt;chr&gt;    
 ##  1 Luke Skywalker     Tatooine masculine
@@ -530,7 +530,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 4
+## # A tibble: 87 × 4
 ##    name               hair_color    skin_color  eye_color
 ##    &lt;chr&gt;              &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;    
 ##  1 Luke Skywalker     blond         fair        blue     
@@ -560,7 +560,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 5 x 14
+## # A tibble: 5 × 14
 ##   species homeworld name           height  mass hair_color skin_color  eye_color birth_year sex    gender    films     vehicles  starships
 ##   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
 ## 1 Human   Tatooine  Luke Skywalker    172    77 blond      fair        blue            19   male   masculine &lt;chr [5]&gt; &lt;chr [2]&gt; &lt;chr [2]&gt;
@@ -592,7 +592,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 4
+## # A tibble: 87 × 4
 ##    name               birth_year dog_years comment                                
 ##    &lt;chr&gt;                   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                                  
 ##  1 Luke Skywalker           19        133  Luke Skywalker is 133 in dog years.    
@@ -624,7 +624,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 87 x 4
+## # A tibble: 87 × 4
 ##    name               birth_year dog_years comment                                
 ##    &lt;chr&gt;                   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                                  
 ##  1 Luke Skywalker           19        133  Luke Skywalker is 133 in dog years.    
@@ -655,7 +655,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 2 x 4
+## # A tibble: 2 × 4
 ##   name             height tall1 tall2
 ##   &lt;chr&gt;             &lt;int&gt; &lt;lgl&gt; &lt;chr&gt;
 ## 1 Luke Skywalker      172 FALSE Short
@@ -677,7 +677,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 5 x 6
+## # A tibble: 5 × 6
 ##   name           height  mass hair_color skin_color  eye_color
 ##   &lt;chr&gt;           &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;    
 ## 1 LUKE SKYWALKER    172    77 BLOND      FAIR        BLUE     
@@ -693,9 +693,9 @@ starwars %&gt;%
 *Note:* This workflow (i.e. combining `mutate` and `across`) supersedes the old "scoped" variants of `mutate` that you might have used previously. More details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html).
 
 ---
-name: summarise
+name: summarize
 
-# 5) dplyr::summarise
+# 5) dplyr::summarize
 
 Particularly useful in combination with the `group_by` command.
 
@@ -707,7 +707,7 @@ Let's compute the average height by "species" and "gender":
 ```r
 starwars %&gt;% 
   group_by(species, gender) %&gt;% 
-  summarise(mean_height = mean(height, na.rm = TRUE))
+  summarize(mean_height = mean(height, na.rm = TRUE))
 ```
 
 ```
@@ -715,7 +715,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 42 x 3
+## # A tibble: 42 × 3
 ## # Groups:   species [38]
 ##    species   gender    mean_height
 ##    &lt;chr&gt;     &lt;chr&gt;           &lt;dbl&gt;
@@ -734,20 +734,20 @@ starwars %&gt;%
 
 ---
 
-# 5) dplyr::summarise (cont.)
+# 5) dplyr::summarize (cont.)
 
-Note that including "na.rm = TRUE" (or,  its alias "na.rm = T") is usually a good idea with summarise functions. Otherwise, any missing value will propogate to the summarised value too. Try to see what happens when you take the mean without the option "na.rm").
+Note that including "na.rm = TRUE" (or,  its alias "na.rm = T") is usually a good idea with summarize functions. Otherwise, any missing value will propogate to the summarized value too. Try to see what happens when you take the mean without the option "na.rm").
 
 --
 
 ```r
 ## Probably not what we want
 starwars %&gt;% 
-  summarise(mean_height = mean(height))
+  summarize(mean_height = mean(height))
 ```
 
 ```
-## # A tibble: 1 x 1
+## # A tibble: 1 × 1
 ##   mean_height
 ##         &lt;dbl&gt;
 ## 1          NA
@@ -756,11 +756,11 @@ starwars %&gt;%
 ```r
 ## Much better
 starwars %&gt;% 
-  summarise(mean_height = mean(height, na.rm = TRUE))
+  summarize(mean_height = mean(height, na.rm = TRUE))
 ```
 
 ```
-## # A tibble: 1 x 1
+## # A tibble: 1 × 1
 ##   mean_height
 ##         &lt;dbl&gt;
 ## 1        174.
@@ -768,20 +768,20 @@ starwars %&gt;%
 
 ---
 
-# 5) dplyr::summarise (cont.)
+# 5) dplyr::summarize (cont.)
 
-The same `across`-based workflow that we saw with `mutate` a few slides back also works with `summarise`. For example:
+The same `across`-based workflow that we saw with `mutate` a few slides back also works with `summarize`. For example:
 
 
 ```r
 starwars %&gt;% 
   group_by(species) %&gt;% 
-* summarise(across(where(is.numeric), mean, na.rm=T)) %&gt;%
+* summarize(across(where(is.numeric), mean, na.rm=T)) %&gt;%
   head(5)
 ```
 
 ```
-## # A tibble: 5 x 4
+## # A tibble: 5 × 4
 ##   species  height  mass birth_year
 ##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
 ## 1 Aleena       79    15        NaN
@@ -791,14 +791,182 @@ starwars %&gt;%
 ## 5 Clawdite    168    55        NaN
 ```
 
---
+&lt;!-- -- --&gt;
 
-&lt;/br&gt;
-*Note:* Again, this functionality supersedes the old "scoped" variants of `summarise` that you used prior to dplyr 1.0.0. Details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html).
+&lt;!-- &lt;/br&gt; --&gt;
+&lt;!-- *Note:* Again, this functionality supersedes the old "scoped" variants of `summarize` that you used prior to dplyr 1.0.0. Details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html). --&gt;
 
 ---
 
+# Other dplyr functions
 
+`group_by` and `ungroup`: For (un)grouping.
+- Particularly useful with the `summarise` and `mutate` commands, as we've already seen.
+
+--
+
+`slice`: Subset rows by position rather than filtering by values.
+- E.g. `starwars %&gt;% slice(c(1, 5))`
+
+--
+
+`pull`: Extract a column from as a data frame as a vector or scalar.
+- E.g. `starwars %&gt;% filter(gender=="female") %&gt;% pull(height)`
+
+--
+
+`count` and `distinct`: Count and isolate unique observations.
+- E.g. `starwars %&gt;% count(species)`, or `starwars %&gt;% distinct(species)`
+- You could also use a combination of `mutate`, `group_by`, and `n()`, e.g. `starwars %&gt;% group_by(species) %&gt;% mutate(num = n())`.
+
+
+---
+
+# Other dplyr functions (cont.)
+
+There are also a whole class of [window functions](https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html) for getting leads and lags, ranking, creating cumulative aggregates, etc.
+- See `vignette("window-functions")`.
+
+
+---
+name: joins
+
+# Joins
+
+One of the mainstays of the dplyr package is merging data with the family [join operations](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html).
+- `inner_join(df1, df2)`
+- `left_join(df1, df2)`
+- `right_join(df1, df2)`
+- `full_join(df1, df2)`
+- `semi_join(df1, df2)`
+- `anti_join(df1, df2)`
+
+(You find find it helpful to to see visual depictions of the different join operations [here](https://r4ds.had.co.nz/relational-data.html).)
+
+--
+
+For the simple examples that I'm going to show here, we'll need some data sets that come bundled with the [**nycflights13**](http://github.com/hadley/nycflights13) package. 
+- Load it now and then inspect these data frames in your own console.
+
+
+
+```r
+library(nycflights13)
+flights 
+planes
+```
+
+---
+
+# Joins (cont.)
+
+Let's perform a [left join](https://stat545.com/bit001_dplyr-cheatsheet.html#left_joinsuperheroes-publishers) on the flights and planes datasets. 
+- *Note*: I'm going subset columns after the join, but only to keep text on the slide.
+
+--
+
+
+```r
+left_join(flights, planes) %&gt;%
+  select(year, month, day, dep_time, arr_time, carrier, flight, tailnum, type, model) %&gt;% head(5)
+```
+
+```
+## Joining, by = c("year", "tailnum")
+```
+
+```
+## # A tibble: 5 × 10
+##    year month   day dep_time arr_time carrier flight tailnum type  model
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;    &lt;int&gt; &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;
+## 1  2013     1     1      517      830 UA        1545 N14228  &lt;NA&gt;  &lt;NA&gt; 
+## 2  2013     1     1      533      850 UA        1714 N24211  &lt;NA&gt;  &lt;NA&gt; 
+## 3  2013     1     1      542      923 AA        1141 N619AA  &lt;NA&gt;  &lt;NA&gt; 
+## 4  2013     1     1      544     1004 B6         725 N804JB  &lt;NA&gt;  &lt;NA&gt; 
+## 5  2013     1     1      554      812 DL         461 N668DN  &lt;NA&gt;  &lt;NA&gt;
+```
+--
+
+- *Note*: Never do this!
+
+---
+
+# Joins (cont.)
+
+(*continued from previous slide*)
+
+Note that dplyr made a reasonable guess about which columns to join on (i.e. columns that share the same name). It also told us its choices: 
+
+```
+*## Joining, by = c("year", "tailnum")
+```
+
+However, there's an obvious problem here: the variable "year" does not have a consistent meaning across our joining datasets!
+- In one it refers to the *year of flight*, in the other it refers to *year of construction*.
+
+--
+
+&lt;br&gt; 
+&lt;center&gt;
+&lt;b&gt;Always specify the columns you are joining on!&lt;/b&gt;
+&lt;/center&gt;
+
+---
+
+# Joins (cont.)
+
+Be explicit in your join call by using the `by = ` argument.
+- You can also rename any ambiguous columns to avoid confusion. 
+
+```r
+left_join(
+  flights,
+  planes %&gt;% rename(year_built = year), ## Not necessary w/ below line, but helpful
+  by = "tailnum" ## Be specific about the joining column
+  ) %&gt;%
+  select(year, month, day, dep_time, arr_time, carrier, flight, tailnum, year_built, type, model) %&gt;%
+  head(3) ## Just to save vertical space on the slide
+```
+
+```
+## # A tibble: 3 × 11
+##    year month   day dep_time arr_time carrier flight tailnum year_built type                    model  
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;    &lt;int&gt; &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;                   &lt;chr&gt;  
+## 1  2013     1     1      517      830 UA        1545 N14228        1999 Fixed wing multi engine 737-824
+## 2  2013     1     1      533      850 UA        1714 N24211        1998 Fixed wing multi engine 737-824
+## 3  2013     1     1      542      923 AA        1141 N619AA        1990 Fixed wing multi engine 757-223
+```
+
+---
+
+# Joins (cont.)
+
+(*continued from previous slide*)
+
+Nnote what happens if we again specify the join column BUT don't rename the ambiguous "year" column in at least one of the given data frames.
+
+```r
+left_join(
+  flights,
+  planes, ## Not renaming "year" to "year_built" this time
+  by = "tailnum"
+  ) %&gt;%
+  select(contains("year"), month, day, dep_time, arr_time, carrier, flight, tailnum, type, model) %&gt;%
+  head(3)
+```
+
+```
+## # A tibble: 3 × 11
+##   year.x year.y month   day dep_time arr_time carrier flight tailnum type                    model  
+##    &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;    &lt;int&gt; &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;                   &lt;chr&gt;  
+## 1   2013   1999     1     1      517      830 UA        1545 N14228  Fixed wing multi engine 737-824
+## 2   2013   1998     1     1      533      850 UA        1714 N24211  Fixed wing multi engine 737-824
+## 3   2013   1990     1     1      542      923 AA        1141 N619AA  Fixed wing multi engine 757-223
+```
+
+--
+
+Make sure you know what "year.x" and "year.y" are. Again, it pays to be specific.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

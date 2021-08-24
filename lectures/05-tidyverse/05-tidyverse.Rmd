@@ -16,7 +16,6 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(tidyverse)
 library(hrbrthemes)
 library(fontawesome)
 library(xaringan)
@@ -194,8 +193,8 @@ Using them can dramatically improve the experience of reading and writing code. 
 
 ```{r, eval = F}
 ## These next two lines of code do exactly the same thing.
-mpg %>% filter(manufacturer=="audi") %>% group_by(model) %>% summarise(hwy_mean = mean(hwy))
-summarise(group_by(filter(mpg, manufacturer=="audi"), model), hwy_mean = mean(hwy))
+mpg %>% filter(manufacturer=="audi") %>% group_by(model) %>% summarize(hwy_mean = mean(hwy))
+summarize(group_by(filter(mpg, manufacturer=="audi"), model), hwy_mean = mean(hwy))
 ```
 
 --
@@ -216,7 +215,7 @@ The piped version of the code is even more readable if we write it over several 
 mpg %>% 
   filter(manufacturer=="audi") %>% 
   group_by(model) %>% 
-  summarise(hwy_mean = mean(hwy))
+  summarize(hwy_mean = mean(hwy))
 ```
 
 ---
@@ -245,7 +244,7 @@ packageVersion('dplyr')
 *Note:* **dplyr** 1.0.0 also notifies you about grouping variables every time you do operations on or with them. If you prefer not to see these messages, [switch them off](https://twitter.com/MattCowgill/status/1278463099272491008).
 
 ```r
-options(dplyr.summarise.inform = FALSE) ## Add to .Rprofile to make permanent
+options(dplyr.summarize.inform = FALSE) ## Add to .Rprofile to make permanent
 ```
 
 
@@ -263,7 +262,7 @@ There are five key dplyr verbs that you need to learn.
 
 4. `mutate`: Create new columns.
 
-5. `summarise`: Collapse multiple rows into a single summary value.<sup>1</sup>
+5. `summarize`: Collapse multiple rows into a single summary value.<sup>1</sup>
 
 .footnote[
 <sup>1</sup> `summarize` with a "z" works too.
@@ -479,9 +478,9 @@ starwars %>%
 *Note:* This workflow (i.e. combining `mutate` and `across`) supersedes the old "scoped" variants of `mutate` that you might have used previously. More details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html).
 
 ---
-name: summarise
+name: summarize
 
-# 5) dplyr::summarise
+# 5) dplyr::summarize
 
 Particularly useful in combination with the `group_by` command.
 
@@ -492,43 +491,176 @@ Let's compute the average height by "species" and "gender":
 ```{r summ1}
 starwars %>% 
   group_by(species, gender) %>% 
-  summarise(mean_height = mean(height, na.rm = TRUE))
+  summarize(mean_height = mean(height, na.rm = TRUE))
 ```
 
 ---
 
-# 5) dplyr::summarise (cont.)
+# 5) dplyr::summarize (cont.)
 
-Note that including "na.rm = TRUE" (or,  its alias "na.rm = T") is usually a good idea with summarise functions. Otherwise, any missing value will propogate to the summarised value too. Try to see what happens when you take the mean without the option "na.rm").
+Note that including "na.rm = TRUE" (or,  its alias "na.rm = T") is usually a good idea with summarize functions. Otherwise, any missing value will propogate to the summarized value too. Try to see what happens when you take the mean without the option "na.rm").
 
 --
 ```{r summ2}
 ## Probably not what we want
 starwars %>% 
-  summarise(mean_height = mean(height))
+  summarize(mean_height = mean(height))
 ## Much better
 starwars %>% 
-  summarise(mean_height = mean(height, na.rm = TRUE))
+  summarize(mean_height = mean(height, na.rm = TRUE))
 ```
 
 ---
 
-# 5) dplyr::summarise (cont.)
+# 5) dplyr::summarize (cont.)
 
-The same `across`-based workflow that we saw with `mutate` a few slides back also works with `summarise`. For example:
+The same `across`-based workflow that we saw with `mutate` a few slides back also works with `summarize`. For example:
 
 ```{r, summ4}
 starwars %>% 
   group_by(species) %>% 
-  summarise(across(where(is.numeric), mean, na.rm=T)) %>% #<<
+  summarize(across(where(is.numeric), mean, na.rm=T)) %>% #<<
   head(5)
+```
+
+<!-- -- -->
+
+<!-- </br> -->
+<!-- *Note:* Again, this functionality supersedes the old "scoped" variants of `summarize` that you used prior to dplyr 1.0.0. Details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html). -->
+
+---
+
+# Other dplyr functions
+
+`group_by` and `ungroup`: For (un)grouping.
+- Particularly useful with the `summarise` and `mutate` commands, as we've already seen.
+
+--
+
+`slice`: Subset rows by position rather than filtering by values.
+- E.g. `starwars %>% slice(c(1, 5))`
+
+--
+
+`pull`: Extract a column from as a data frame as a vector or scalar.
+- E.g. `starwars %>% filter(gender=="female") %>% pull(height)`
+
+--
+
+`count` and `distinct`: Count and isolate unique observations.
+- E.g. `starwars %>% count(species)`, or `starwars %>% distinct(species)`
+- You could also use a combination of `mutate`, `group_by`, and `n()`, e.g. `starwars %>% group_by(species) %>% mutate(num = n())`.
+
+
+---
+
+# Other dplyr functions (cont.)
+
+There are also a whole class of [window functions](https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html) for getting leads and lags, ranking, creating cumulative aggregates, etc.
+- See `vignette("window-functions")`.
+
+
+---
+name: joins
+
+# Joins
+
+One of the mainstays of the dplyr package is merging data with the family [join operations](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html).
+- `inner_join(df1, df2)`
+- `left_join(df1, df2)`
+- `right_join(df1, df2)`
+- `full_join(df1, df2)`
+- `semi_join(df1, df2)`
+- `anti_join(df1, df2)`
+
+(You find find it helpful to to see visual depictions of the different join operations [here](https://r4ds.had.co.nz/relational-data.html).)
+
+--
+
+For the simple examples that I'm going to show here, we'll need some data sets that come bundled with the [**nycflights13**](http://github.com/hadley/nycflights13) package. 
+- Load it now and then inspect these data frames in your own console.
+
+```{r flights, echo = F}
+library(nycflights13)
+```
+```{r, eval = F}
+library(nycflights13)
+flights 
+planes
+```
+
+---
+
+# Joins (cont.)
+
+Let's perform a [left join](https://stat545.com/bit001_dplyr-cheatsheet.html#left_joinsuperheroes-publishers) on the flights and planes datasets. 
+- *Note*: I'm going subset columns after the join, but only to keep text on the slide.
+
+--
+
+```{r join1}
+left_join(flights, planes) %>%
+  select(year, month, day, dep_time, arr_time, carrier, flight, tailnum, type, model) %>% head(5)
+```
+--
+
+- *Note*: Never do this!
+
+---
+
+# Joins (cont.)
+
+(*continued from previous slide*)
+
+Note that dplyr made a reasonable guess about which columns to join on (i.e. columns that share the same name). It also told us its choices: 
+
+```
+*## Joining, by = c("year", "tailnum")
+```
+
+However, there's an obvious problem here: the variable "year" does not have a consistent meaning across our joining datasets!
+- In one it refers to the *year of flight*, in the other it refers to *year of construction*.
+
+--
+
+<br> 
+<center>
+<b>Always specify the columns you are joining on!</b>
+</center>
+
+---
+
+# Joins (cont.)
+
+Be explicit in your join call by using the `by = ` argument.
+- You can also rename any ambiguous columns to avoid confusion. 
+```{r join2}
+left_join(
+  flights,
+  planes %>% rename(year_built = year), ## Not necessary w/ below line, but helpful
+  by = "tailnum" ## Be specific about the joining column
+  ) %>%
+  select(year, month, day, dep_time, arr_time, carrier, flight, tailnum, year_built, type, model) %>%
+  head(3) ## Just to save vertical space on the slide
+```
+
+---
+
+# Joins (cont.)
+
+(*continued from previous slide*)
+
+Nnote what happens if we again specify the join column BUT don't rename the ambiguous "year" column in at least one of the given data frames.
+```{r join3}
+left_join(
+  flights,
+  planes, ## Not renaming "year" to "year_built" this time
+  by = "tailnum"
+  ) %>%
+  select(contains("year"), month, day, dep_time, arr_time, carrier, flight, tailnum, type, model) %>%
+  head(3)
 ```
 
 --
 
-</br>
-*Note:* Again, this functionality supersedes the old "scoped" variants of `summarise` that you used prior to dplyr 1.0.0. Details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html).
-
----
-
-
+Make sure you know what "year.x" and "year.y" are. Again, it pays to be specific.
