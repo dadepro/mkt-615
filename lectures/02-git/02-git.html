@@ -4,9 +4,9 @@
     <title>MKT615: Data Storytelling for Marketers</title>
     <meta charset="utf-8" />
     <meta name="author" content="Davide Proserpio" />
-    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -57,7 +57,7 @@ name:intro
 
 - It's important to realize that Git and GitHub are distinct things.
 - GitHub is an online hosting platform that provides an array of services built on top of the Git system. (Similar platforms include Bitbucket and GitLab)
-- Just like we don't *need* Rstudio to run R code, we don't *need* GitHub to use Git... But it will make our lives so much easier
+- Just like we don't *need* Rstudio to run R code, we don't *need* GitHub to use Git...But it will make our lives so much easier
 
 ---
 
@@ -73,7 +73,7 @@ Git and GitHub's role in global software development is not in question
 
 - Git(Hub) helps to operationalize the ideals of open science and reproducibility
 - Journals have increasingly strict requirements regarding reproducibility and data access. GitHub makes this easy
-- I used for research, classes, and host and maintain my website using [GitHub Pages](https://pages.github.com/) (more on this later)
+- I use it for research, classes, and host and maintain my website using [GitHub Pages](https://pages.github.com/) (more on this later)
 - *Nature:* "[Democratic databases: science on GitHub](https://www.nature.com/news/democratic-databases-science-on-github-1.20719)" (Perkel, 2016)
 
 ---
@@ -172,7 +172,7 @@ Now that you've cloned your first repo and made some local changes, it's time to
 # Push and Pull
 
 &lt;div align="center"&gt;
-&lt;img src="02-git-files/figures/git-push-pull.gif" height=500&gt;
+&lt;img src="02-git-files/figures/git-push-pull.gif" height=400&gt;
 &lt;/div&gt;
 
 --
@@ -196,11 +196,11 @@ NB aside: Always pull from the upstream repo *before* you push any changes. Seri
 
 --
 
-PS — You were likely challenged for your GitHub credentials at some point. Learn how to cache these [here](https://happygitwithr.com/credential-caching.html)
+PS — You were likely challenged for your GitHub credentials at some point. Learn how to cache these and how to use a personal access token (we discussed this in the [previous lecture](https://raw.githack.com/dadepro/mkt-615/main/lectures/01-intro/01-intro.html#20)) [here](https://happygitwithr.com/credential-caching.html)
 
---
+&lt;!-- -- --&gt;
 
-PPS — Speaking of credentials, an even better approach is to [switch to SSH](https://happygitwithr.com/ssh-keys.html). I recommend you do this once you feel comfortable with the main Git operations
+&lt;!-- PPS — Speaking of credentials, an even better approach is to [switch to SSH](https://happygitwithr.com/ssh-keys.html). I recommend you do this once you feel comfortable with the main Git operations --&gt;
 
 ---
 
@@ -228,7 +228,7 @@ The GitHub + RStudio Project combo is ideal for new users
 - RStudio's Git integration and built-in GUI cover all the major operations
 
 However, I want to go over Git &lt;a href="http://happygitwithr.com/ssh-keys.html#shell" target="_blank"&gt;shell&lt;/a&gt; commands so that you can internalize the basics
-- The shell is more powerful and flexible. Does some things that the RStudio Git GUI can't
+- The shell is more powerful and flexible and does some things that the RStudio Git GUI can't
 - Potentially more appropriate for projects that aren't primarily based in R. (Although, no real harm in using RStudio Projects to clone a non-R repo)
 
 --
@@ -239,7 +239,7 @@ However, I want to go over Git &lt;a href="http://happygitwithr.com/ssh-keys.htm
 
 # Authentication 
 
-Recall that I tolde you that recently GitHub updated its security requirements and now uses 2FA. This means that to access Git via Shell you need a token.
+Recall that I told you that recently GitHub updated its security requirements and now uses 2FA. This means that to access Git via Shell you need a token.
 
 Two steps:
   1. Create a [GitHub access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
@@ -260,10 +260,16 @@ See the commit history (hit spacebar to scroll down or q to exit)
 $ git log
 ```
 
+File long with changes
+```bash
+$ git log -p filename
+```
+
 What has changed? 
 ```bash
 $ git status
 ```
+
 ---
 
 # Main Git shell commands (cont.)
@@ -306,6 +312,11 @@ Push any local changes that you've committed to the upstream repo (i.e. GitHub)
 ```bash
 $ git push
 ```
+--
+
+&lt;br&gt;
+
+PS: There are many more commands that we won't have time to cover. For example, reverting to a previous commit can be useful in certain cases (e.g., your code don't compile anymore and you don't have any idea why ;)), some more info about this is [here](https://stackoverflow.com/questions/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit)
 
 ---
 class: inverse, center, middle
@@ -318,7 +329,7 @@ name: merge
 
 # Collaboration time 
 
-Turn to the person next to you. You are now partners. (Congratulations)
+Turn to the person next to you. You are now partners, congratulations! :)
 
 - P1: Invite P2 to join you as a collaborator on the "test" GitHub repo that you created earlier. (See the *Settings* tab of your repo)
 
@@ -371,7 +382,7 @@ Text added by Partner 1.
 More text here.
 ```
 
-.footnote[&lt;sup&gt;1&lt;/sup&gt; Other good choices are &lt;a href="https://code.visualstudio.com/" target="_blank"&gt;VS Code&lt;/a&gt; or &lt;a href="https://atom.io/" target="_blank"&gt;Atom&lt;/a&gt;, which both support native Git(Hub) integration. You can set your preferred default editor with `$ git config --global core.editor "PREFERRED_EDITOR"`.]
+.footnote[&lt;sup&gt;1&lt;/sup&gt; Other good choices are &lt;a href="https://code.visualstudio.com/" target="_blank"&gt;Visual Studio Code&lt;/a&gt;, [Sublime](https://www.sublimetext.com/),  or &lt;a href="https://atom.io/" target="_blank"&gt;Atom&lt;/a&gt;, which support GitHub integration. You can set your preferred default editor with `$ git config --global core.editor "PREFERRED_EDITOR"`.]
 
 ---
 
@@ -506,8 +517,8 @@ name: branches
 
 # What are branches and why use them?
 
-Branches are one of Git's coolest features
-- Allow you to take a snapshot of your existing repo and try out a whole new idea *without affecting* your main (i.e., "master" or "main") branch
+Branches are one of Git's most interesting features
+- Allow you to take a snapshot of your existing repo and try out a whole new idea *without affecting* your main (i.e., "master") branch
 
 - Only once you (and your collaborators) are 100% satisfied, would you merge it back into the master branch
   - This is how most new features in modern software and apps are developed
@@ -622,7 +633,7 @@ Once you fork a repo, you are free to do anything you want to it. (It's yours.) 
 
 Creating forks is super easy as we've just seen. However, maintaining them involves some more leg work if you want to stay up to date with the original repo.
 - GitHub: "[Syncing a fork](https://help.github.com/articles/syncing-a-fork/)"
-- This isn't going to be an issue for completed projects. E.g. Forking the repo that contains the code and data of a published paper
+- This isn't going to be an issue for completed projects, e.g., forking the repo that contains the code and data of a published paper
 
 ---
 class: inverse, center, middle
@@ -649,7 +660,7 @@ READMEs should be written in Markdown, which GH automatically renders
 
 # .gitignore
 
-A .gitignore file tells Git what to — *wait for it* — ignore
+A .gitignore file tells Git what to ignore (i.e., not keep track of it)
 
 This is especially useful if you want to exclude whole folders or a class of files (e.g. based on size or type)
 - Proprietary data files should be ignored from the beginning if you intend to make a repo public at some point
@@ -699,7 +710,7 @@ name: summary
 # Summary
 ---
 
-# Recipe (shell commands in grey)
+# Recipe
 
 1. Create a repo on GitHub and initialize with a README.
 
@@ -725,7 +736,7 @@ Repeat steps 3—7 (but especially steps 3 and 4) often.
 
 ### Get the course materials
 
-If you haven't done so already, now is a good time to clone/fork the course materials to your local computer.
+If you haven't done so already, now is a good time to clone the course materials to your local computer.
 
 &lt;!-- ### Assignment 1 --&gt;
 

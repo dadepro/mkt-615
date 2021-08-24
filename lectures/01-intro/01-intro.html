@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta name="author" content="Davide Proserpio" />
     <meta name="date" content="2021-08-25" />
-    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -48,15 +48,18 @@ class: inverse, center, middle
 
 # Course: Data Storytelling for Marketing
 
-I will teach the first seven weeks (then Dinesh will take over)
+I will teach the first **seven weeks** (then Dinesh will take over), so our last class will be October 6.
 
 --
 
-All the material is available at https://github.com/dadepro/mkt-615
+&lt;br&gt;
 
-We are going to use Git and GitHub to download course material and upload homeworks, assigments, and presentations
+We are going to use Git and GitHub to download course material https://github.com/dadepro/mkt-615
+and upload homeworks, assigments, and presentations through [GitHub Classroom](https://classroom.github.com/classrooms/88850687-mkt615-fall2021) 
 
 --
+
+&lt;br&gt;
 
 What will we learn?
 
@@ -74,7 +77,7 @@ school."*
 
 --
 
-Please bring your laptops to class. This will be a very hands-on course. We'll be working through lecture notes together in class and you'll be running code on your own laptops
+**Please bring your laptops to class. This will be a very hands-on course. We'll be working through lecture notes together in class and you'll be running code on your own laptops**
 
 ---
 # Why R and SQL?
@@ -101,9 +104,9 @@ Please bring your laptops to class. This will be a very hands-on course. We'll b
 
 | Component                           | Weight |
 |:-|-:|
-| 2 × homework assignments (25% each) | 50% |
+| 2 × homework assignments (20% each) | 40% |
 | 1 × project 		| 40% |
-| 1 x short presentation | 10% |
+| 1 x short presentation | 20% |
 
 The project involves the analysis of a dataset of your choice using the tools we learned in class
 - You will present your data analysis on **October 6**
@@ -114,8 +117,18 @@ The project involves the analysis of a dataset of your choice using the tools we
   - You can scrape it yourself (advanced, we won't have time to cover scraping)
   - Me (Airbnb, Yelp, Expedia)
 
-- Short presentation of a R package/tool related to the lectures (I will provide a list among which to choose)
+- Short presentation of a R package/tool related to the lectures (I will assign one to each student or you can propose a topic to me)
 
+---
+# Grading (first half only, cont.)
+
+Some topics for the short presentations:
+  1. GitHub Pages
+  2. Screen
+  3. ggsignif 
+  4. RMarkdown
+  5. gganimate
+  
 ---
 
 # Grading (first half only, cont.)
@@ -143,10 +156,10 @@ class: inverse, center, middle
 ### Mshresearch (Server that I manage and that you can use)
 Characteristics: Ubuntu OS, 64 cores, 0.5TB of RAM
 
-All of you should have received an email to setup your mshresearch.marshall.usc account
+All of you should have received an email to setup your mshresearch.marshall.usc account, did you do it? (Otherwise, do it now)
 
 Software installed
-- Rstudio sever: http://mshresearch.marshall.usc.edu:8787/ (you can access with the mshresearch user and pwd)
+- Rstudio sever: http://mshresearch.marshall.usc.edu:8787/ (you can access with the same mshresearch user and pwd)
 - Stata 16 
 - Matlab 2021
 - Python 3.7
@@ -163,11 +176,10 @@ Installing useful packages:
 
 ```r
 # Package names
-packages &lt;- c("sjmisc", "RMySQL", "stargazer", "fixest", "ggthemes" , "zoo", "data.table", "lfe", "ggplot2", "readxl", "dplyr", "tidyr", "ggfortify", 
-              "DT", "reshape2", "knitr", "lubridate", "pwr", "psy", "car", "doBy", "imputeMissings", "RcmdrMisc", "questionr", 
+packages &lt;- c("tidyverse", "sjmisc", "RMySQL", "stargazer", "fixest", "ggthemes" , "zoo", "data.table", "lfe", "ggplot2", "readxl", "dplyr", "tidyr", "ggfortify", "DT", "reshape2", "knitr", "lubridate", "pwr", "psy", "car", "doBy", "imputeMissings", "RcmdrMisc", "questionr", 
               "vcd", "multcomp", "KappaGUI", "rcompanion", "FactoMineR", "factoextra", "corrplot", "ltm", "goeveg", "corrplot", 
               "FSA", "MASS", "scales", "nlme", "psych", "ordinal", "lmtest", "ggpubr", "dslabs", "stringr", "assist", "ggstatsplot", 
-              "forcats", "styler", "remedy", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
+              "forcats", "styler", "remedy", "snakecaser", "addinslist", "esquisse", "here", "summarytools", "magrittr", "tidyverse", 
               "funModeling", "pander", "cluster", "abind")
 
 # Install packages not yet installed
@@ -193,7 +205,7 @@ if (any(installed_packages == FALSE)) {
 
 ### Git and GitHub
 
-Download [Git](https://git-scm.com/downloads) (Windows users might also need [Git for Windows](https://gitforwindows.org/) so that they have a Bash shell)
+Download [Git](https://git-scm.com/downloads) (Windows users might also need [Git for Windows](https://gitforwindows.org/) so that they have a Bash shell. Another option is [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10))
 
 Create a [GitHub](https://github.com/) account
 
@@ -253,7 +265,7 @@ Open the Bash [Shell](https://happygitwithr.com/shell.html#shell)
   
   `git config --global --edit` and use [vim](https://www.vim.org/) to modify the file
 
-- Did you create a GitHub account?
+- Did you create a GitHub account? (Note that you get the pro account for free through the *education* program)
 
 - Recently GitHub updated its security requirements and now uses 2FA. This means that to access Git via Shell you need a token
   - Create a [GitHub access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
@@ -310,7 +322,7 @@ class: inverse, center, middle
 # Research Workflow (cont.)
 
 Once I submit to a journal, I create a README file clearly describing each script and what it produces
-- this is extremely important and will help you creating the replication files that many journals ask for
+- This is extremely important and will help you creating the replication files that many journals ask for
 
 &lt;div align="center"&gt;
 &lt;img src="01-intro-files/figures/readme-example.png" height=350&gt;
@@ -326,21 +338,21 @@ Once I submit to a journal, I create a README file clearly describing each scrip
 - MySQL: Where I store all my datasets
 - Python: "Advanced" analysis/data manipulation
 - Latex: Write papers
-- Slack (drastically reduces emails)
+- Slack: Communication with  co-authors (drastically reduces emails)
 
 ### Text Editor
 - [Sublime](https://www.sublimetext.com/)
-  - Can be used for everything, from Latex to R
+  - Can be used for everything, from writing a compiling Latex to R and Python
   - Connects directly to a server so you can work on "remote" files
 
-- [Visual Studio Code](https://code.visualstudio.com/) also very good!
+- [Visual Studio Code](https://code.visualstudio.com/) also extremely good!
 
 ---
 # Research Worklfow (cont.)
 
 ### Useful resources
 
-I collected (and updating) a bunch of [resources](https://dadepro.github.io/resources.html) that can be useful for grad school and academic life
+I collected (and continue updating) a bunch of [resources](https://dadepro.github.io/resources.html) that can be useful for grad school and academic life
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
