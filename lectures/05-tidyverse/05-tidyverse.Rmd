@@ -12,6 +12,7 @@ output:
       highlightLines: true
       highlightSpans: true
       countIncrementalSlides: false
+      ratio: "16:9"
 
 ---
 

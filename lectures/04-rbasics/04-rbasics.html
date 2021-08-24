@@ -36,7 +36,8 @@ This lecture is going to be very hands on to get you comfortable with R, so laun
 
 ### Packages that you will need for today.
 
-We're going to work almost exclusively in **base** R today.
+We're going to work almost exclusively in **base** R today but very briefly to learn some useful notations and operators. What I want you to learn very well is **tidyverse** and **data.table** which are the subjects of the next two lectures.
+
 - I'll also use the [**dplyr**](https://dplyr.tidyverse.org/) package, but only to demonstrate a few additional considerations for working with non-base libraries. Install/update it now, either through RStudio (recommended) or from your R console (`install.packages("dplyr"), dependencies = TRUE`). 
 
 - If it is already installed, just load it: 
@@ -371,6 +372,44 @@ https://www.tutorialspoint.com/r/r_operators.htm
 
 (let's play with them for a few minutes to get familiar with them)
 
+---
+class: inverse, center, middle
+name: intro
+
+# More useful things
+
+---
+# Build-in datasets 
+
+- R comes with a lot of (build-in datasets](http://www.sthda.com/english/wiki/r-built-in-data-sets). See also [here](https://stackoverflow.com/questions/33797666/how-do-i-get-a-list-of-built-in-data-sets-in-r) to learn how to get a list of these datasets
+
+- Some packages like **dplyr** also have build-in datasets (mpg, starwars, etc.)
+
+---
+
+# Application Programming Interface (API)
+
+There are tons of very useful API available for R
+  - [Census data](https://cran.r-project.org/web/packages/censusapi/vignettes/getting-started.html)
+  - [Twitter](https://www.earthdatascience.org/courses/earth-analytics/get-data-using-apis/use-twitter-api-r/)
+  - etc.
+---
+
+# Reading data files
+
+- There are several functions to read any type of data in R, from Excel files to Stata file to csv...
+
+- But the fastest and easy and fastest way to read almost any file (even compressed ones) is [fread](https://www.rdocumentation.org/packages/data.table/versions/1.14.0/topics/fread)
+  - Usually, the only argument needed is the file name, `fread` will automatically figure out which file you are trying to load!
+
+
+---
+
+# Rstudio tips
+
+- RStudio is a pretty powerful text editor with a lot of nice features
+
+- For some tips see: https://appsilon.com/rstudio-shortcuts-and-tips/)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -378,7 +417,8 @@ https://www.tutorialspoint.com/r/r_operators.htm
 "highlightStyle": "github",
 "highlightLines": true,
 "highlightSpans": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
