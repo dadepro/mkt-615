@@ -4,16 +4,16 @@
     <title>MKT615: Data Storytelling for Marketers</title>
     <meta charset="utf-8" />
     <meta name="author" content="Davide Proserpio" />
-    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # MKT615: Data Storytelling for Marketers
-## Lecture 2: Version control with Git &amp; GitHub
+## Lecture 3: The Shell
 ### Davide Proserpio
 ### Marshall School of Business
 
@@ -74,7 +74,7 @@ name: intro
 
 Don't be thrown off by terminology: *shell*, *terminal*, *tty*, *command prompt*, etc. 
 - These are all basically just different names for the same thing.&lt;sup&gt;1&lt;/sup&gt;
-- They are all referring to a **command line interface** (CLI).
+- They are all referring to a **Command Line Interface** (CLI).
 
 .footnote[
 &lt;sup&gt;1&lt;/sup&gt; [Truth be told](https://unix.stackexchange.com/questions/4126/what-is-the-exact-difference-between-a-terminal-a-shell-a-tty-and-a-con), there are some subtle and sometimes important differences, as well as some interesting history behind the names. But we can safely ignore these here.
@@ -102,7 +102,7 @@ There are many shell variants, but we're going to focus on [**Bash**](https://ww
  - Scripting is reproducible, while clicking is not.
 
 3. Interacting with servers and high-performance computers
-  - The shell is often the only option for high performance computing. We'll get to this later in the course.
+  - The shell is often the only option for high performance computing.
 
 4. Automating workflow and analysis pipelines
   - Easily track and reproduce an entire project (e.g. use a Makefile to combine multiple programs, scripts, etc.)
@@ -287,7 +287,7 @@ Examples:
 
 &lt;/br&gt;
 
-**commands**
+**Commands**
 - You don't always need options or arguments. (E.g. `$ ls ~/Documents/` and `$ ls -lh` are both valid commands that will yield output.)
 - However, you always need a command.
 
@@ -720,8 +720,8 @@ man ls
 # Help: man (cont.)
 
 A useful feature of `man` is quick pattern searching with "/pattern".
-- Try this now by running `$ man ls` again and then typing "/human" and hitting the return key. 
-- To continue on to the next case, hit `n`. (It won't work here because the pattern "human" only occurs once in the manual file.)
+- Try this now by running `$ man ls` again and then typing "/time" and hitting the return key. 
+- To continue on to the next case, hit `n`.
 
 --
 
@@ -843,7 +843,7 @@ Solutions:
 
   - Use Tab completion to automatically "escape" the space: `$ cd My\ Documents`. 
   
-  - **Don't use spaces in file and folder names**
+  - **BEST PRACTICE: Don't use spaces in file and folder names!**
 
 ---
 
@@ -861,10 +861,10 @@ ls -lh examples
 
 ```
 ## total 288
-## drwxr-xr-x@ 3 dproserp  staff    96B Aug 11 11:52 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 11 11:52 copies
-## -rw-r--r--@ 1 dproserp  staff   149B Aug  2 09:45 hello.R
-## -rwxr-xr-x@ 1 dproserp  staff    37B Aug  2 09:45 hello.sh
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 24 18:11 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 24 18:11 copies
+## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 24 17:58 hello.R
+## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
 ## -rwxr-xr-x  1 dproserp  staff    73B Aug 11 10:49 loop.sh
 ## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
 ## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
@@ -891,7 +891,7 @@ count:false
 What does this all mean? Let's focus on the top line.
 
 &lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;
-&lt;span style='background: #ffff88;'&gt;d&lt;/span&gt;rwxr-xr-x 2 grant users 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+&lt;span style='background: #ffff88;'&gt;d&lt;/span&gt;rwxr-xr-x 3 dproserp staff 96B Aug 24 17:05 ABC&lt;/span&gt;
 
 - The first column denotes the object type:
   - `d` (directory or folder), `l` (link), or `-` (file)
@@ -904,7 +904,7 @@ count:false
 
 What does this all mean? Let's focus on the top line.
 
-&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;d&lt;span style='background: #ffff88;'&gt;&lt;span style='color: #e41a1c;'&gt;rwx&lt;/span&gt;&lt;span style='color: #377eb8;'&gt;r-x&lt;/span&gt;&lt;span style='color: #4daf4a;'&gt;r-x&lt;/span&gt;&lt;/span&gt; 2 grant users 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;d&lt;span style='background: #ffff88;'&gt;&lt;span style='color: #e41a1c;'&gt;rwx&lt;/span&gt;&lt;span style='color: #377eb8;'&gt;r-x&lt;/span&gt;&lt;span style='color: #4daf4a;'&gt;r-x&lt;/span&gt;&lt;/span&gt; 3 dproserp staff 96B Aug 24 17:05 ABC&lt;/span&gt;
 
 - &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
   - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
@@ -919,14 +919,14 @@ count:false
 
 What does this all mean? Let's focus on the top line.
 
-&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x &lt;span style='background: #ffff88;'&gt;2&lt;/span&gt; grant users 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x &lt;span style='background: #ffff88;'&gt;3&lt;/span&gt; dproserp staff 96B Aug 24 17:05 ABC&lt;/span&gt;
 
 - &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
   - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
 - &lt;span style='color: #A9A9A9;'&gt;Next, we see the permissions associated with the object's three possible user types: 1) owner, 2) the owner's group, and 3) all other users.
   - Permissions reflect `r` (read), `w` (write), or `x` (execute) access.
   - &lt;b&gt;`-`&lt;/b&gt; denotes missing permissions for a class of operations.&lt;/span&gt;
-- The number of [hard links](http://www.giannistsakiris.com/2011/04/15/counting-and-listing-hard-links-on-linux/) to the object.
+- The number of [hard links](https://www.redhat.com/sysadmin/linking-linux-explained) to the object.
 
 ---
 
@@ -936,7 +936,7 @@ count:false
 
 What does this all mean? Let's focus on the top line.
 
-&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x 2 &lt;span style='background: #ffff88;'&gt;&lt;span style='color: #e41a1c;'&gt;grant&lt;/span&gt; &lt;span style='color: #377eb8;'&gt;users&lt;/span&gt;&lt;/span&gt; 4.0K Jan 12 22:12 ABC&lt;/span&gt;
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x 3 &lt;span style='background: #ffff88;'&gt;&lt;span style='color: #e41a1c;'&gt;dproserp&lt;/span&gt; &lt;span style='color: #377eb8;'&gt;staff&lt;/span&gt;&lt;/span&gt; 96B Aug 24 17:05 ABC&lt;/span&gt;
 
 - &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
   - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
@@ -953,7 +953,7 @@ count:false
 
 What does this all mean? Let's focus on the top line.
 
-&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x 2 grant users &lt;span style='background: #ffff88;'&gt;4.0K Jan 12 22:12 ABC&lt;/span&gt;&lt;/span&gt;
+&lt;p span style="font-family:Fira Code; font-size:80%; color: #333; background: #f8f8f8; padding: 0.5em;";&gt;drwxr-xr-x 3 dproserp staff &lt;span style='background: #ffff88;'&gt;96B Aug 24 17:05 ABC&lt;/span&gt;&lt;/span&gt;
 
 - &lt;span style='color: #A9A9A9;'&gt;The first column denotes the object type:
   - `d` (directory or folder), `l` (link), or `-` (file)&lt;/span&gt;
@@ -974,6 +974,7 @@ One of the most common shell tasks is object creation (files, directories, etc.)
 We use `mkdir` to create directories. E.g. To create a new "testing" directory:
 
 ```bash
+# remove directory if exists before creating
 rm -fR testing
 mkdir testing
 ```
@@ -1244,7 +1245,7 @@ find . -type f | wc -l
 ```
 
 ```
-##       33
+##       36
 ```
 ---
 class: inverse, center, middle
@@ -1273,7 +1274,7 @@ cat examples/hello.sh
 
 ```
 ## #!/bin/sh
-## echo -e "\nHello World!\n"
+## echo "Hello World!"
 ```
 
 --
@@ -1285,8 +1286,9 @@ I'm sure that you already have a good idea of what this script is meant to do, b
 # Hello World! (cont.)
 
 ```bash
-*#!/bin/sh
-echo -e "\nHello World!\n"
+#!/bin/sh
+echo "Hello World!"
+
 ```
 
 - `#!/bin/sh` is a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix), indicating which program to run the command with (here: any Bash-compatible shell). However, it is typically ignored (note that it begins with the hash comment character.)
@@ -1298,11 +1300,11 @@ count: false
 
 ```bash
 #!/bin/sh
-*echo -e "\nHello World!\n"
+echo "Hello World!"
 ```
 
 - `#!/bin/sh` is a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix), indicating which program to run the command with (here: any Bash-compatible shell). However, it is typically ignored (note that it begins with the hash comment character.)
-- `echo -e "\nHello World!\n"` is the actual command that we want to run.
+- `echo "Hello World!"` is the actual command that we want to run.
 
 ---
 count: false
@@ -1311,7 +1313,7 @@ count: false
 
 ```bash
 #!/bin/sh
-echo -e "\nHello World!\n"
+echo "Hello World!"
 ```
 
 - `#!/bin/sh` is a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix), indicating which program to run the command with (here: any Bash-compatible shell). However, it is typically ignored (note that it begins with the hash comment character.)
@@ -1326,7 +1328,6 @@ examples/hello.sh
 ```
 
 ```
-## -e 
 ## Hello World!
 ```
 
@@ -1341,11 +1342,11 @@ The most relevant case for this class is the [`Rscript`](https://stat.ethz.ch/R-
 
 
 ```bash
-Rscript -e "cat('Hello World, from R!')"
+Rscript -e "cat('Hello World, from R')"
 ```
 
 ```
-## Hello World, from R!
+## Hello World, from R
 ```
 
 --
@@ -1362,7 +1363,7 @@ cat examples/hello.R
 ## i = args[1]; j = args[2]
 ## 
 ## cat('Hello World, from R!\n', 
-##      i, '+', j, '=', as.integer(i) + as.integer(j))
+##      i, '+', j, '=', as.integer(i) + as.integer(j),'\n')
 ```
 
 ---
@@ -1390,6 +1391,8 @@ Rscript examples/hello.R 12 9
 ## Hello World, from R!
 ##  12 + 9 = 21
 ```
+
+PS: Add `#!/usr/bin/env Rscript` as the first line to run the script w/o using `Rscript`
 
 ---
 class: inverse, center, middle
@@ -1425,12 +1428,15 @@ name: running
 #(More on) Running Scripts
 
 - Let create a new script called `loop.sh` under the `examples` folder that runs a for loop from 1 to 100, printing `Loop iteration i` ** at each iteration and wait (sleep) a second between each iteration
+
+- Try to do it yourself
+
+--
+
   
   ```bash
   vim examples/loop.sh
   ```
-
-  Try to do it yourself
 
 --
   
