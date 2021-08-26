@@ -18,6 +18,9 @@ output:
 library(tidyverse)
 library(hrbrthemes)
 library(fontawesome)
+library(data.table)
+library(ggthemes)
+library(scales)
 ```
 
 # Introduction
@@ -81,34 +84,27 @@ school."*
 
 ```{R, indeeddotcom, echo = F, fig.height = 6, fig.width = 9, dev = "svg"}
 # The popularity data
-pop_df = 
-  data.frame(
-  lang = c("SQL", "Python", "R", "SAS", "Matlab", "SPSS", "Stata"),
-  n_jobs = c(107130, 66976, 48772, 25644, 11464, 3717, 1624),
-  free = c(T, T, T, F, F, F, F)
+
+
+pop.df = 
+  data.table(
+    lang = c("SQL", "Python", "R", "SAS", "Matlab", "SPSS", "Stata"),
+    n_jobs = c(107130, 66976, 48772, 25644, 11464, 3717, 1624),
+    free = c(T, T, T, F, F, F, F)
   )
-## Plot it
-pop_df %>% 
-  mutate(lang = lang %>% factor(ordered = T)) %>%
-  ggplot(aes(x = lang, y = n_jobs, fill = free)) +
-  geom_col() +
-  geom_hline(yintercept = 0) +
-  aes(x = reorder(lang, -n_jobs), fill = reorder(free, -free)) +
-  xlab("") +
-  scale_y_continuous(label = scales::comma) +
-  ylab("Number of jobs\n") +
-  labs(
-    title = "Comparing statistical languages",
-    subtitle = "Number of job postings on Indeed.com, 2019/01/06"
-    ) +
-  scale_fill_manual(
-    "Free?",
-    labels = c("True", "False"),
-    values = c("deepskyblue4", "Grey")
-    ) +
-  ggthemes::theme_pander(base_size = 17) +
-  # theme_ipsum() +
-  theme(legend.position = "bottom")
+
+pop.df[, lang:= factor(lang, levels = lang[order(-n_jobs)])]
+p = ggplot(pop.df, aes(x = lang, y = n_jobs, fill = free))
+p = p + geom_bar(stat="identity")
+p = p + xlab("")
+p = p + aes(fill = reorder(free, -free))
+p = p + scale_y_continuous("Number of Jobs\n", label = comma)
+p = p + scale_fill_manual("Free?",
+                        labels = c("True", "False"),
+                        values = c("deepskyblue4", "Grey"))
+p = p + theme_pander(base_size = 17)
+p = p + theme(legend.position = "bottom")
+p
 ```
 ---
 
