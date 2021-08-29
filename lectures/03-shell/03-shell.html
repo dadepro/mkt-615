@@ -22,7 +22,6 @@ class: center, middle, inverse, title-slide
 
 # Table of contents
 
-
 1. [Introduction](#intro)
 
 2. [Bash shell basics](#basics)
@@ -39,13 +38,11 @@ class: center, middle, inverse, title-slide
 
 7. [User roles and file permissions](#permissions)
 
-8. [Vim](#vim)
+8. [Changing permissions](#permissions2)
 
-9. [Running scripts](#running)
+9. [Vim, running scripts, and monitor resources](#vim)
 
-10. [Monitor resources](#monitor)
-
-11. [Appendix (Windows users only)](#windows)
+10. [Appendix (Windows users only)](#windows)
 
 ---
 
@@ -869,8 +866,8 @@ ls -lh examples
 
 ```
 ## total 288
-## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 14:48 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 29 14:48 copies
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 15:09 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 29 15:09 copies
 ## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 29 14:37 hello.R
 ## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
 ## -rwxr--r--  1 dproserp  staff    73B Aug 11 10:49 loop.sh
@@ -898,8 +895,8 @@ ls -lh
 
 ```
 ## total 288
-## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 14:48 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 29 14:48 copies
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 15:09 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 29 15:09 copies
 ## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 29 14:37 hello.R
 ## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
 ## -rwxr--r--  1 dproserp  staff    73B Aug 11 10:49 loop.sh
@@ -1435,162 +1432,11 @@ PS: Add `#!/usr/bin/env Rscript` as the first line to run the script w/o using `
 
 ---
 class: inverse, center, middle
+name: permissions2
 
-# Editing files using terminal
+# Changing permission
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
----
-name:vim 
-
-# [Vim](https://www.vim.org/)
-
-- Text editor that works on the terminal
-- Steep curve to learn (I will give you just a brief intro here)
-
-Open a file:
-
-```bash
-vim examples/hello.sh
-```
-
-- Exit: `q` (exit w/o saving changes: `q!`)
-- Save: `w` (save and exit: `wq`)
-- To start writing (insert): `i`
-- Exit from current status: Escape
-- Search: `/pattern` (`n` for next occurrence)
-- Delete line: `dd`
-- Copy and paste line: `yyp`
-- Commands start with colons and can by quite complicated, e.g.:
-  `%s/Hello/Ciao/g`
----
-name: running
-
-#(More on) Running Scripts
-
-- Let create a new script called `loop.sh` under the `examples` folder that runs a for loop from 1 to 100, printing `Loop iteration i` ** at each iteration and wait (sleep) a second between each iteration
-
-- Try to do it yourself
-
---
-
-  
-  ```bash
-  vim examples/loop.sh
-  ```
-
---
-  
-  ```bash
-  #!/bin/bash
-  for i in {1..100}
-  do
-        echo "Loop iteration $i"
-        sleep 1
-  done
-  
-  ```
-- Now, try to run the script:
-  
-  ```bash
-  dadeusc:examples dproserp$ ./loop.sh
-  ```
----
-#(More on) Running Scripts
-
-- Does the script run? Why?
-
---
-
-- Let's set the right permissions, e.g.:
-  
-  ```bash
-  chmod 755 loop.sh
-  ```
---
-
-- Now run the script. 
-
-- Now, let's stop it: `crtl c` (it literally kills the script)
-
---
-
-- Start it again
-
---
-
-- **Pause** the script: `ctrl z`
-  - Restart it in the background: `bg 1`
-  - Can you kill it using `ctrl c`? (No, you need to bring it to the foreground first: `fg 1` )
-
-
----
-
-#(More on) Running Scripts
-
-- Start a script in background (add `&amp;` after the script name (with a space in between)) and redirecte the output to a files called output.txt: 
-  
-  ```bash
-  # Note that I redicrect the output to a file
-  loop.sh &gt; output.txt &amp; 
-  ```
-- You should see something like this:
-  
-  ```bash
-  dadeusc:examples dproserp$ ./loop.sh &gt; output.txt &amp;
-  [1] 43073
-  ```
-  43073 is the process id of the script you just run. Very useful to **kill** and **disown** processes:
-  
-  `kill -9 pid` (-9 is a sort of *force kill*)
-  
-  `disown pid` (very useful in cases in which you run a script on the server and close the connection)
-  
----
-
-#(More on) Running Scripts
-
-How do you check your script is running? Command `ps`:
-
-- Run the script in the background again (`./loop.sh &gt; output.txt &amp;`)
-- Check it is running: `ps x | grep loop.sh`:
-  
-  ```bash
-  (base) dadeusc:examples dproserp$ ps x | grep loop.sh
-  43678 s000  S      0:00.01 /bin/bash ./loop.sh
-  43690 s000  S+     0:00.00 grep loop.sh
-  ```
-
-- If you want learn more abou ps: `man ps`
-
----
-# Crontab: Scheduling tasks
-
-What if you want to run a script every hour, or every other week, or on a specific schedule? (I use it a lot to setup scrapers)
-
-[Crontab](https://man7.org/linux/man-pages/man5/crontab.5.html) is your friend!
-
-&lt;div align="center"&gt;
-&lt;img src="03-shell-files/figures/crontab.png" height=400&gt;
-&lt;/div&gt;
-
----
-
-# Crontab: Scheduling tasks (cont)
-Open crontab: `crontab -e` (and use vim to edit it)
-
-Example (run everyday at 5 o'clock):
-```
-0 5 * * * /Users/dproserp/phd/teaching/mkt-615/lectures/03-shell/examples/loop.sh &gt; output.txt
-```
-
----
-name: monitor
-# Monitor resources
-
-### Top
-
-&lt;div align="center"&gt;
-&lt;img src="03-shell-files/figures/top.png" height=400&gt;
-&lt;/div&gt;
 ---
 
 # Disclaimer
@@ -1599,7 +1445,7 @@ This next section is tailored towards Unix-based operating systems, like Linux o
 
 &lt;br&gt;
 
-Regardless, the things we learn here will become relevant to everyone (even Windows users) once we start interacting with Linux servers
+Regardless, the things we learn here will become relevant to everyone (even Windows users) once you start interacting with Linux servers (e.g., mshresearch)
 
 ---
 
@@ -1635,7 +1481,6 @@ Difference is one of priviledge.
 
 
 ---
-
 
 # Changing permissions and ownership
 
@@ -1737,8 +1582,7 @@ Changing file ownership is somewhat easier than changing permissions, because yo
  $ chown -R alice ABC
  ```
 
-Things get a little more interesting when we want to add new users and groups, or change an existing users group.
-- I'll save that for a later lecture on cloud servers, though.
+Things get a little more interesting when we want to add new users and groups, or change an existing users group (but this is out of the scope of this course)
 
 ---
 
@@ -1749,7 +1593,169 @@ Things get a little more interesting when we want to add new users and groups, o
 - [Data Science at the Command Line](https://www.datascienceatthecommandline.com/) (Jeroen Janssens)
 &lt;!-- - [Using AWK and R to parse 25tb](https://livefreeordichotomize.com/2019/06/04/using_awk_and_r_to_parse_25tb/) (Nick Strayer) --&gt;
 
+---
+class: inverse, center, middle
 
+name:vim 
+
+# Vim, running scripts, and monitor resources
+
+---
+
+# [Vim](https://www.vim.org/)
+
+- Text editor that works on the terminal
+- Steep curve to learn (I will give you just a brief intro here)
+
+Open a file:
+
+```bash
+vim examples/hello.sh
+```
+
+- Exit: `q` (exit w/o saving changes: `q!`)
+- Save: `w` (save and exit: `wq`)
+- To start writing (insert): `i`
+- Exit from current status: Escape
+- Search: `/pattern` (`n` for next occurrence)
+- Delete line: `dd`
+- Copy and paste line: `yyp`
+- Commands start with colons and can by quite complicated, e.g.:
+  `%s/Hello/Ciao/g`
+---
+name: running
+
+#(More on) Running Scripts
+
+- Let create a new script called `loop.sh` under the `examples` folder that runs a for loop from 1 to 100, printing `Loop iteration i` ** at each iteration and wait (sleep) a second between each iteration
+
+- Try to do it yourself
+
+--
+
+  
+  ```bash
+  vim examples/loop.sh
+  ```
+
+--
+  
+  ```bash
+  #!/bin/bash
+  for i in {1..100}
+  do
+        echo "Loop iteration $i"
+        sleep 1
+  done
+  
+  ```
+- Now, try to run the script:
+  
+  ```bash
+  dadeusc:examples dproserp$ ./loop.sh
+  ```
+---
+#(More on) Running Scripts
+
+- Does the script run? Why?
+
+--
+
+- Let's go to [permi] 
+
+--
+
+- Let's set the right permissions, e.g.:
+  
+  ```bash
+  chmod 755 loop.sh
+  ```
+--
+
+- Now run the script. 
+
+- Now, let's stop it: `crtl c` (it literally kills the script)
+
+--
+
+- Start it again
+
+--
+
+- **Pause** the script: `ctrl z`
+  - Restart it in the background: `bg 1`
+  - Can you kill it using `ctrl c`? (No, you need to bring it to the foreground first: `fg 1` )
+
+
+---
+
+#(More on) Running Scripts
+
+- Start a script in background (add `&amp;` after the script name (with a space in between)) and redirecte the output to a files called output.txt: 
+  
+  ```bash
+  # Note that I redicrect the output to a file
+  loop.sh &gt; output.txt &amp; 
+  ```
+- You should see something like this:
+  
+  ```bash
+  dadeusc:examples dproserp$ ./loop.sh &gt; output.txt &amp;
+  [1] 43073
+  ```
+  43073 is the process id of the script you just run. Very useful to **kill** and **disown** processes:
+  
+  `kill -9 pid` (-9 is a sort of *force kill*)
+  
+  `disown pid` (very useful in cases in which you run a script on the server and close the connection)
+  
+---
+
+#(More on) Running Scripts
+
+How do you check your script is running? Command `ps`:
+
+- Run the script in the background again (`./loop.sh &gt; output.txt &amp;`)
+- Check it is running: `ps x | grep loop.sh`:
+  
+  ```bash
+  (base) dadeusc:examples dproserp$ ps x | grep loop.sh
+  43678 s000  S      0:00.01 /bin/bash ./loop.sh
+  43690 s000  S+     0:00.00 grep loop.sh
+  ```
+
+- If you want learn more abou ps: `man ps`
+
+---
+# Crontab: Scheduling tasks
+
+What if you want to run a script every hour, or every other week, or on a specific schedule? (I use it a lot to setup scrapers)
+
+[Crontab](https://man7.org/linux/man-pages/man5/crontab.5.html) is your friend!
+
+&lt;div align="center"&gt;
+&lt;img src="03-shell-files/figures/crontab.png" height=400&gt;
+&lt;/div&gt;
+
+---
+
+# Crontab: Scheduling tasks (cont)
+Open crontab: `crontab -e` (and use vim to edit it)
+
+Example (run everyday at 5 o'clock):
+```
+0 5 * * * /Users/dproserp/phd/teaching/mkt-615/lectures/03-shell/examples/loop.sh &gt; output.txt
+```
+
+---
+name: monitor
+# Monitor resources
+
+### Top
+
+&lt;div align="center"&gt;
+&lt;img src="03-shell-files/figures/top.png" height=400&gt;
+&lt;/div&gt;
 
 ---
 name: windows
