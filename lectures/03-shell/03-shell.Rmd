@@ -192,7 +192,7 @@ This is shell-speak for: "Who am I and where am I?"
 
 - `Ctrl`+`u` deletes everything to the left of the cursor.
 
-- `Ctrl`+`Shift`+`c` to copy and `Ctrl`+`Shift`+`v` to paste (I think `shift` is optional)
+- `Ctrl`+`Shift`+`c` to copy and `Ctrl`+`Shift`+`v` to paste (I think `shift` is optional if you are not using RStudio shell)
 
 - `clear` to clear your terminal.
 
@@ -328,14 +328,14 @@ man ls
 # Help: man (cont.)
 
 A useful feature of `man` is quick pattern searching with "/pattern".
-- Try this now by running `$ man ls` again and then typing "/time" and hitting the return key. 
+- Try this now by running `$man ls`  again and then typing "/time" and hitting the return key. 
 - To continue on to the next case, hit `n`.
 
 --
 
 </br>
 
-Again, this and other `man` tricks tricks are detailed in the help pages (hit "h").
+Again, this and other `man` tricks are detailed in the help pages (hit "h").
 
 ---
 
@@ -407,22 +407,27 @@ Key navigation commands:
 
 - `pwd` to print (the current) working directory.
 
-- `cd` to change directory.
-
 ```{bash nav1}
 pwd
 ```
 
---
+---
+
+# Navigation (cont.)
+
+- `cd` to change directory.
 
 You can use absolute paths, but it's better to use relative paths and invoke special symbols for a user's home folder (`~`), current directory (`.`), and parent directory (`..`) as needed. 
 
 ```{bash nav2}
+pwd
 cd examples ## Move into the "examples" sub-directory of this lecture directory.
+pwd
+cd .. ## Now go back up one directories.
+pwd
 cd ../.. ## Now go back up two directories.
 pwd
 ```
-
 ---
 
 # Navigation (cont.)
@@ -454,6 +459,20 @@ We're about to go into more depth about the `ls` command.
 ```{bash ls}
 # cd PathWhereYouClonedThisRepo/lectures/03-shell ## change as needed
 ls -lh examples
+```
+
+---
+
+# Listing files and their properties (cont.)
+
+We're about to go into more depth about the `ls` command.
+- To do this effectively, it will be helpful if we're all working off the same group of files and folders.
+- Navigate to the directory containing these lecture notes (i.e. `03-shell`). Now list the contents of the  `examples/` sub-directory with the `-lh` option ("long format", "human readable").
+
+```{bash ls2}
+# cd PathWhereYouClonedThisRepo/lectures/03-shell ## change as needed
+cd examples
+ls -lh 
 ```
 
 ---
@@ -585,6 +604,7 @@ The syntax for copying is `$ cp object path/copyname`
 
 ```{bash cp}
 ## Create new "copies" sub-directory
+rm -fR examples/copies
 mkdir examples/copies
 ## Now copy across a file (with a new name)
 cp examples/reps.txt examples/copies/reps-copy.txt
@@ -635,7 +655,7 @@ find examples -iname "monday.csv" ## will automatically do recursive
 ```
 
 ```{bash find2}
-find . -iname "*.txt" ## must use "." to indicate pwd
+find . -iname "*.txt" ## must use "." to indicate current directory!
 ```
 
 ---
@@ -649,7 +669,10 @@ name: text
 
 # Counting text: wc
 
-You can use the `wc` command to count: 1) lines of text, 2) the number of words, and 3) the number of characters.
+You can use the `wc` command to count: 
+1. lines of text
+2. the number of words
+3. the number of characters.
 
 Let's demonstrate with a text file containing all of Shakespeare's Sonnets.<sup>1</sup>
 
@@ -830,7 +853,7 @@ name: rscript
 
 # Rscript
 
-It's important to realise that we aren't limited to running shell scripts in the shell. The exact same principles carry over to other programs and files.
+It's important to realize that we aren't limited to running shell scripts in the shell. The exact same principles carry over to other programs and files.
 
 The most relevant case for this class is the [`Rscript`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html) command for (you guessed it) executing R scripts and expressions. For example:
 
@@ -949,14 +972,14 @@ name: running
 
 - **Pause** the script: `ctrl z`
   - Restart it in the background: `bg 1`
-  - Can you kill it? (No, you need to bring it to the foreground first: `fg 1` )
+  - Can you kill it using `ctrl c`? (No, you need to bring it to the foreground first: `fg 1` )
 
 
 ---
 
 #(More on) Running Scripts
 
-- Start a script in background: Add `&` after the script name (with a space in between): 
+- Start a script in background (add `&` after the script name (with a space in between)) and redirecte the output to a files called output.txt: 
   ```{bash, eval= FALSE}
   # Note that I redicrect the output to a file
   loop.sh > output.txt & 
@@ -970,13 +993,13 @@ name: running
   
   `kill -9 pid` (-9 is a sort of *force kill*)
   
-  `disown pid` (very useful in cases in which you run a script on the server)
+  `disown pid` (very useful in cases in which you run a script on the server and close the connection)
   
 ---
 
 #(More on) Running Scripts
 
-Check whether your script is running using `ps`:
+How do you check your script is running? Command `ps`:
 
 - Run the script in the background again (`./loop.sh > output.txt &`)
 - Check it is running: `ps x | grep loop.sh`:
@@ -986,10 +1009,10 @@ Check whether your script is running using `ps`:
   43690 s000  S+     0:00.00 grep loop.sh
   ```
 
-- If you learn more abou ps: `man ps`
+- If you want learn more abou ps: `man ps`
 
 ---
-# Crontab
+# Crontab: Scheduling tasks
 
 What if you want to run a script every hour, or every other week, or on a specific schedule? (I use it a lot to setup scrapers)
 
@@ -1001,7 +1024,7 @@ What if you want to run a script every hour, or every other week, or on a specif
 
 ---
 
-# Crontab (cont)
+# Crontab: Scheduling tasks (cont)
 Open crontab: `crontab -e` (and use vim to edit it)
 
 Example (run everyday at 5 o'clock):
