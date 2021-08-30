@@ -1083,11 +1083,7 @@ name: running
 
 #(More on) Running Scripts
 
-- Let create a new script called `loop.sh` under the `examples` folder that runs a for loop from 1 to 100, printing `Loop iteration i` ** at each iteration and wait (sleep) a second between each iteration
-
-- Try to do it yourself
-
---
+- Let create a new script called `loop.sh` under the `examples` folder that runs a for loop from 1 to 100, printing `Loop iteration i` at each iteration and wait (sleep) a second between each iteration
 
   ```{bash, eval=FALSE}
   vim examples/loop.sh
