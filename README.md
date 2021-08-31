@@ -12,7 +12,7 @@ For more information about this class, take a look at the **[Syllabus](https://g
 3. Lecture 3: [Shell](https://raw.githack.com/dadepro/mkt-615/main/lectures/03-shell/03-shell.html)
 4. Lecture 4: [Introduction to R](https://raw.githack.com/dadepro/mkt-615/main/lectures/04-rbasics/04-rbasics.html)
 5. Lecture 5: Data manipulation and visualization
-    1. tidyverse
+    1. [tidyverse](https://raw.githack.com/dadepro/mkt-615/main/lectures/05-tidyverse/05-tidyverse.html)
     2. data.table
     3. ggplot
 7. Lecture 6: Data storage using MySQL
