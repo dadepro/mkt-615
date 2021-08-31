@@ -82,10 +82,11 @@ Let's try all these operators
 
 It's important to emphasize that there are many different *types* (or *classes*) of objects. 
 
-We'll revisit the issue of "type" vs "class" in a slide or two. For the moment, it is helpful simply to name some objects that we'll be working with regularly:
+It is helpful simply to name some objects that we'll be working with regularly:
 - vectors
 - matrices
 - data frames
+- data tables
 - lists
 - functions
 - etc.
@@ -228,6 +229,7 @@ Try re-assign `pi` for example...
 A similar issue crops up when we load two packages, which have functions that share the same name. E.g. Look what happens we load the `dplyr` package.
 
 ```r
+library(stats)
 library(dplyr)
 ```
 
@@ -296,7 +298,7 @@ filter = dplyr::filter ## Change it back again.
 
 # General advice
 
-I would generally advocate for the temporary `package::function()` solution. 
+&lt;!-- I would generally advocate for the temporary `package::function()` solution.  --&gt;
 
 Load your most important packages last. (E.g. Load the tidyverse after you've already loaded any other packages.)
   
@@ -364,13 +366,65 @@ dd
 
 - but you can also use indexes to select columns, how?
 
+--
+
+- `dd[rows list, columns list]`
+
+
 ---
 
 # More operators
 
 https://www.tutorialspoint.com/r/r_operators.htm
 
-(let's play with them for a few minutes to get familiar with them)
+&lt;!-- (let's play with them for a few minutes to get familiar with them) --&gt;
+
+---
+
+# Factors 
+
+- Factors are the data objects which are used to categorize the data and store it as levels
+
+- The function `factor` converts vectors to factors
+  - You can also use it to reorder the levels (useful for regressions)
+  - You can also create levels labels
+  
+---
+# Factors (cont.)
+
+
+```r
+data &lt;- c("East","West","East","North","North","East","West",
+          "West","West","East","North", "South")
+# Create the factors
+data &lt;- factor(data)
+data
+```
+
+```
+##  [1] East  West  East  North North East  West  West  West  East  North South
+## Levels: East North South West
+```
+
+```r
+# Apply the factor function with required order of the level.
+factor(data,levels = c("North", "East","South", "West"))
+```
+
+```
+##  [1] East  West  East  North North East  West  West  West  East  North South
+## Levels: North East South West
+```
+
+```r
+# Apply the factor function with required order of the level and change labels.
+factor(data,levels = c("North", "East","South", "West"), labels = c("N", "E", "S", "W"))
+```
+
+```
+##  [1] E W E N N E W W W E N S
+## Levels: N E S W
+```
 
 ---
 class: inverse, center, middle
@@ -399,7 +453,7 @@ There are tons of very useful API available for R
 
 - There are several functions to read any type of data in R, from Excel files to Stata file to csv...
 
-- But the fastest and easy and fastest way to read almost any file (even compressed ones) is [fread](https://www.rdocumentation.org/packages/data.table/versions/1.14.0/topics/fread)
+- But the fastest and easy and fastest way to read almost any file (even compressed ones) is [fread](https://www.rdocumentation.org/packages/data.table/versions/1.14.0/topics/fread) (part of the **data.table** library)
   - Usually, the only argument needed is the file name, `fread` will automatically figure out which file you are trying to load!
 
 
