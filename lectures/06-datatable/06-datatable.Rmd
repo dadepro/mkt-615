@@ -1,0 +1,36 @@
+---
+title: "MKT615: Data Storytelling for Marketers"
+subtitle: "Lecture 5: data.table"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+# date: "08/25/2021" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+
+---
+
+```{r setup, include=FALSE}
+library(hrbrthemes)
+library(fontawesome)
+library(xaringan)
+options(htmltools.dir.version = FALSE)
+library(knitr)
+opts_chunk$set(
+  fig.align="center", #fig.width=6, fig.height=4.5, 
+  # out.width="748px", #out.length="520.75px",
+  dpi=300, #fig.path='Figs/',
+  cache=F#, echo=F, warning=F, message=F
+  )
+```
+# Table of contents
+
+1. [Introduction](#intro)
+
+---
