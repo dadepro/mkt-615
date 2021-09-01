@@ -4,9 +4,9 @@
     <title>MKT615: Data Storytelling for Marketers</title>
     <meta charset="utf-8" />
     <meta name="author" content="Davide Proserpio" />
-    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -866,16 +866,16 @@ ls -lh examples
 
 ```
 ## total 288
-## drwxr-xr-x  3 dproserp  staff    96B Aug 30 14:47 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 30 14:47 copies
-## -rwxr-xr-x  1 dproserp  staff   154B Aug 25 10:12 hello.R
-## -rwxr-xr-x  1 dproserp  staff    30B Aug 25 10:12 hello.sh
-## -rw-rw-rw-  1 dproserp  staff    73B Aug 20 15:42 loop.sh
-## drwxr-xr-x  9 dproserp  staff   288B Aug 20 15:42 meals
-## -rw-r--r--  1 dproserp  staff    32B Aug 20 15:42 nursery.txt
-## -rw-r--r--  1 dproserp  staff   1.8K Aug 20 15:42 output.txt
-## -rwxr-xr-x  1 dproserp  staff   153B Aug 20 15:42 reps.txt
-## -rw-r--r--  1 dproserp  staff   117K Aug 20 15:42 sonnets.txt
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 17:01 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 29 17:01 copies
+## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 29 14:37 hello.R
+## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
+## -rw-r--r--  1 dproserp  staff    73B Aug 31 09:16 loop.sh
+## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
+## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
+## -rw-r--r--  1 dproserp  staff   1.8K Aug 11 10:51 output.txt
+## -rwxr-xr-x@ 1 dproserp  staff   153B Aug  2 09:45 reps.txt
+## -rw-r--r--@ 1 dproserp  staff   117K Aug  2 09:45 sonnets.txt
 ```
 
 ---
@@ -895,16 +895,16 @@ ls -lh
 
 ```
 ## total 288
-## drwxr-xr-x  3 dproserp  staff    96B Aug 30 14:47 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 30 14:47 copies
-## -rwxr-xr-x  1 dproserp  staff   154B Aug 25 10:12 hello.R
-## -rwxr-xr-x  1 dproserp  staff    30B Aug 25 10:12 hello.sh
-## -rw-rw-rw-  1 dproserp  staff    73B Aug 20 15:42 loop.sh
-## drwxr-xr-x  9 dproserp  staff   288B Aug 20 15:42 meals
-## -rw-r--r--  1 dproserp  staff    32B Aug 20 15:42 nursery.txt
-## -rw-r--r--  1 dproserp  staff   1.8K Aug 20 15:42 output.txt
-## -rwxr-xr-x  1 dproserp  staff   153B Aug 20 15:42 reps.txt
-## -rw-r--r--  1 dproserp  staff   117K Aug 20 15:42 sonnets.txt
+## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 17:01 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Aug 29 17:01 copies
+## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 29 14:37 hello.R
+## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
+## -rw-r--r--  1 dproserp  staff    73B Aug 31 09:16 loop.sh
+## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
+## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
+## -rw-r--r--  1 dproserp  staff   1.8K Aug 11 10:51 output.txt
+## -rwxr-xr-x@ 1 dproserp  staff   153B Aug  2 09:45 reps.txt
+## -rw-r--r--@ 1 dproserp  staff   117K Aug  2 09:45 sonnets.txt
 ```
 
 ---
@@ -1281,7 +1281,7 @@ find . -type f | wc -l
 ```
 
 ```
-##       33
+##       36
 ```
 ---
 class: inverse, center, middle

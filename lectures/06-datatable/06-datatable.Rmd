@@ -8,6 +8,7 @@ output:
   xaringan::moon_reader:
     lib_dir: libs
     nature:
+      beforeInit: "libs/cols_macro.js"
       highlightStyle: github
       highlightLines: true
       highlightSpans: true
@@ -16,11 +17,24 @@ output:
 
 ---
 
+```{css, echo=FALSE}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.large4 { font-size: 400% }
+.large2 { font-size: 200% }
+.small90 { font-size: 90% }
+.small75 { font-size: 75% }
+```
+
 ```{r setup, include=FALSE}
 library(hrbrthemes)
 library(fontawesome)
 library(xaringan)
 options(htmltools.dir.version = FALSE)
+
 library(knitr)
 opts_chunk$set(
   fig.align="center", #fig.width=6, fig.height=4.5, 
@@ -33,4 +47,544 @@ opts_chunk$set(
 
 1. [Introduction](#intro)
 
+
+
 ---
+
+# Checklist
+
+We'll be using the following packages in today's lecture:
+- Already installed: **dplyr**, **ggplot2**, **nycflights13**
+- New: **data.table**, **tidyfast**, **dtplyr**, **microbenchmark**
+
+--
+
+The following code chunk will install (if necessary) and load everything for you.
+
+```{r libs, cache=FALSE, message=FALSE}
+if (!require(pacman)) install.packages('pacman', repos = 'https://cran.rstudio.com')
+pacman::p_load(dplyr, data.table, dtplyr, tidyfast, microbenchmark, ggplot2, nycflights13)
+options(dplyr.summarise.inform = FALSE) ## Turn off annoying dplyr group_by messages (optional)
+```
+
+---
+class: inverse, center, middle
+name: intro
+
+# Introduction
+
+---
+
+# Why learn data.table?
+
+The **tidyverse** is great. As I keep hinting, it will also provide a bridge to many of the big data tools that we'll encounter later in the course (SQL databases, etc.)
+
+--
+
+So why bother learning another data wrangling package/syntax?
+
+--
+
+When it comes to **data.table**, I can think of at least five reasons:
+
+1. Concise
+2. Insanely fast
+3. Memory efficient
+4. Feature rich
+5. Dependency free
+
+--
+
+Before we get into specifics, here are a few examples to whet your appetite...
+
+---
+
+# Why learn data.table? (cont.)
+
+### 1) Concise
+
+These two code chunks do the same thing:
+
+```r
+# library(dplyr) ## Already loaded
+# data(starwars, package = "dplyr") ## Optional to bring the DF into the global env
+starwars %>% 
+  filter(species=="Human") %>% 
+  group_by(homeworld) %>% 
+  summarise(mean_height=mean(height)) 
+```
+vs
+```r
+# library(data.table) ## Already loaded
+starwars_dt = as.data.table(starwars)
+starwars_dt[species=="Human", mean(height), by=homeworld]
+```
+
+---
+name:fast
+
+# Why learn data.table? (cont.)
+
+.small90[
+
+```{r collapse_comp_neval, eval = FALSE}
+collapse_dplyr = function() {
+  storms %>%
+    group_by(name, year, month, day) %>% 
+    summarize(wind = mean(wind), pressure = mean(pressure), category = dplyr::first(category))
+}
+
+storms_dt = as.data.table(storms)
+collapse_dt = function() {
+  storms_dt[, .(wind = mean(wind), pressure = mean(pressure), category = first(category)),
+            by = .(name, year, month, day)]
+  }
+microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
+```
+---
+
+```{r collapse_comp, echo=FALSE, message=FALSE}
+collapse_dplyr = function() {
+  storms %>%
+    group_by(name, year, month, day) %>% 
+    summarize(wind = mean(wind), pressure = mean(pressure), category = dplyr::first(category))
+  }
+storms_dt = as.data.table(storms)
+collapse_dt = function() {
+  storms_dt[, .(wind = mean(wind), pressure = mean(pressure), category = first(category)),
+            by = .(name, year, month, day)]
+  }
+mb = microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
+mb_dt = as.data.table(mb) ## For easy calculation in text
+## Round to nearest multiple of 10
+mbx = round((mb_dt[expr=="collapse_dplyr()", median(time)] /
+               mb_dt[expr=="collapse_dt()", median(time)]))
+mb ## print result
+```
+]
+
+--
+
+.small90[
+**Result:** data.table is ~`r mbx`x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+]
+
+---
+class: inverse, center, middle
+name: basics
+
+# data.table basics
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+
+---
+
+# The data.table object
+
+data.table functions only work on objects that have been converted to data.tables first.
+- Beyond simple visual enhancements (similar to tibbles), the specialised internal structure of data.table objects is a key reason why the package is so fast. (More [here](https://rdatatable.gitlab.io/data.table/articles/datatable-intro.html#what-is-datatable-1a) and [here](https://twitter.com/matloff/status/1131372631372918784).)
+
+--
+
+To create a data.table, we have a couple of options:
+- `fread('mydata.csv')` reads a CSV into R as a data.table (and is very fast).
+- `data.table(x = 1:10)` creates a new data.table from scratch
+- `as.data.table(d)` od `data.table(d)` coerces an existing data frame (`d`) to a data.table.
+- `setDT(d)` coerces an existing data frame to a data.table *by reference*; i.e. we don't have to (re)assign it.
+
+---
+
+# What does "modify by reference" mean?
+
+That last bullet leads us to an important concept that underlies much of data.table's awesomeness: It tries, as much as possible, to *modify by reference*.
+
+--
+
+What does this mean? 
+
+--
+We don't have time to go into details here, but the very (very) short version is that there are basically two ways of changing or assigning objects in R.
+1. **Copy-on-modify:** Creates a copy of your data. Implies extra computational overhead.<sup>*</sup>
+2. **Modify-in-place:** Avoids creating copies and simply changes the data where it sits in memory. 
+
+.footnote[<sup>*</sup> In truth, we need to distinguish between <i>shallow</i> and <i>deep copies</i>. But that's more than I want you to worry about here.]
+
+--
+
+When we say that data.table "modifies by reference", that essentially means it modifies objects in place. This translates to lower memory overhead and faster computation time!
+
+--
+
+P.S. Further reading if this stuff interests you: (a) [Reference semantics](https://rdatatable.gitlab.io/data.table/articles/datatable-reference-semantics.html) data.table vignette, (b) [Names and Values](https://adv-r.hadley.nz/names-values.html) section of *Advanced R* (Hadley Wickham), (c) Nice [blog post](https://tysonbarrett.com//jekyll/update/2019/07/12/datatable/) by Tyson Barrett that's accessible to beginners.
+
+---
+
+# data.table syntax
+
+All data.tables accept the same basic syntax:
+
+<center>
+<h1>
+DT[<span style='color: #66C2A5;'>i</span>, <span style='color: #FC8D62;'>j</span>, <span style='color: #8DA0CB;'>by</span>]
+</h1>
+</center>
+
+<center>
+<h2>
+<span style='color: #66C2A5;'>On which rows?</span>&emsp;<span style='color: #FC8D62;'>What to do?</span>&emsp;<span style='color: #8DA0CB;'>Grouped by what?</span>
+</h2>
+</center>
+
+--
+
+
+dplyr "equivalents":
+
+
+<center>
+<h2>
+<span style='color: #66C2A5;'>filter(); slice(); arrange()</span>&emsp;<span style='color: #FC8D62;'>select(); mutate()</span>&emsp;<span style='color: #8DA0CB;'>group_by()</span>
+</h2>
+</center>
+
+--
+
+While the tidyverse tends to break up operations step-by-step, data.table aims to do everything in one concise expression.
+
+---
+
+# An Example
+
+Let's see a quick side-by-side comparison with dplyr, since that will help to orientate us for the rest of the lecture. Using our starwars dataset, say we want to know:
+
+.center[**What is the average height of the human characters by gender?**]
+--
+
+.pull-left[
+### dplyr
+```{r, eval=T}
+data(starwars, package = "dplyr")
+starwars %>%
+  filter(species=="Human") %>%
+  group_by(gender) %>%
+  summarise(mean(height, na.rm=T))
+```
+
+]
+
+
+.pull-right[
+### data.table
+```{r, eval=T}
+starwars_dt = as.data.table(starwars)
+starwars_dt[
+  species=="Human", 
+  mean(height, na.rm=T), 
+  by = gender]
+```
+]
+
+---
+class: inverse, center, middle
+name: i
+
+# Working with rows: DT[i, ]
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+
+---
+
+# Subset by rows (filter)
+
+Subsetting by rows is very straightforward in data.table. Everything works pretty much the same as you'd expect if you're coming from dplyr. 
+
+- `DT[x == "string", ]`: Subset to rows where variable x equals "string"
+
+- `DT[y > 5, ]`: Subset to rows where variable y is greater than 5
+
+- `DT[1:10, ]`: Subset to the first 10 rows
+
+--
+
+Multiple filters/conditions are fine too:
+
+- `DT[x=="string" & y>5, ]`: Subset to rows where x is "string" AND y is greater than 5
+
+--
+
+Note that we don't actually need commas when we're only subsetting on `i` (i.e. no `j` or `by` components).
+- `DT[x=="string"]` is equivalent to `DT[x=="string", ]`
+- `DT[1:10]` is equivalent to `DT[1:10, ]`
+- etc.
+
+---
+
+# Subset by rows (filter) cont.
+
+Just to emphasise the point, here's an example of subsetting by rows using our starwars data.table from earlier.
+
+```{r sub_rows1}
+starwars_dt[height>190 & species=='Human']
+```
+
+---
+
+# Order by rows (arrange)
+
+```r
+starwars_dt[order(birth_year)]  ## (temporarily) sort by youngest to oldest
+starwars_dt[order(-birth_year)] ## (temporarily) sort by oldest to youngest
+```
+
+--
+
+While ordering as per the above is very straightforward, data.table also provides an optimized `setorder()` function for reordering *by reference*.
+
+--
+
+```{r sw_setorder}
+setorder(starwars_dt, birth_year, na.last = TRUE)
+starwars_dt[1:5, name:birth_year] ## Only print subset to stay on the slide
+```
+
+---
+class: inverse, center, middle
+name: j
+
+# Manipulating columns: DT[, j]
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+
+---
+
+# j: One slot to rule them all
+
+Recall some of the dplyr verbs that we used to manipulate our variables in different ways:
+
+- `select()`
+- `mutate()`
+- `summarise()`
+- `count()`
+
+--
+
+data.table recognizes that all of these verbs are just different versions of telling R... 
+>"*Do something to this variable in my dataset*"
+... and it let's you do all of those operations in one place: the `j` slot.
+
+--
+
+However, this requires a few syntax tweaks w.r.t. how we change and assign variables in our dataset.
+
+---
+
+# Modifying columns :=
+
+To add, delete, or change columns in data.table, we use the **`:=`** operator.
+
+--
+
+For example,
+
+- `DT[, xsq := x^2]`: Create a new column (`xsq`) from an existing one (`x`)
+- `DT[, x := as.character(x)]`: Change an existing column
+
+--
+
+**Important:** `:=` is *modifying by reference*, i.e. in place. So we don't have to (re)assign the object to save these changes.
+
+--
+
+However, we also won't see these changes printed to screen unless we ask R explicitly.
+
+```{r mod_col}
+DT = data.table(x = 1:2)
+# DT[, xsq := x^2] ## Modifies in place but doesn't print the result
+DT[, x_sq := x^2][] ## Adding [] prints the result.
+```
+
+---
+
+# Modifying columns := (cont.)
+
+
+As I keep saying, *modifying by reference* has important implications for data manipulation. Consider what happens if we copy our data.table and then remove a column.
+
+```{r mod_copy1}
+DT_copy = DT
+DT_copy[, x_sq := NULL]
+```
+
+--
+
+Clearly, "x_sq" has been removed from `DT_copy`. But what of the original `DT` table?
+
+--
+
+```{r mod_copy2}
+DT
+```
+
+--
+
+It has been removed from DT too... exactly as modifying by reference demands. To avoid this behaviour, use the explicit [`data.table::copy()`](https://rdatatable.gitlab.io/data.table/reference/copy.html) function. Run this next chunk yourself:
+
+```{r, highlightSpans = TRUE, eval = FALSE}
+DT[, x_sq := x^2]     
+DT_copy = copy(DT)  
+DT_copy[, x_sq := NULL]
+DT ## x_sq is still there (run and confirm for yourself)
+```
+```{r mod_copy3, include=FALSE}
+DT[, x_sq := x^2]     
+DT_copy = copy(DT)  
+DT_copy[, x_sq := NULL]
+DT ## x_sq is still there (run and confirm for yourself)
+```
+
+---
+
+# Modifying columns := (cont.)
+
+### Sub-assign by reference
+
+One really cool implication of `:=` is data.table's [sub-assign by reference](https://rdatatable.gitlab.io/data.table/articles/datatable-reference-semantics.html#ref-i-j) functionality. As a simple example, consider another fake dataset.
+
+```{r subassign1, cache=FALSE}
+DT2 = data.table(a = -2:2, b = LETTERS[1:5])
+```
+
+--
+
+Now, imagine we want to locate all rows where "a" is negative and replace the corresponding "b" cell with NA. 
+
+--
+
+- In dplyr you'd have to do something like `...mutate(b = ifelse(a < 0, NA, b))`.
+--
+
+- In data.table, simply specify which rows to target (`i`) and then sub-assign (`j`) directly.
+
+```{r subassign2, cache=FALSE}
+DT2[a < 0, b := NA][] ## Again, just adding the second [] to print to screen
+```
+
+---
+
+# Modifying columns := (cont.)
+
+To modify multiple columns simultaneously, we have two options.
+
+1. LHS `:=` RHS form: `DT[, c("var1", "var2") := .(val1, val2)]`
+
+2. Functional form: `DT[, ':=' (var1=val1, var2=val2)]`
+
+
+
+```{r mod_cols, cache=FALSE}
+DT[, ':=' (y = 3:4, y_name = c("three", "four"))]
+DT ## Another way to print the results instead of appending []
+```
+
+--
+
+Note, however, that dynamically assigning dependent columns in a single step (like we did with dplyr::mutate) doesn't work.
+
+```{r mod_cols2, error=TRUE}
+DT[, ':=' (z = 5:6, z_sq = z^2)][]
+```
+
+---
+
+# Aside: Chaining data.table operations
+
+That last example provides as good a time as any to mention that you can chain multiple data.table operations together.
+
+--
+
+The native data.table way is simply to append consecutive `[]` terms.
+
+```{r mod_cols3, cache=FALSE}
+DT[, z := 5:6][, z_sq := z^2][] 
+```
+
+---
+
+# Modifying columns := (cont.)
+
+A few useful data.table operators
+
+- Remove a column from your dataset:
+```{r mod_cols5, cache=FALSE}
+DT[, y_name := NULL]
+```
+
+- Count observations 
+
+```{r count, cache=FALSE}
+DT[, y_name := .N]
+```
+
+- Create an index 1 to N
+
+```{r idx, cache=FALSE}
+DT[, y_name := 1:.N]
+```
+
+---
+
+# Subsetting on columns (select)
+
+We can also use the `j` slot to subset our data on columns. Let's the starwars dataset for these examples...
+
+--
+
+Subset by column position:
+```{r sub_cols1}
+starwars_dt[1:2, c(1:3, 10)]
+```
+
+--
+Or by name:
+
+```{r sub_cols2}
+# starwars_dt[, c("name", "height", "mass", "homeworld")] ## Also works
+# starwars_dt[, list(name, height, mass, homeworld)] ## So does this
+starwars_dt[1:2, .(name, height, mass, homeworld)]
+```
+
+
+---
+
+# Aside: What's with the .()?
+
+We've now seen `.()` in a couple places, e.g the previous slide and [this slide](#fast) from earlier if you were paying close attention.
+- `.()` is just a data.table shortcut for `list()`. 
+
+We'll be using `.()` quite liberally once we start working subsetting and/or grouping by multiple variables at a time.
+
+You can think of it as one of data.table's syntactical quirks. But, really, it's just there to give you more options. You can often &mdash; if not always &mdash; use these three forms interchangeably in data.table:
+- `.(var1, var2, ...)`
+- `list(var1, var2, ...)`
+- `c("var1", "var2", ...)`
+
+---
+
+
+
+You can also exclude columns through negation. Try this next code chunk yourself:
+
+```{r, eval = FALSE}
+starwars_dt[, !c("name", "height")]
+```
+
+---
+# Subsetting on columns (cont.)
+
+
+### Renaming columns
+
+You can rename (set) a column by reference. Again, run this yourself:
+
+```{r, eval=FALSE}
+setnames(starwars_dt, old = c("name", "homeworld"), new = c("alias", "crib"))[]
+## Better change it back, in case we use "name" or "homeworld" on a later slide
+setnames(starwars_dt, old = c("alias", "crib"), new = c("name", "homeworld"))
+```
