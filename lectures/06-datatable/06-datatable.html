@@ -54,7 +54,29 @@ The following code chunk will install (if necessary) and load everything for you
 
 ```r
 if (!require(pacman)) install.packages('pacman', repos = 'https://cran.rstudio.com')
+```
+
+```
+## Warning in library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE, : there is no package called 'pacman'
+```
+
+```
+## 
+## The downloaded binary packages are in
+## 	/var/folders/n7/863p37ls0yn4zxkp82921xtw0000gn/T//RtmpCd1R2q/downloaded_packages
+```
+
+```r
 pacman::p_load(dplyr, data.table, dtplyr, tidyfast, microbenchmark, ggplot2, nycflights13)
+```
+
+```
+## 
+## The downloaded binary packages are in
+## 	/var/folders/n7/863p37ls0yn4zxkp82921xtw0000gn/T//RtmpCd1R2q/downloaded_packages
+```
+
+```r
 options(dplyr.summarise.inform = FALSE) ## Turn off annoying dplyr group_by messages (optional)
 ```
 
@@ -139,15 +161,15 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 80.914276 80.914276 80.914276 80.914276 80.914276 80.914276     1
-##     collapse_dt()  2.595001  2.595001  2.595001  2.595001  2.595001  2.595001     1
+##  collapse_dplyr() 75.771304 75.771304 75.771304 75.771304 75.771304 75.771304     1
+##     collapse_dt()  2.746175  2.746175  2.746175  2.746175  2.746175  2.746175     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~31x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~28x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -252,7 +274,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 2 × 2
+## # A tibble: 2 x 2
 ##   gender    `mean(height, na.rm = T)`
 ##   &lt;chr&gt;                         &lt;dbl&gt;
 ## 1 feminine                       160.

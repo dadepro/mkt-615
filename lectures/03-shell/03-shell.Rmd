@@ -152,7 +152,7 @@ You should see something like:
  username@hostname:~$
 ```
 
-This is shell-speak for: "Who am I and where am I?"
+This is shell-speak for: "Who am I and where am I?"0
 
 --
 
@@ -188,6 +188,8 @@ This is shell-speak for: "Who am I and where am I?"
 - `Ctrl`+`k` deletes everything to the right of the cursor.
 
 - `Ctrl`+`u` deletes everything to the left of the cursor.
+
+- `Alt`+`Del` delete a word to the left (`option` for Mac)
 
 - `Ctrl`+`Shift`+`c` to copy and `Ctrl`+`Shift`+`v` to paste (I think `shift` is optional if you are not using RStudio shell)
 
@@ -338,7 +340,7 @@ Again, this and other `man` tricks are detailed in the help pages (hit "h").
 
 # Help: cheat
 
-I also like the [cheat](https://github.com/chrisallenlane/cheat) utility, which provides a more readable summary / cheatsheet of various command. You'll need to install it first. (Linux and MacOS only.)
+I also like the [cheat](https://github.com/cheat/cheat) utility, which provides a more readable summary / cheatsheet of various command. You'll need to install it first. (Linux and MacOS only.)
 
 ```
 $ cheat ls
@@ -1130,14 +1132,18 @@ name: running
 
 - **Pause** the script: `ctrl z`
   - Restart it in the background: `bg 1`
-  - Can you kill it using `ctrl c`? (No, you need to bring it to the foreground first: `fg 1` )
+  - Can you kill it using `ctrl c`? 
+
+--
+
+        (No, you need to bring it to the foreground first: `fg 1` )
 
 
 ---
 
 #(More on) Running Scripts
 
-- Start a script in background (add `&` after the script name (with a space in between)) and redirecte the output to a files called output.txt: 
+- Let's start `loop.sh` in background: add `&` after the script name (with a space in between) and redirect the output to a files called output.txt: 
   ```{bash, eval= FALSE}
   # Note that I redicrect the output to a file
   loop.sh > output.txt & 
@@ -1147,7 +1153,7 @@ name: running
   dadeusc:examples dproserp$ ./loop.sh > output.txt &
   [1] 43073
   ```
-  43073 is the process id of the script you just run. Very useful to **kill** and **disown** processes:
+  43073 is the process id (PID) of the script you just run. Very useful to **kill** and **disown** processes:
   
   `kill -9 pid` (-9 is a sort of *force kill*)
   
@@ -1189,6 +1195,7 @@ Example (run everyday at 5 o'clock):
 ```
 0 5 * * * /Users/dproserp/phd/teaching/mkt-615/lectures/03-shell/examples/loop.sh > output.txt
 ```
+PS: Note that I used the absolute path of the script!
 
 ---
 name: monitor

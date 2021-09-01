@@ -152,7 +152,7 @@ You should see something like:
  username@hostname:~$
 ```
 
-This is shell-speak for: "Who am I and where am I?"
+This is shell-speak for: "Who am I and where am I?"0
 
 --
 
@@ -188,6 +188,8 @@ This is shell-speak for: "Who am I and where am I?"
 - `Ctrl`+`k` deletes everything to the right of the cursor.
 
 - `Ctrl`+`u` deletes everything to the left of the cursor.
+
+- `Alt`+`Del` delete a word to the left (`option` for Mac)
 
 - `Ctrl`+`Shift`+`c` to copy and `Ctrl`+`Shift`+`v` to paste (I think `shift` is optional if you are not using RStudio shell)
 
@@ -730,7 +732,7 @@ Again, this and other `man` tricks are detailed in the help pages (hit "h").
 
 # Help: cheat
 
-I also like the [cheat](https://github.com/chrisallenlane/cheat) utility, which provides a more readable summary / cheatsheet of various command. You'll need to install it first. (Linux and MacOS only.)
+I also like the [cheat](https://github.com/cheat/cheat) utility, which provides a more readable summary / cheatsheet of various command. You'll need to install it first. (Linux and MacOS only.)
 
 ```
 $ cheat ls
@@ -866,16 +868,16 @@ ls -lh examples
 
 ```
 ## total 288
-## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 17:01 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 29 17:01 copies
-## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 29 14:37 hello.R
-## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
-## -rw-r--r--  1 dproserp  staff    73B Aug 31 09:16 loop.sh
-## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
-## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
-## -rw-r--r--  1 dproserp  staff   1.8K Aug 11 10:51 output.txt
-## -rwxr-xr-x@ 1 dproserp  staff   153B Aug  2 09:45 reps.txt
-## -rw-r--r--@ 1 dproserp  staff   117K Aug  2 09:45 sonnets.txt
+## drwxr-xr-x  3 dproserp  staff    96B Sep  1 11:06 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Sep  1 11:06 copies
+## -rwxr-xr-x  1 dproserp  staff   154B Aug 25 10:12 hello.R
+## -rwxr-xr-x  1 dproserp  staff    30B Aug 25 10:12 hello.sh
+## -rw-rw-rw-  1 dproserp  staff    73B Aug 20 15:42 loop.sh
+## drwxr-xr-x  9 dproserp  staff   288B Aug 20 15:42 meals
+## -rw-r--r--  1 dproserp  staff    32B Aug 20 15:42 nursery.txt
+## -rw-r--r--  1 dproserp  staff   1.8K Aug 20 15:42 output.txt
+## -rwxr-xr-x  1 dproserp  staff   153B Aug 20 15:42 reps.txt
+## -rw-r--r--  1 dproserp  staff   117K Aug 20 15:42 sonnets.txt
 ```
 
 ---
@@ -895,16 +897,16 @@ ls -lh
 
 ```
 ## total 288
-## drwxr-xr-x@ 3 dproserp  staff    96B Aug 29 17:01 ABC
-## drwxr-xr-x  3 dproserp  staff    96B Aug 29 17:01 copies
-## -rwxrwxr-x@ 1 dproserp  staff   154B Aug 29 14:37 hello.R
-## -rwxr-xr-x@ 1 dproserp  staff    30B Aug 24 17:53 hello.sh
-## -rw-r--r--  1 dproserp  staff    73B Aug 31 09:16 loop.sh
-## drwxr-xr-x@ 9 dproserp  staff   288B Aug  2 09:45 meals
-## -rw-r--r--@ 1 dproserp  staff    32B Aug  2 09:45 nursery.txt
-## -rw-r--r--  1 dproserp  staff   1.8K Aug 11 10:51 output.txt
-## -rwxr-xr-x@ 1 dproserp  staff   153B Aug  2 09:45 reps.txt
-## -rw-r--r--@ 1 dproserp  staff   117K Aug  2 09:45 sonnets.txt
+## drwxr-xr-x  3 dproserp  staff    96B Sep  1 11:06 ABC
+## drwxr-xr-x  3 dproserp  staff    96B Sep  1 11:06 copies
+## -rwxr-xr-x  1 dproserp  staff   154B Aug 25 10:12 hello.R
+## -rwxr-xr-x  1 dproserp  staff    30B Aug 25 10:12 hello.sh
+## -rw-rw-rw-  1 dproserp  staff    73B Aug 20 15:42 loop.sh
+## drwxr-xr-x  9 dproserp  staff   288B Aug 20 15:42 meals
+## -rw-r--r--  1 dproserp  staff    32B Aug 20 15:42 nursery.txt
+## -rw-r--r--  1 dproserp  staff   1.8K Aug 20 15:42 output.txt
+## -rwxr-xr-x  1 dproserp  staff   153B Aug 20 15:42 reps.txt
+## -rw-r--r--  1 dproserp  staff   117K Aug 20 15:42 sonnets.txt
 ```
 
 ---
@@ -1678,14 +1680,18 @@ name: running
 
 - **Pause** the script: `ctrl z`
   - Restart it in the background: `bg 1`
-  - Can you kill it using `ctrl c`? (No, you need to bring it to the foreground first: `fg 1` )
+  - Can you kill it using `ctrl c`? 
+
+--
+
+        (No, you need to bring it to the foreground first: `fg 1` )
 
 
 ---
 
 #(More on) Running Scripts
 
-- Start a script in background (add `&amp;` after the script name (with a space in between)) and redirecte the output to a files called output.txt: 
+- Let's start `loop.sh` in background: add `&amp;` after the script name (with a space in between) and redirect the output to a files called output.txt: 
   
   ```bash
   # Note that I redicrect the output to a file
@@ -1697,7 +1703,7 @@ name: running
   dadeusc:examples dproserp$ ./loop.sh &gt; output.txt &amp;
   [1] 43073
   ```
-  43073 is the process id of the script you just run. Very useful to **kill** and **disown** processes:
+  43073 is the process id (PID) of the script you just run. Very useful to **kill** and **disown** processes:
   
   `kill -9 pid` (-9 is a sort of *force kill*)
   
@@ -1740,6 +1746,7 @@ Example (run everyday at 5 o'clock):
 ```
 0 5 * * * /Users/dproserp/phd/teaching/mkt-615/lectures/03-shell/examples/loop.sh &gt; output.txt
 ```
+PS: Note that I used the absolute path of the script!
 
 ---
 name: monitor
