@@ -33,6 +33,23 @@ opts_chunk$set(
 
 1. [Introduction](#intro)
 
+2. [Tidyverse basics](#basics)
+
+3. [Data wrangling with dplyr](#dplyr)
+  - [filter](#filter)
+  - [arrange](#arrange)
+  - [select](#select)
+  - [mutate](#mutate)
+  - [summarise](#summarise)
+  - [joins](#joins)
+  
+4. [Data tidying with tidyr](#tidyr)
+  - [pivot_longer](#pivot_longer) / [pivot_wider](#pivot_wider)
+  - [separate](#separate)
+  - [unite](#unite)
+
+5. [Summary](#summary)
+
 ---
 class: inverse, center, middle
 name: intro
@@ -567,12 +584,15 @@ name: joins
 # Joins
 
 One of the mainstays of the dplyr package is merging data with the family [join operations](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html).
-- `inner_join(df1, df2)`
-- `left_join(df1, df2)`
-- `right_join(df1, df2)`
-- `full_join(df1, df2)`
-- `semi_join(df1, df2)`
-- `anti_join(df1, df2)`
+- `inner_join(x, y)`: keeps obs that are in both tables
+
+**Outer** join (keeps obs that are in at least one table):
+  1. `left_join(x, y)`: keep all obs in the first (left) table (most commonly used)
+  2. `right_join(x, y)`: keep all obs in the second (right) table
+  3. `full_join(x, y)`: keep all observations available in both tables
+
+- `semi_join(x, y)`: keeps all observations in `x` that have a match in `y`
+- `anti_join(x, y)`: drops all observations in `x` that have a match in `y`
 
 (You find find it helpful to to see visual depictions of the different join operations [here](https://r4ds.had.co.nz/relational-data.html).)
 
@@ -605,7 +625,7 @@ left_join(flights, planes) %>%
 ```
 --
 
-- *Note*: Never do this!
+.center[**Note: Never do this!**]
 
 ---
 
@@ -649,9 +669,7 @@ left_join(
 
 # Joins (cont.)
 
-(*continued from previous slide*)
-
-Nnote what happens if we again specify the join column BUT don't rename the ambiguous "year" column in at least one of the given data frames.
+Note what happens if we again specify the join column BUT don't rename the ambiguous "year" column in at least one of the given data frames.
 ```{r join3}
 left_join(
   flights,
@@ -665,3 +683,191 @@ left_join(
 --
 
 Make sure you know what "year.x" and "year.y" are. Again, it pays to be specific.
+
+---
+class: inverse, center, middle
+name: tidyr
+
+# tidyr
+
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
+
+---
+
+# Key tidyr verbs
+
+1. `pivot_longer`: Pivot wide data into long format (i.e. "melt").<sup>1</sup> 
+
+2. `pivot_wider`: Pivot long data into wide format (i.e. "cast").<sup>2</sup> 
+
+3. `separate`: Separate (i.e. split) one column into multiple columns.
+
+4. `unite`: Unite (i.e. combine) multiple columns into one.
+
+.footnote[
+<sup>1</sup> Updated version of `tidyr::gather`.
+
+<sup>2</sup> Updated version of `tidyr::spread`.
+]  
+
+--
+
+</br>
+
+Let's practice these verbs together in class.
+<!-- - Side question: Which of `pivot_longer` vs `pivot_wider` produces "tidy" data? -->
+  
+---
+name: pivot_longer
+
+# 1) tidyr::pivot_longer
+
+```{r pivot_longer1}
+stocks = data.frame( ## Could use "tibble" instead of "data.frame" if you prefer
+  time = as.Date('2009-01-01') + 0:1,
+  X = rnorm(2, 0, 1),
+  Y = rnorm(2, 0, 2),
+  Z = rnorm(2, 0, 4)
+  )
+stocks
+stocks %>% pivot_longer(-time, names_to="stock", values_to="price") %>% slice(1:5)
+```
+
+---
+
+# 1) tidyr::pivot_longer *cont.*
+
+Let's quickly save the "tidy" (i.e. long) stocks data frame for use on the next slide. 
+
+```{r pivot_longer2}
+tidy_stocks = 
+  stocks %>% 
+  pivot_longer(-time, names_to="stock", values_to="price")
+```
+
+---
+name: pivot_wider
+
+# 2) tidyr::pivot_wider
+
+```{r pivot_wider1, dependson=tidy_stocks}
+tidy_stocks %>% pivot_wider(names_from=stock, values_from=price)
+tidy_stocks %>% pivot_wider(names_from=time, values_from=price)
+```
+
+--
+
+</br>
+Note that the second example &mdash; which has combined different pivoting arguments &mdash; has effectively transposed the data.
+
+
+---
+
+# Aside: Remembering the pivot_* syntax 
+
+There's a long-running joke about no-one being able to remember Stata's "reshape" command. ([Exhibit A](https://twitter.com/helleringer143/status/1117234887902285836).)
+
+It's easy to see this happening with the `pivot_*` functions too. However, I find that I never forget the commands as long as I remember the argument order is *"names"* then *"values"*.
+
+---
+name: separate
+
+# 3) tidyr::separate
+
+```{r sep1}
+economists = data.frame(name = c("Adam.Smith", "Paul.Samuelson", "Milton.Friedman"))
+economists
+economists %>% separate(name, c("first_name", "last_name")) 
+```
+
+--
+
+</br>
+
+This command is pretty smart. But to avoid ambiguity, you can also specify the separation character with `separate(..., sep=".")`.
+
+---
+
+# 3) tidyr::separate *cont.*
+
+A related function is `separate_rows`, for splitting up cells that contain multiple fields or observations (a frustratingly common occurence with survey data).
+
+```{r sep2}
+jobs = data.frame(
+  name = c("Jack", "Jill"),
+  occupation = c("Homemaker", "Philosopher, Philanthropist, Troublemaker") 
+  ) 
+jobs
+## Now split out Jill's various occupations into different rows
+jobs %>% separate_rows(occupation, sep = ",")
+```
+
+---
+name: unite
+
+# 4) tidyr::unite
+
+```{r unite1}
+gdp = data.frame(
+  yr = rep(2016, times = 4),
+  mnth = rep(1, times = 4),
+  dy = 1:4,
+  gdp = rnorm(4, mean = 100, sd = 2)
+  )
+gdp 
+## Combine "yr", "mnth", and "dy" into one "date" column
+gdp %>% unite(date, c("yr", "mnth", "dy"), sep = "-")
+```
+
+---
+
+# 4) tidyr::unite *cont.*
+
+Note that `unite` will automatically create a character variable. You can see this better if we convert it to a tibble. 
+```{r unite2}
+gdp_u = gdp %>% unite(date, c("yr", "mnth", "dy"), sep = "-") %>% as_tibble()
+gdp_u
+```
+
+--
+
+If you want to convert it to something else (e.g. date or numeric) then you will need to modify it using `mutate`. See the next slide for an example, using the [lubridate](https://lubridate.tidyverse.org/) package's super helpful date conversion functions.
+
+---
+
+# 4) tidyr::unite *cont.*
+
+*(continued from previous slide)*
+
+```{r unite3, message=F}
+library(lubridate)
+gdp_u %>% mutate(date = ymd(date))
+```
+---
+
+class: inverse, center, middle
+name: summary
+
+# Summary
+
+---
+
+# Key verbs
+
+### dplyr
+1. `filter`
+2. `arrange`
+3. `select`
+4. `mutate`
+5. `summarise`
+
+### tidyr
+1. `pivot_longer`
+2. `pivot_wider`
+3. `separate`
+4. `unite`
+
+--
+
+Other useful items include: pipes (`%>%`), grouping (`group_by`), joining functions (`left_join`, `inner_join`, etc.).
+

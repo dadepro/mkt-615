@@ -43,14 +43,14 @@ name: intro
 
 This lecture is going to be very hands on to get you comfortable with R, so launch RStudio and be prepared to code
 
-### Packages that you will need for today.
+<!-- ### Packages that you will need for today. -->
 
 We're going to work almost exclusively in **base** R today but very briefly to learn some useful notations and operators. What I want you to learn very well is **tidyverse** and **data.table** which are the subjects of the next two lectures.
 
-- I'll also use the [**dplyr**](https://dplyr.tidyverse.org/) package, but only to demonstrate a few additional considerations for working with non-base libraries. Install/update it now, either through RStudio (recommended) or from your R console (`install.packages("dplyr"), dependencies = TRUE`). 
+<!-- - I'll also use the [**dplyr**](https://dplyr.tidyverse.org/) package, but only to demonstrate a few additional considerations for working with non-base libraries. Install/update it now, either through RStudio (recommended) or from your R console (`install.packages("dplyr"), dependencies = TRUE`).  -->
 
-- If it is already installed, just load it: 
-`library(dplyr)`
+<!-- - If it is already installed, just load it:  -->
+<!-- `library(dplyr)` -->
 
 ---
 
@@ -77,8 +77,7 @@ We're going to work almost exclusively in **base** R today but very briefly to l
 
 --
 
-Let's try all these operators
-
+We are going to try to use all these operators today.
 ---
 
 # Moere about R
@@ -324,9 +323,27 @@ dd
 
 --
 
-- `dd[rows list, columns list]`
+- `dd[rows list, columns list]` (note that `dd[1]` selects column 1, `dd[1,]` row 1)
 
+---
 
+# Subsetting rows (with data.frame)
+
+- Select rows where `x` is equal to 1: 
+
+  `dd[dd$x ==1,]`
+
+- Select rows where `x` in some values:
+
+  `dd[dd$x %in% c(11,21,31),]`
+
+- Select rows where `x` is different from 91:
+
+  `dd[dd$x != 91,]`
+
+- Select rows where `x` is greater or equal than 40:
+
+  `dd[dd$x >= 40,]`
 ---
 
 # More operators
@@ -341,7 +358,7 @@ https://www.tutorialspoint.com/r/r_operators.htm
 
 - Factors are the data objects which are used to categorize the data and store it as levels
 
-- The function `factor` converts vectors to factors
+- The function `factor` converts vectors (or variables) to factors
   - You can also use it to reorder the levels (useful for regressions)
   - You can also create levels labels
   
