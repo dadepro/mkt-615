@@ -680,13 +680,12 @@ Make sure you know what "year.x" and "year.y" are. Again, it pays to be specific
 # Join exercises
 
 1. Count flights that don't have matching planes
-
 <!-- SOL -->
 <!-- flights %>% -->
 <!--   anti_join(planes, by = "tailnum") %>% -->
 <!--   count(tailnum, sort = TRUE) -->
 
-2. Create a table containing flights number, origig, oringin lat, origin lon
+2. Create a table containing flights number, origin, origin lat, origin lon
 
 3. Compute average temperature by flight origin
 
