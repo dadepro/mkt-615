@@ -1,6 +1,6 @@
 ---
 title: "MKT615: Data Storytelling for Marketers"
-subtitle: "Lecture 6: data.table"
+subtitle: "Lecture 5.2: data.table"
 author: "Davide Proserpio"
 institute: "Marshall School of Business"
 # date: "08/25/2021" #(updated: `r Sys.Date()`)"

@@ -354,6 +354,13 @@ https://www.tutorialspoint.com/r/r_operators.htm
 
 ---
 
+# R Base tutorials and cheat sheet
+
+For some excellent base R data manipulation tutorials, you can take e a look [here](https://www.rspatial.org/intr/index.html) and [here](https://github.com/matloff/fasteR), and [here](https://iqss.github.io/dss-workshops/R/Rintro/base-r-cheat-sheet.pdf) for a cheat sheet
+
+---
+
+
 # Factors 
 
 - Factors are the data objects which are used to categorize the data and store it as levels

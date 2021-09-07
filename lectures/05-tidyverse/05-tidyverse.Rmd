@@ -1,6 +1,6 @@
 ---
 title: "MKT615: Data Storytelling for Marketers"
-subtitle: "Lecture 5: Tidyverse"
+subtitle: "Lecture 5.1: Tidyverse"
 author: "Davide Proserpio"
 institute: "Marshall School of Business"
 # date: "08/25/2021" #(updated: `r Sys.Date()`)"
@@ -72,8 +72,8 @@ name: intro
 
 ### Key points:
 1. Each variable forms a column.
-2. Each observation forms a row.
-3. Each type of observational unit forms a table.
+2. Every row is an observation.
+3. Every cell is a single value.
 
 <!-- -- -->
 
@@ -120,14 +120,11 @@ name: basics
 # Tidyverse
 
 - Provides a convenient "front-end" to big data tools that we'll use later in the course.
+
 - For data cleaning and plotting, the tidyverse is great.
 
+- But, personally I prefer [**data.table**](http://r-datatable.com/) and actually this is what I use the most because it's way faster (and this is also why I am way better at data.table than tidyverse). This package will be the subject of our next lecture.
 
-- But, personally I prefer[**data.table**](http://r-datatable.com/) and actually this is what I use the most because it's way faster (and this is also why I am way better at data.table than tidyverse). This package will be the subject of our next lecture.
-
---
-
-Note that I am going to (almost, a part for the previous lecture) skip **base R**. For some excellent base R data manipulation tutorials, you can take e a look [here](https://www.rspatial.org/intr/index.html) and [here](https://github.com/matloff/fasteR), and [here](https://iqss.github.io/dss-workshops/R/Rintro/base-r-cheat-sheet.pdf) for a cheat sheet
 
 ---
 
@@ -175,7 +172,7 @@ tidyverse_packages()
 
 We'll use several of these additional packages during the remainder of this course.
 
-- E.g. The **lubridate** package for working with dates and the **rvest** package for webscraping.
+<!-- - E.g. The **lubridate** package for working with dates and the **rvest** package for webscraping. -->
 - However, bear in mind that these packages will have to be loaded separately.
 
 ---
@@ -246,20 +243,18 @@ name: dplyr
 
 ---
 
-# Aside: dplyr 1.0.0 release
-
-Some of the **dplyr** features that we'll cover today were introduced in [version 1.0.0](https://www.tidyverse.org/blog/2020/06/dplyr-1-0-0/) of the package.
-- Version 1.0.0 is a big deal since it marks a stable code base for the package going forward.
-- Please make sure that you are running at least **dplyr** 1.0.0 before continuing.
+# Check dplyr version
 
 ```{r dplyr_vers, cache=FALSE}
 packageVersion('dplyr')
 # install.packages('dplyr') ## install updated version if < 1.0.0
 ```
 
+- Please make sure that you are running at least **dplyr** 1.0.0 before continuing.
+
 --
 
-*Note:* **dplyr** 1.0.0 also notifies you about grouping variables every time you do operations on or with them. If you prefer not to see these messages, [switch them off](https://twitter.com/MattCowgill/status/1278463099272491008).
+*Note:* **dplyr** >  1.0.0 also notifies you about grouping variables every time you do operations on or with them. If you prefer not to see these messages, [switch them off](https://twitter.com/MattCowgill/status/1278463099272491008).
 
 ```r
 options(dplyr.summarize.inform = FALSE) ## Add to .Rprofile to make permanent
@@ -280,11 +275,7 @@ There are five key dplyr verbs that you need to learn.
 
 4. `mutate`: Create new columns.
 
-5. `summarize`: Collapse multiple rows into a single summary value.<sup>1</sup>
-
-.footnote[
-<sup>1</sup> `summarize` with a "z" works too.
-]
+5. `summarize`: Collapse multiple rows into a single summary 
 
 ---
 # Key dplyr verbs (cont.)
@@ -430,10 +421,6 @@ starwars %>%
   head(5)
 ```
 
---
-
-</br>
-*Note:* The new `relocate` function available in dplyr 1.0.0 has brought a lot more functionality to ordering of columns. See [here](https://www.tidyverse.org/blog/2020/03/dplyr-1-0-0-select-rename-relocate/).
 
 ---
 name: mutate
@@ -489,11 +476,6 @@ starwars %>%
   mutate(across(where(is.character), toupper)) %>% #<< 
   head(5)
 ```
-
---
-
-</br>
-*Note:* This workflow (i.e. combining `mutate` and `across`) supersedes the old "scoped" variants of `mutate` that you might have used previously. More details [here](https://www.tidyverse.org/blog/2020/04/dplyr-1-0-0-colwise/) and [here](https://dplyr.tidyverse.org/dev/articles/colwise.html).
 
 ---
 name: summarize
@@ -560,7 +542,7 @@ starwars %>%
 
 --
 
-`pull`: Extract a column from as a data frame as a vector or scalar.
+`pull`: Extract a column from a data frame as a vector or scalar.
 - E.g. `starwars %>% filter(gender=="female") %>% pull(height)`
 
 --
@@ -577,6 +559,18 @@ starwars %>%
 There are also a whole class of [window functions](https://cran.r-project.org/web/packages/dplyr/vignettes/window-functions.html) for getting leads and lags, ranking, creating cumulative aggregates, etc.
 - See `vignette("window-functions")`.
 
+
+---
+
+# Some exercises with the starwars dataset
+
+1. Count the number of male and female characters
+
+2. Select rows with missing `hair_color`
+
+3. Select all non-human rows which `name` includes the string `R2`
+
+4. Sort the data by `name` and `height`
 
 ---
 name: joins
@@ -631,12 +625,10 @@ left_join(flights, planes) %>%
 
 # Joins (cont.)
 
-(*continued from previous slide*)
-
 Note that dplyr made a reasonable guess about which columns to join on (i.e. columns that share the same name). It also told us its choices: 
 
 ```
-*## Joining, by = c("year", "tailnum")
+## Joining, by = c("year", "tailnum")
 ```
 
 However, there's an obvious problem here: the variable "year" does not have a consistent meaning across our joining datasets!
@@ -683,6 +675,20 @@ left_join(
 --
 
 Make sure you know what "year.x" and "year.y" are. Again, it pays to be specific.
+
+---
+# Join exercises
+
+1. Count flights that don't have matching planes
+
+<!-- SOL -->
+<!-- flights %>% -->
+<!--   anti_join(planes, by = "tailnum") %>% -->
+<!--   count(tailnum, sort = TRUE) -->
+
+2. Create a table containing flights number, origig, oringin lat, origin lon
+
+3. Compute average temperature by flight origin
 
 ---
 class: inverse, center, middle
