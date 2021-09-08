@@ -45,7 +45,7 @@ This lecture is going to be very hands on to get you comfortable with R, so laun
 
 <!-- ### Packages that you will need for today. -->
 
-We're going to work almost exclusively in **base** R today but very briefly to learn some useful notations and operators. What I want you to learn very well is **tidyverse** and **data.table** which are the subjects of the next two lectures.
+We're going to work almost exclusively in **base** R today (but very briefly) to learn some useful notations and operators. What I want you to learn very well is **tidyverse** and **data.table** which are the subjects of the next two lectures.
 
 <!-- - I'll also use the [**dplyr**](https://dplyr.tidyverse.org/) package, but only to demonstrate a few additional considerations for working with non-base libraries. Install/update it now, either through RStudio (recommended) or from your R console (`install.packages("dplyr"), dependencies = TRUE`).  -->
 
@@ -323,7 +323,7 @@ dd
 
 --
 
-- `dd[rows list, columns list]` (note that `dd[1]` selects column 1, `dd[1,]` row 1)
+    `dd[rows list, columns list]` (note that `dd[1]` selects column 1, `dd[1,]` row 1)
 
 ---
 

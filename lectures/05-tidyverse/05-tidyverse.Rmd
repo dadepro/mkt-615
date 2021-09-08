@@ -689,6 +689,8 @@ Make sure you know what "year.x" and "year.y" are. Again, it pays to be specific
 
 3. Compute average temperature by flight origin
 
+4. Find coldest Airport
+
 ---
 class: inverse, center, middle
 name: tidyr
