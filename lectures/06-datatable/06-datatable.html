@@ -139,15 +139,15 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 82.028253 82.028253 82.028253 82.028253 82.028253 82.028253     1
-##     collapse_dt()  1.712143  1.712143  1.712143  1.712143  1.712143  1.712143     1
+##  collapse_dplyr() 82.356380 82.356380 82.356380 82.356380 82.356380 82.356380     1
+##     collapse_dt()  1.853876  1.853876  1.853876  1.853876  1.853876  1.853876     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~48x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~44x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -810,9 +810,9 @@ stocks
 ```
 
 ```
-##          time           X         Y         Z
-## 1: 2009-01-01 1.918078201 -1.865353 -2.905400
-## 2: 2009-01-02 0.001332872 -1.348642 -1.422271
+##          time         X          Y         Z
+## 1: 2009-01-01 1.2618511 -0.9801444 -5.080992
+## 2: 2009-01-02 0.3755926  6.8665222  2.315024
 ```
 --
 
@@ -822,13 +822,13 @@ melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
 ```
 
 ```
-##          time variable        price
-## 1: 2009-01-01        X  1.918078201
-## 2: 2009-01-02        X  0.001332872
-## 3: 2009-01-01        Y -1.865352888
-## 4: 2009-01-02        Y -1.348641661
-## 5: 2009-01-01        Z -2.905399947
-## 6: 2009-01-02        Z -1.422271044
+##          time variable      price
+## 1: 2009-01-01        X  1.2618511
+## 2: 2009-01-02        X  0.3755926
+## 3: 2009-01-01        Y -0.9801444
+## 4: 2009-01-02        Y  6.8665222
+## 5: 2009-01-01        Z -5.0809919
+## 6: 2009-01-02        Z  2.3150242
 ```
 
 ---
@@ -847,9 +847,9 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 ```
 
 ```
-##          time           X         Y         Z
-## 1: 2009-01-01 1.918078201 -1.865353 -2.905400
-## 2: 2009-01-02 0.001332872 -1.348642 -1.422271
+##          time         X          Y         Z
+## 1: 2009-01-01 1.2618511 -0.9801444 -5.080992
+## 2: 2009-01-02 0.3755926  6.8665222  2.315024
 ```
 
 
@@ -878,7 +878,7 @@ Let's use the gapminder dataset part of the gapminder package
 &lt;!--   .[max_gdp_growth == gdp_growth] %&gt;% --&gt;
 &lt;!--   .[order(-gdp_growth)] --&gt;
 
-4. Calculate the number of years since the country reached $8k in GDP per capita at each relevant observation as accurately as the data allows (set years before gdp is greater or equal to 8k to NA)
+4. Calculate the number of years since the country reached $8k in GDP per capita at each relevant observation as accurately as the data allows (set years before gdp is greater or equal to 8k to NA) (hint: use the `which` function)
 &lt;!-- gp_dt = [order(country, year)] --&gt;
 &lt;!-- # Years from first 8k --&gt;
 &lt;!-- tt = gp_dt[, years_from8k := year - year[which(gdpPercap &gt;= 8000)[1]], country][years_from8k &lt; 0, years_from8k := NA] --&gt;

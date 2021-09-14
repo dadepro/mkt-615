@@ -739,7 +739,7 @@ Let's use the gapminder dataset part of the gapminder package
 <!--   .[max_gdp_growth == gdp_growth] %>% -->
 <!--   .[order(-gdp_growth)] -->
 
-4. Calculate the number of years since the country reached $8k in GDP per capita at each relevant observation as accurately as the data allows (set years before gdp is greater or equal to 8k to NA)
+4. Calculate the number of years since the country reached $8k in GDP per capita at each relevant observation as accurately as the data allows (set years before gdp is greater or equal to 8k to NA) (hint: use the `which` function)
 <!-- gp_dt = [order(country, year)] -->
 <!-- # Years from first 8k -->
 <!-- tt = gp_dt[, years_from8k := year - year[which(gdpPercap >= 8000)[1]], country][years_from8k < 0, years_from8k := NA] -->
