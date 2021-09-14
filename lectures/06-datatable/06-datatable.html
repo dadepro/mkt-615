@@ -139,15 +139,15 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 80.898601 80.898601 80.898601 80.898601 80.898601 80.898601     1
-##     collapse_dt()  1.705379  1.705379  1.705379  1.705379  1.705379  1.705379     1
+##  collapse_dplyr() 82.028253 82.028253 82.028253 82.028253 82.028253 82.028253     1
+##     collapse_dt()  1.712143  1.712143  1.712143  1.712143  1.712143  1.712143     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~47x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~48x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -548,7 +548,7 @@ DT[, ':=' (z = 5:6, z_sq = z^2)][]
 
 ---
 
-# Aside: Chaining data.table operations
+# Aside: Piping data.table operations (%&gt;% in tidyverse)
 
 However, with data.table you can chain multiple data.table operations together.
 
@@ -565,6 +565,15 @@ DT[, z := 5:6][, z_sq := z^2][]
 ##    x x_sq y y_name z z_sq
 ## 1: 1    1 3  three 5   25
 ## 2: 2    4 4   four 6   36
+```
+
+--
+Alternatively, using `%&gt;%`:
+
+
+```r
+DT[, z := 5:6] %&gt;%
+  .[, z_sq := z^2] 
 ```
 
 ---
@@ -801,9 +810,9 @@ stocks
 ```
 
 ```
-##          time          X        Y          Z
-## 1: 2009-01-01 -0.6301095 5.220759  0.4986453
-## 2: 2009-01-02  0.8479223 1.505840 -6.4651038
+##          time           X         Y         Z
+## 1: 2009-01-01 1.918078201 -1.865353 -2.905400
+## 2: 2009-01-02 0.001332872 -1.348642 -1.422271
 ```
 --
 
@@ -813,13 +822,13 @@ melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
 ```
 
 ```
-##          time variable      price
-## 1: 2009-01-01        X -0.6301095
-## 2: 2009-01-02        X  0.8479223
-## 3: 2009-01-01        Y  5.2207593
-## 4: 2009-01-02        Y  1.5058403
-## 5: 2009-01-01        Z  0.4986453
-## 6: 2009-01-02        Z -6.4651038
+##          time variable        price
+## 1: 2009-01-01        X  1.918078201
+## 2: 2009-01-02        X  0.001332872
+## 3: 2009-01-01        Y -1.865352888
+## 4: 2009-01-02        Y -1.348641661
+## 5: 2009-01-01        Z -2.905399947
+## 6: 2009-01-02        Z -1.422271044
 ```
 
 ---
@@ -838,12 +847,42 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 ```
 
 ```
-##          time          X        Y          Z
-## 1: 2009-01-01 -0.6301095 5.220759  0.4986453
-## 2: 2009-01-02  0.8479223 1.505840 -6.4651038
+##          time           X         Y         Z
+## 1: 2009-01-01 1.918078201 -1.865353 -2.905400
+## 2: 2009-01-02 0.001332872 -1.348642 -1.422271
 ```
 
 
+---
+
+# Some more exercises
+
+Let's use the gapminder dataset part of the gapminder package
+
+
+```r
+  library(gapminder)
+  gp_dt = data.table(gapminder)
+```
+
+1. How many different countries are covered by the data? (hint: look how to use `uniqueN`)
+&lt;!-- gp[, uniqueN(country)] --&gt;
+
+2. Create a lag variable for GDP per capita. (hint: look how to use `shift`)
+&lt;!-- gp_dt[, gdpPercap_l1 := shift(gdpPercap), by = country] --&gt;
+&lt;!-- head(gp_dt) --&gt;
+
+3. Calculate the GDP per capita growth from 2002 to 2007 for each country. Extract the one with the highest value for each continent.
+&lt;!-- gp_dt[year == 2007, list(gdp_growth = (gdpPercap/gdpPercap_l1)-1), by = list(country, continent)] %&gt;% --&gt;
+&lt;!--   .[, max_gdp_growth:=max(gdp_growth, na.rm =T), by = continent] %&gt;% --&gt;
+&lt;!--   .[max_gdp_growth == gdp_growth] %&gt;% --&gt;
+&lt;!--   .[order(-gdp_growth)] --&gt;
+
+4. Calculate the number of years since the country reached $8k in GDP per capita at each relevant observation as accurately as the data allows (set years before gdp is greater or equal to 8k to NA)
+&lt;!-- gp_dt = [order(country, year)] --&gt;
+&lt;!-- # Years from first 8k --&gt;
+&lt;!-- tt = gp_dt[, years_from8k := year - year[which(gdpPercap &gt;= 8000)[1]], country][years_from8k &lt; 0, years_from8k := NA] --&gt;
+&lt;!-- tt --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

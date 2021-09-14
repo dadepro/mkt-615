@@ -493,7 +493,7 @@ DT[, ':=' (z = 5:6, z_sq = z^2)][]
 
 ---
 
-# Aside: Chaining data.table operations
+# Aside: Piping data.table operations (%>% in tidyverse)
 
 However, with data.table you can chain multiple data.table operations together.
 
@@ -503,6 +503,14 @@ The native data.table way is simply to append consecutive `[]` terms.
 
 ```{r mod_cols3, cache=FALSE}
 DT[, z := 5:6][, z_sq := z^2][] 
+```
+
+--
+Alternatively, using `%>%`:
+
+```{r mod_cols4, cache=FALSE}
+DT[, z := 5:6] %>%
+  .[, z_sq := z^2] 
 ```
 
 ---
@@ -707,3 +715,32 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 ```
 
 
+---
+
+# Some more exercises
+
+Let's use the gapminder dataset part of the gapminder package
+
+```{r gp, eval = F}
+  library(gapminder)
+  gp_dt = data.table(gapminder)
+```
+
+1. How many different countries are covered by the data? (hint: look how to use `uniqueN`)
+<!-- gp[, uniqueN(country)] -->
+
+2. Create a lag variable for GDP per capita. (hint: look how to use `shift`)
+<!-- gp_dt[, gdpPercap_l1 := shift(gdpPercap), by = country] -->
+<!-- head(gp_dt) -->
+
+3. Calculate the GDP per capita growth from 2002 to 2007 for each country. Extract the one with the highest value for each continent.
+<!-- gp_dt[year == 2007, list(gdp_growth = (gdpPercap/gdpPercap_l1)-1), by = list(country, continent)] %>% -->
+<!--   .[, max_gdp_growth:=max(gdp_growth, na.rm =T), by = continent] %>% -->
+<!--   .[max_gdp_growth == gdp_growth] %>% -->
+<!--   .[order(-gdp_growth)] -->
+
+4. Calculate the number of years since the country reached $8k in GDP per capita at each relevant observation as accurately as the data allows (set years before gdp is greater or equal to 8k to NA)
+<!-- gp_dt = [order(country, year)] -->
+<!-- # Years from first 8k -->
+<!-- tt = gp_dt[, years_from8k := year - year[which(gdpPercap >= 8000)[1]], country][years_from8k < 0, years_from8k := NA] -->
+<!-- tt -->
