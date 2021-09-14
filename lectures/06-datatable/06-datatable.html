@@ -13,7 +13,7 @@
 class: center, middle, inverse, title-slide
 
 # MKT615: Data Storytelling for Marketers
-## Lecture 6: data.table
+## Lecture 5.2: data.table
 ### Davide Proserpio
 ### Marshall School of Business
 
@@ -54,29 +54,7 @@ The following code chunk will install (if necessary) and load everything for you
 
 ```r
 if (!require(pacman)) install.packages('pacman', repos = 'https://cran.rstudio.com')
-```
-
-```
-## Warning in library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE, : there is no package called 'pacman'
-```
-
-```
-## 
-## The downloaded binary packages are in
-## 	/var/folders/n7/863p37ls0yn4zxkp82921xtw0000gn/T//RtmpCd1R2q/downloaded_packages
-```
-
-```r
 pacman::p_load(dplyr, data.table, dtplyr, tidyfast, microbenchmark, ggplot2, nycflights13)
-```
-
-```
-## 
-## The downloaded binary packages are in
-## 	/var/folders/n7/863p37ls0yn4zxkp82921xtw0000gn/T//RtmpCd1R2q/downloaded_packages
-```
-
-```r
 options(dplyr.summarise.inform = FALSE) ## Turn off annoying dplyr group_by messages (optional)
 ```
 
@@ -108,7 +86,7 @@ When it comes to **data.table**, I can think of at least five reasons:
 
 --
 
-Before we get into specifics, here are a few examples to whet your appetite...
+Before we get into specifics, here are a few examples...
 
 ---
 
@@ -161,15 +139,15 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 75.771304 75.771304 75.771304 75.771304 75.771304 75.771304     1
-##     collapse_dt()  2.746175  2.746175  2.746175  2.746175  2.746175  2.746175     1
+##  collapse_dplyr() 80.898601 80.898601 80.898601 80.898601 80.898601 80.898601     1
+##     collapse_dt()  1.705379  1.705379  1.705379  1.705379  1.705379  1.705379     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~28x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~47x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -177,7 +155,7 @@ class: inverse, center, middle
 name: basics
 
 # data.table basics
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
 
@@ -274,7 +252,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 2 x 2
+## # A tibble: 2 × 2
 ##   gender    `mean(height, na.rm = T)`
 ##   &lt;chr&gt;                         &lt;dbl&gt;
 ## 1 feminine                       160.
@@ -329,7 +307,7 @@ Multiple filters/conditions are fine too:
 
 --
 
-Note that we don't actually need commas when we're only subsetting on `i` (i.e. no `j` or `by` components).
+**Note that we don't actually need commas when we're only subsetting on `i` (i.e., no `j` or `by` components).**
 - `DT[x=="string"]` is equivalent to `DT[x=="string", ]`
 - `DT[1:10]` is equivalent to `DT[1:10, ]`
 - etc.
@@ -393,7 +371,7 @@ class: inverse, center, middle
 name: j
 
 # Manipulating columns: DT[, j]
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
 
@@ -482,7 +460,7 @@ DT
 
 --
 
-It has been removed from DT too... exactly as modifying by reference demands. To avoid this behaviour, use the explicit [`data.table::copy()`](https://rdatatable.gitlab.io/data.table/reference/copy.html) function. Run this next chunk yourself:
+It has been removed from DT too... exactly as modifying by reference demands. To avoid this behavior, use the explicit [`data.table::copy()`](https://rdatatable.gitlab.io/data.table/reference/copy.html) function. Run this next chunk yourself:
 
 
 ```r
@@ -572,7 +550,7 @@ DT[, ':=' (z = 5:6, z_sq = z^2)][]
 
 # Aside: Chaining data.table operations
 
-That last example provides as good a time as any to mention that you can chain multiple data.table operations together.
+However, with data.table you can chain multiple data.table operations together.
 
 --
 
@@ -661,13 +639,14 @@ We've now seen `.()` in a couple places, e.g the previous slide and [this slide]
 
 We'll be using `.()` quite liberally once we start working subsetting and/or grouping by multiple variables at a time.
 
-You can think of it as one of data.table's syntactical quirks. But, really, it's just there to give you more options. You can often &amp;mdash; if not always &amp;mdash; use these three forms interchangeably in data.table:
+You can think of it as one of data.table's syntactical quirks. But, really, it's just there to give you more options. You can often &amp;mdash; but not always &amp;mdash; use these three forms interchangeably in data.table:
 - `.(var1, var2, ...)`
 - `list(var1, var2, ...)`
 - `c("var1", "var2", ...)`
 
 ---
 
+# Subsetting on columns (cont.)
 
 
 You can also exclude columns through negation. Try this next code chunk yourself:
@@ -691,6 +670,180 @@ setnames(starwars_dt, old = c("name", "homeworld"), new = c("alias", "crib"))[]
 ## Better change it back, in case we use "name" or "homeworld" on a later slide
 setnames(starwars_dt, old = c("alias", "crib"), new = c("name", "homeworld"))
 ```
+
+---
+
+# Creating a new data.table from a data.table
+
+Before I showed you that you can do:
+
+
+```r
+starwars_dt[
+  species=="Human", 
+  mean(height, na.rm=T), 
+  by = gender]
+```
+
+```
+##       gender       V1
+## 1: masculine 182.3478
+## 2:  feminine 160.2500
+```
+
+but what if you want to assign a name to **V1**?
+--
+
+
+```r
+starwars_dt[
+  species=="Human", 
+  list(avg_height = mean(height, na.rm=T)), 
+  by = gender]
+```
+
+```
+##       gender avg_height
+## 1: masculine   182.3478
+## 2:  feminine   160.2500
+```
+
+---
+# $ operator
+
+Works in the same way as with data frames, so you can use it to select a column, e.g.
+
+
+```r
+starwars_dt$species
+```
+
+```
+##  [1] "Ewok"           "Droid"          "Human"          "Human"          "Human"          "Kel Dor"        "Human"          "Human"         
+##  [9] "Human"          "Human"          "Droid"          "Human"          "Mirialan"       "Mon Calamari"   "Human"          "Human"         
+## [17] "Rodian"         "Human"          "Human"          "Human"          "Twi'lek"        "Human"          "Gungan"         "Trandoshan"    
+## [25] "Zabrak"         "Human"          "Mirialan"       NA               "Human"          "Human"          "Human"          "Human"         
+## [33] "Human"          "Human"          "Human"          "Human"          "Human"          "Cerean"         "Human"          "Droid"         
+## [41] "Wookiee"        "Hutt"           "Yoda's species" "Droid"          "Human"          "Human"          "Sullustan"      "Neimodian"     
+## [49] "Gungan"         "Gungan"         NA               "Toydarian"      "Dug"            "Twi'lek"        "Vulptereen"     "Xexto"         
+## [57] "Toong"          "Nautolan"       "Zabrak"         "Tholothian"     "Iktotchi"       "Quermian"       "Chagrian"       "Human"         
+## [65] "Human"          "Geonosian"      "Human"          "Clawdite"       "Besalisk"       "Kaminoan"       "Kaminoan"       "Human"         
+## [73] "Aleena"         "Droid"          "Skakoan"        "Muun"           "Togruta"        "Kaleesh"        "Wookiee"        "Human"         
+## [81] NA               "Pau'an"         "Human"          "Human"          "Human"          "Droid"          NA
+```
+
+---
+
+# Some exercises with the starwars dataset
+
+Recall the data.table version is called starwars_dt
+
+1. Count the number of male and female characters
+
+2. Select rows with missing `hair_color`
+
+3. Select all non-human rows which `name` includes the string `R2`
+
+4. Sort the data by `name` and `height`
+
+---
+
+# Joins with data.table: Merge
+
+Sintax: 
+  
+  ```r
+  merge(dt1, dt2,
+              by (or by.x and by.y when column names do not match),
+              all=T (default, inner join), all.x=T (left join), all.y=T (right join))
+  ```
+
+---
+# Join exercises
+
+Remember to convert the dataframes to data.tables
+
+1. Count flights that don't have matching planes
+&lt;!-- planes_dt = data.table(planes) --&gt;
+&lt;!-- flights_dt = data.table(flights) --&gt;
+&lt;!-- out = merge(flights_dt, planes_dt, by = "tailnum", all.x=T) --&gt;
+&lt;!-- nrow(out[is.na(model)]) --&gt;
+2. Create a table containing flights number, origin, origin lat, origin lon
+&lt;!-- airports_dt = data.table(airports) --&gt;
+&lt;!-- out = merge(flights_dt, airports_dt, by.x = 'origin', by.y = 'faa') --&gt;
+&lt;!-- out[, c("flight", "origin", "lat", "lon")] --&gt;
+
+3. Compute average temperature by flight origin
+&lt;!-- weather_dt= data.table(weather) --&gt;
+&lt;!-- out = merge(flights_dt, weather_dt, by = c("origin", "year", "month", "day", "hour")) --&gt;
+&lt;!-- out[, list(avg_temp = mean(temp, na.rm=T)), by = c("origin")] --&gt;
+
+4. Find coldest Airport
+&lt;!-- weather_dt= data.table(weather) --&gt;
+&lt;!-- out = merge(flights_dt, weather_dt, by = c("origin", "year", "month", "day", "hour")) --&gt;
+&lt;!-- out[, list(avg_temp = mean(temp, na.rm=T)), by = c("origin")] --&gt;
+&lt;!-- out[, list(avg_temp = mean(temp, na.rm=T)), by = c("origin")][order(avg_temp)] --&gt;
+
+
+---
+
+# Melt (wide to long)
+
+
+```r
+stocks = data.table(
+  time = as.Date('2009-01-01') + 0:1,
+  X = rnorm(2, 0, 1),
+  Y = rnorm(2, 0, 2),
+  Z = rnorm(2, 0, 4)
+  )
+stocks
+```
+
+```
+##          time          X        Y          Z
+## 1: 2009-01-01 -0.6301095 5.220759  0.4986453
+## 2: 2009-01-02  0.8479223 1.505840 -6.4651038
+```
+--
+
+
+```r
+melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
+```
+
+```
+##          time variable      price
+## 1: 2009-01-01        X -0.6301095
+## 2: 2009-01-02        X  0.8479223
+## 3: 2009-01-01        Y  5.2207593
+## 4: 2009-01-02        Y  1.5058403
+## 5: 2009-01-01        Z  0.4986453
+## 6: 2009-01-02        Z -6.4651038
+```
+
+---
+
+# Dcast (long to wide)
+
+
+```r
+stocks_long = melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
+```
+
+
+
+```r
+dcast(stocks_long, time ~ variable, value.var = "price")
+```
+
+```
+##          time          X        Y          Z
+## 1: 2009-01-01 -0.6301095 5.220759  0.4986453
+## 2: 2009-01-02  0.8479223 1.505840 -6.4651038
+```
+
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

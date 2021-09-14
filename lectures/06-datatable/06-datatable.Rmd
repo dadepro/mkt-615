@@ -95,7 +95,7 @@ When it comes to **data.table**, I can think of at least five reasons:
 
 --
 
-Before we get into specifics, here are a few examples to whet your appetite...
+Before we get into specifics, here are a few examples...
 
 ---
 
@@ -174,7 +174,7 @@ class: inverse, center, middle
 name: basics
 
 # data.table basics
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
 
 ---
 
@@ -310,7 +310,7 @@ Multiple filters/conditions are fine too:
 
 --
 
-Note that we don't actually need commas when we're only subsetting on `i` (i.e. no `j` or `by` components).
+**Note that we don't actually need commas when we're only subsetting on `i` (i.e., no `j` or `by` components).**
 - `DT[x=="string"]` is equivalent to `DT[x=="string", ]`
 - `DT[1:10]` is equivalent to `DT[1:10, ]`
 - etc.
@@ -350,7 +350,7 @@ class: inverse, center, middle
 name: j
 
 # Manipulating columns: DT[, j]
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
 
 ---
 
@@ -424,7 +424,7 @@ DT
 
 --
 
-It has been removed from DT too... exactly as modifying by reference demands. To avoid this behaviour, use the explicit [`data.table::copy()`](https://rdatatable.gitlab.io/data.table/reference/copy.html) function. Run this next chunk yourself:
+It has been removed from DT too... exactly as modifying by reference demands. To avoid this behavior, use the explicit [`data.table::copy()`](https://rdatatable.gitlab.io/data.table/reference/copy.html) function. Run this next chunk yourself:
 
 ```{r, highlightSpans = TRUE, eval = FALSE}
 DT[, x_sq := x^2]     
@@ -495,7 +495,7 @@ DT[, ':=' (z = 5:6, z_sq = z^2)][]
 
 # Aside: Chaining data.table operations
 
-That last example provides as good a time as any to mention that you can chain multiple data.table operations together.
+However, with data.table you can chain multiple data.table operations together.
 
 --
 
@@ -560,13 +560,14 @@ We've now seen `.()` in a couple places, e.g the previous slide and [this slide]
 
 We'll be using `.()` quite liberally once we start working subsetting and/or grouping by multiple variables at a time.
 
-You can think of it as one of data.table's syntactical quirks. But, really, it's just there to give you more options. You can often &mdash; if not always &mdash; use these three forms interchangeably in data.table:
+You can think of it as one of data.table's syntactical quirks. But, really, it's just there to give you more options. You can often &mdash; but not always &mdash; use these three forms interchangeably in data.table:
 - `.(var1, var2, ...)`
 - `list(var1, var2, ...)`
 - `c("var1", "var2", ...)`
 
 ---
 
+# Subsetting on columns (cont.)
 
 
 You can also exclude columns through negation. Try this next code chunk yourself:
@@ -588,3 +589,121 @@ setnames(starwars_dt, old = c("name", "homeworld"), new = c("alias", "crib"))[]
 ## Better change it back, in case we use "name" or "homeworld" on a later slide
 setnames(starwars_dt, old = c("alias", "crib"), new = c("name", "homeworld"))
 ```
+
+---
+
+# Creating a new data.table from a data.table
+
+Before I showed you that you can do:
+
+```{r, eval=T}
+starwars_dt[
+  species=="Human", 
+  mean(height, na.rm=T), 
+  by = gender]
+```
+
+but what if you want to assign a name to **V1**?
+--
+
+```{r, eval=T}
+starwars_dt[
+  species=="Human", 
+  list(avg_height = mean(height, na.rm=T)), 
+  by = gender]
+```
+
+---
+# $ operator
+
+Works in the same way as with data frames, so you can use it to select a column, e.g.
+
+```{r, eval=T}
+starwars_dt$species
+```
+
+---
+
+# Some exercises with the starwars dataset
+
+Recall the data.table version is called starwars_dt
+
+1. Count the number of male and female characters
+
+2. Select rows with missing `hair_color`
+
+3. Select all non-human rows which `name` includes the string `R2`
+
+4. Sort the data by `name` and `height`
+
+---
+
+# Joins with data.table: Merge
+
+Sintax: 
+  ```{r, eval=FALSE}
+  merge(dt1, dt2,
+              by (or by.x and by.y when column names do not match),
+              all=T (default, inner join), all.x=T (left join), all.y=T (right join))
+  ```
+
+---
+# Join exercises
+
+Remember to convert the dataframes to data.tables
+
+1. Count flights that don't have matching planes
+<!-- planes_dt = data.table(planes) -->
+<!-- flights_dt = data.table(flights) -->
+<!-- out = merge(flights_dt, planes_dt, by = "tailnum", all.x=T) -->
+<!-- nrow(out[is.na(model)]) -->
+2. Create a table containing flights number, origin, origin lat, origin lon
+<!-- airports_dt = data.table(airports) -->
+<!-- out = merge(flights_dt, airports_dt, by.x = 'origin', by.y = 'faa') -->
+<!-- out[, c("flight", "origin", "lat", "lon")] -->
+
+3. Compute average temperature by flight origin
+<!-- weather_dt= data.table(weather) -->
+<!-- out = merge(flights_dt, weather_dt, by = c("origin", "year", "month", "day", "hour")) -->
+<!-- out[, list(avg_temp = mean(temp, na.rm=T)), by = c("origin")] -->
+
+4. Find coldest Airport
+<!-- weather_dt= data.table(weather) -->
+<!-- out = merge(flights_dt, weather_dt, by = c("origin", "year", "month", "day", "hour")) -->
+<!-- out[, list(avg_temp = mean(temp, na.rm=T)), by = c("origin")] -->
+<!-- out[, list(avg_temp = mean(temp, na.rm=T)), by = c("origin")][order(avg_temp)] -->
+
+
+---
+
+# Melt (wide to long)
+
+```{r melt}
+stocks = data.table(
+  time = as.Date('2009-01-01') + 0:1,
+  X = rnorm(2, 0, 1),
+  Y = rnorm(2, 0, 2),
+  Z = rnorm(2, 0, 4)
+  )
+stocks
+```
+--
+
+```{r melt1}
+melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
+```
+
+---
+
+# Dcast (long to wide)
+
+```{r dcast}
+stocks_long = melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
+```
+
+
+```{r dcast1}
+dcast(stocks_long, time ~ variable, value.var = "price")
+```
+
+
