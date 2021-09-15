@@ -605,7 +605,7 @@ name: useful
 
 - Calculate summary statistics for a larger list of variables: `mydata[, lapply(.SD, mean), .SDcols = c("arr_delay", "dep_delay")]`
   
-  (w/o `SDcols` .SD takes all continuos variables)
+  (w/o `SDcols` .SD takes all continuous variables)
   
 - Remove duplicates based on all variables:
   ```{r, eval = F}

@@ -145,16 +145,16 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 
 ```
 ## Unit: milliseconds
-##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 75.489410 75.489410 75.489410 75.489410 75.489410 75.489410     1
-##     collapse_dt()  1.844048  1.844048  1.844048  1.844048  1.844048  1.844048     1
+##              expr      min       lq     mean   median       uq      max neval
+##  collapse_dplyr() 75.11716 75.11716 75.11716 75.11716 75.11716 75.11716     1
+##     collapse_dt()  2.21796  2.21796  2.21796  2.21796  2.21796  2.21796     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~41x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~34x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -684,7 +684,7 @@ name: useful
 
 - Calculate summary statistics for a larger list of variables: `mydata[, lapply(.SD, mean), .SDcols = c("arr_delay", "dep_delay")]`
   
-  (w/o `SDcols` .SD takes all continuos variables)
+  (w/o `SDcols` .SD takes all continuous variables)
   
 - Remove duplicates based on all variables:
   
@@ -837,9 +837,9 @@ stocks
 ```
 
 ```
-##          time             X          Y         Z
-## 1: 2009-01-01 -0.0005480596  1.5511742  2.001355
-## 2: 2009-01-02 -1.2177323655 -0.2598142 -7.431429
+##          time          X         Y         Z
+## 1: 2009-01-01 -0.8357592 -1.109469  7.128295
+## 2: 2009-01-02 -0.8123574 -1.089025 -7.618703
 ```
 --
 
@@ -849,13 +849,13 @@ melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
 ```
 
 ```
-##          time variable         price
-## 1: 2009-01-01        X -0.0005480596
-## 2: 2009-01-02        X -1.2177323655
-## 3: 2009-01-01        Y  1.5511741529
-## 4: 2009-01-02        Y -0.2598141620
-## 5: 2009-01-01        Z  2.0013548505
-## 6: 2009-01-02        Z -7.4314288201
+##          time variable      price
+## 1: 2009-01-01        X -0.8357592
+## 2: 2009-01-02        X -0.8123574
+## 3: 2009-01-01        Y -1.1094685
+## 4: 2009-01-02        Y -1.0890249
+## 5: 2009-01-01        Z  7.1282953
+## 6: 2009-01-02        Z -7.6187032
 ```
 
 ---
@@ -874,9 +874,9 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 ```
 
 ```
-##          time             X          Y         Z
-## 1: 2009-01-01 -0.0005480596  1.5511742  2.001355
-## 2: 2009-01-02 -1.2177323655 -0.2598142 -7.431429
+##          time          X         Y         Z
+## 1: 2009-01-01 -0.8357592 -1.109469  7.128295
+## 2: 2009-01-02 -0.8123574 -1.089025 -7.618703
 ```
 
 
