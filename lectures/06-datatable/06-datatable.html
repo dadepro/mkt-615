@@ -146,15 +146,15 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 80.327843 80.327843 80.327843 80.327843 80.327843 80.327843     1
-##     collapse_dt()  1.711479  1.711479  1.711479  1.711479  1.711479  1.711479     1
+##  collapse_dplyr() 75.489410 75.489410 75.489410 75.489410 75.489410 75.489410     1
+##     collapse_dt()  1.844048  1.844048  1.844048  1.844048  1.844048  1.844048     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~47x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~41x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -259,7 +259,7 @@ starwars %&gt;%
 ```
 
 ```
-## # A tibble: 2 × 2
+## # A tibble: 2 x 2
 ##   gender    `mean(height, na.rm = T)`
 ##   &lt;chr&gt;                         &lt;dbl&gt;
 ## 1 feminine                       160.
@@ -585,32 +585,6 @@ DT[, z := 5:6] %&gt;%
 
 ---
 
-# Modifying columns := (cont.)
-
-A few useful data.table operators
-
-- Remove a column from your dataset:
-
-```r
-DT[, y_name := NULL]
-```
-
-- Count observations 
-
-
-```r
-DT[, y_name := .N]
-```
-
-- Create an index 1 to N
-
-
-```r
-DT[, y_name := 1:.N]
-```
-
----
-
 # Subsetting on columns (select)
 
 We can also use the `j` slot to subset our data on columns. Let's the starwars dataset for these examples...
@@ -695,6 +669,33 @@ name: useful
 
 ---
 
+# A few useful data.table operators
+
+
+- Remove a column from your dataset:    `DT[, y_name := NULL]`
+
+- Count observations: `DT[, y_name := .N]`
+
+- Create an index 1 to N: `DT[, y_name := 1:.N]`
+
+- Subset rows between two values: `DT[col %between% c(x, y)]`
+
+- Subset rows in values (`%in%` in base R): `DT[col %chin% c(x, y)]`
+
+- Calculate summary statistics for a larger list of variables: `mydata[, lapply(.SD, mean), .SDcols = c("arr_delay", "dep_delay")]`
+  
+  (w/o `SDcols` .SD takes all continuos variables)
+  
+- Remove duplicates based on all variables:
+  
+  ```r
+  setkey(mydata, NULL)
+  unique(mydata)
+  ```
+  set index to a column(s) to removed duplicates based on this column(s)
+---
+
+
 # Creating a new data.table from a data.table
 
 Before I showed you that you can do:
@@ -741,17 +742,16 @@ starwars_dt$species
 ```
 
 ```
-##  [1] "Ewok"           "Droid"          "Human"          "Human"          "Human"          "Kel Dor"        "Human"          "Human"         
-##  [9] "Human"          "Human"          "Droid"          "Human"          "Mirialan"       "Mon Calamari"   "Human"          "Human"         
-## [17] "Rodian"         "Human"          "Human"          "Human"          "Twi'lek"        "Human"          "Gungan"         "Trandoshan"    
-## [25] "Zabrak"         "Human"          "Mirialan"       NA               "Human"          "Human"          "Human"          "Human"         
-## [33] "Human"          "Human"          "Human"          "Human"          "Human"          "Cerean"         "Human"          "Droid"         
-## [41] "Wookiee"        "Hutt"           "Yoda's species" "Droid"          "Human"          "Human"          "Sullustan"      "Neimodian"     
-## [49] "Gungan"         "Gungan"         NA               "Toydarian"      "Dug"            "Twi'lek"        "Vulptereen"     "Xexto"         
-## [57] "Toong"          "Nautolan"       "Zabrak"         "Tholothian"     "Iktotchi"       "Quermian"       "Chagrian"       "Human"         
-## [65] "Human"          "Geonosian"      "Human"          "Clawdite"       "Besalisk"       "Kaminoan"       "Kaminoan"       "Human"         
-## [73] "Aleena"         "Droid"          "Skakoan"        "Muun"           "Togruta"        "Kaleesh"        "Wookiee"        "Human"         
-## [81] NA               "Pau'an"         "Human"          "Human"          "Human"          "Droid"          NA
+##  [1] "Ewok"           "Droid"          "Human"          "Human"          "Human"          "Kel Dor"        "Human"          "Human"          "Human"         
+## [10] "Human"          "Droid"          "Human"          "Mirialan"       "Mon Calamari"   "Human"          "Human"          "Rodian"         "Human"         
+## [19] "Human"          "Human"          "Twi'lek"        "Human"          "Gungan"         "Trandoshan"     "Zabrak"         "Human"          "Mirialan"      
+## [28] NA               "Human"          "Human"          "Human"          "Human"          "Human"          "Human"          "Human"          "Human"         
+## [37] "Human"          "Cerean"         "Human"          "Droid"          "Wookiee"        "Hutt"           "Yoda's species" "Droid"          "Human"         
+## [46] "Human"          "Sullustan"      "Neimodian"      "Gungan"         "Gungan"         NA               "Toydarian"      "Dug"            "Twi'lek"       
+## [55] "Vulptereen"     "Xexto"          "Toong"          "Nautolan"       "Zabrak"         "Tholothian"     "Iktotchi"       "Quermian"       "Chagrian"      
+## [64] "Human"          "Human"          "Geonosian"      "Human"          "Clawdite"       "Besalisk"       "Kaminoan"       "Kaminoan"       "Human"         
+## [73] "Aleena"         "Droid"          "Skakoan"        "Muun"           "Togruta"        "Kaleesh"        "Wookiee"        "Human"          NA              
+## [82] "Pau'an"         "Human"          "Human"          "Human"          "Droid"          NA
 ```
 
 ---
@@ -777,8 +777,22 @@ Sintax:
   ```r
   merge(dt1, dt2,
               by (or by.x and by.y when column names do not match),
-              all=T (default, inner join), all.x=T (left join), all.y=T (right join))
+              all=F (default, inner join, T is for full join), all.x=T (left join), all.y=T (right join))
   ```
+--
+
+Alternatively, you can perform inner joins in this way:
+  `X[Y]` but  you need to set the `key` (i.e., the variable to join on)
+
+Let's see an example using the flights and planes data.tables:
+
+```r
+flights_dt = data.table(flights)
+planes_dt = data.table(planes)
+setkey(flights_dt, "tailnum")
+setkey(planes_dt, "tailnum")
+test = flights_dt[planes_dt]
+```
 
 ---
 # Join exercises
@@ -823,9 +837,9 @@ stocks
 ```
 
 ```
-##          time           X          Y         Z
-## 1: 2009-01-01 -0.04574093 -0.7862135 -8.375884
-## 2: 2009-01-02 -1.53513835  1.1168243 -2.245484
+##          time             X          Y         Z
+## 1: 2009-01-01 -0.0005480596  1.5511742  2.001355
+## 2: 2009-01-02 -1.2177323655 -0.2598142 -7.431429
 ```
 --
 
@@ -835,13 +849,13 @@ melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
 ```
 
 ```
-##          time variable       price
-## 1: 2009-01-01        X -0.04574093
-## 2: 2009-01-02        X -1.53513835
-## 3: 2009-01-01        Y -0.78621349
-## 4: 2009-01-02        Y  1.11682435
-## 5: 2009-01-01        Z -8.37588423
-## 6: 2009-01-02        Z -2.24548401
+##          time variable         price
+## 1: 2009-01-01        X -0.0005480596
+## 2: 2009-01-02        X -1.2177323655
+## 3: 2009-01-01        Y  1.5511741529
+## 4: 2009-01-02        Y -0.2598141620
+## 5: 2009-01-01        Z  2.0013548505
+## 6: 2009-01-02        Z -7.4314288201
 ```
 
 ---
@@ -860,9 +874,9 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 ```
 
 ```
-##          time           X          Y         Z
-## 1: 2009-01-01 -0.04574093 -0.7862135 -8.375884
-## 2: 2009-01-02 -1.53513835  1.1168243 -2.245484
+##          time             X          Y         Z
+## 1: 2009-01-01 -0.0005480596  1.5511742  2.001355
+## 2: 2009-01-02 -1.2177323655 -0.2598142 -7.431429
 ```
 
 
@@ -870,7 +884,7 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 
 # Some more exercises
 
-Let's use the gapminder dataset part of the gapminder package
+Let's use the gapminder dataset part of the gapminder package (it contains panel data on life expectancy, population size, and GDP per capita for 142 countries since the 1950s.)
 
 
 ```r

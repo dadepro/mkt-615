@@ -522,29 +522,6 @@ DT[, z := 5:6] %>%
 
 ---
 
-# Modifying columns := (cont.)
-
-A few useful data.table operators
-
-- Remove a column from your dataset:
-```{r mod_cols5, cache=FALSE}
-DT[, y_name := NULL]
-```
-
-- Count observations 
-
-```{r count, cache=FALSE}
-DT[, y_name := .N]
-```
-
-- Create an index 1 to N
-
-```{r idx, cache=FALSE}
-DT[, y_name := 1:.N]
-```
-
----
-
 # Subsetting on columns (select)
 
 We can also use the `j` slot to subset our data on columns. Let's the starwars dataset for these examples...
@@ -613,6 +590,32 @@ name: useful
 
 ---
 
+# A few useful data.table operators
+
+
+- Remove a column from your dataset:    `DT[, y_name := NULL]`
+
+- Count observations: `DT[, y_name := .N]`
+
+- Create an index 1 to N: `DT[, y_name := 1:.N]`
+
+- Subset rows between two values: `DT[col %between% c(x, y)]`
+
+- Subset rows in values (`%in%` in base R): `DT[col %chin% c(x, y)]`
+
+- Calculate summary statistics for a larger list of variables: `mydata[, lapply(.SD, mean), .SDcols = c("arr_delay", "dep_delay")]`
+  
+  (w/o `SDcols` .SD takes all continuos variables)
+  
+- Remove duplicates based on all variables:
+  ```{r, eval = F}
+  setkey(mydata, NULL)
+  unique(mydata)
+  ```
+  set index to a column(s) to removed duplicates based on this column(s)
+---
+
+
 # Creating a new data.table from a data.table
 
 Before I showed you that you can do:
@@ -665,8 +668,21 @@ Sintax:
   ```{r, eval=FALSE}
   merge(dt1, dt2,
               by (or by.x and by.y when column names do not match),
-              all=T (default, inner join), all.x=T (left join), all.y=T (right join))
+              all=F (default, inner join, T is for full join), all.x=T (left join), all.y=T (right join))
   ```
+--
+
+Alternatively, you can perform inner joins in this way:
+  `X[Y]` but  you need to set the `key` (i.e., the variable to join on)
+
+Let's see an example using the flights and planes data.tables:
+```{r, eval=F}
+flights_dt = data.table(flights)
+planes_dt = data.table(planes)
+setkey(flights_dt, "tailnum")
+setkey(planes_dt, "tailnum")
+test = flights_dt[planes_dt]
+```
 
 ---
 # Join exercises
