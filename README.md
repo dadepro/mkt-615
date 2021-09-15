@@ -14,5 +14,5 @@ For more information about this class, take a look at the **[Syllabus](https://g
 5. Lecture 5: Data manipulation and visualization
     1. [tidyverse](https://raw.githack.com/dadepro/mkt-615/main/lectures/05-tidyverse/05-tidyverse.html)
     2. [data.table](https://raw.githack.com/dadepro/mkt-615/main/lectures/06-datatable/06-datatable.html)
-    3. ggplot
+    3. [ggplot](https://raw.githack.com/dadepro/mkt-615/main/lectures/07-dataviz/07-dataviz.html)
 7. Lecture 6: Data storage using MySQL
