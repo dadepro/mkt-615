@@ -35,7 +35,12 @@ class: center, middle, inverse, title-slide
 
 # Table of contents
 
-1. [Introduction](#intro)
+1. [Checklist](#check)
+2. [Introduction](#intro)
+3. [data.table basics](#basics)
+4. [Working with rows][#rows]
+5. [Working with columns](#columns)
+6. [More useful things][#useful]
 
 
 
@@ -43,9 +48,11 @@ class: center, middle, inverse, title-slide
 
 # Checklist
 
+name:check
+
 We'll be using the following packages in today's lecture:
 - Already installed: **dplyr**, **ggplot2**, **nycflights13**
-- New: **data.table**, **tidyfast**, **dtplyr**, **microbenchmark**
+- New: **data.table**, **tidyfast**, **dtplyr**, **microbenchmark**, **gapminder**
 
 --
 
@@ -139,15 +146,15 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max neval
-##  collapse_dplyr() 82.356380 82.356380 82.356380 82.356380 82.356380 82.356380     1
-##     collapse_dt()  1.853876  1.853876  1.853876  1.853876  1.853876  1.853876     1
+##  collapse_dplyr() 80.327843 80.327843 80.327843 80.327843 80.327843 80.327843     1
+##     collapse_dt()  1.711479  1.711479  1.711479  1.711479  1.711479  1.711479     1
 ```
 ]
 
 --
 
 .small90[
-**Result:** data.table is ~44x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
+**Result:** data.table is ~47x faster (median)! (Thanks to [Keith Head](https://twitter.com/ckhead) for this example.)
 ]
 
 ---
@@ -282,10 +289,10 @@ starwars_dt[
 
 ---
 class: inverse, center, middle
-name: i
+name: rows
 
 # Working with rows: DT[i, ]
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
 
@@ -368,7 +375,7 @@ starwars_dt[1:5, name:birth_year] ## Only print subset to stay on the slide
 
 ---
 class: inverse, center, middle
-name: j
+name: cols
 
 # Manipulating columns: DT[, j]
 &lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
@@ -681,6 +688,12 @@ setnames(starwars_dt, old = c("alias", "crib"), new = c("name", "homeworld"))
 ```
 
 ---
+class: inverse, center, middle
+name: useful
+
+# More useful things
+
+---
 
 # Creating a new data.table from a data.table
 
@@ -810,9 +823,9 @@ stocks
 ```
 
 ```
-##          time         X          Y         Z
-## 1: 2009-01-01 1.2618511 -0.9801444 -5.080992
-## 2: 2009-01-02 0.3755926  6.8665222  2.315024
+##          time           X          Y         Z
+## 1: 2009-01-01 -0.04574093 -0.7862135 -8.375884
+## 2: 2009-01-02 -1.53513835  1.1168243 -2.245484
 ```
 --
 
@@ -822,13 +835,13 @@ melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
 ```
 
 ```
-##          time variable      price
-## 1: 2009-01-01        X  1.2618511
-## 2: 2009-01-02        X  0.3755926
-## 3: 2009-01-01        Y -0.9801444
-## 4: 2009-01-02        Y  6.8665222
-## 5: 2009-01-01        Z -5.0809919
-## 6: 2009-01-02        Z  2.3150242
+##          time variable       price
+## 1: 2009-01-01        X -0.04574093
+## 2: 2009-01-02        X -1.53513835
+## 3: 2009-01-01        Y -0.78621349
+## 4: 2009-01-02        Y  1.11682435
+## 5: 2009-01-01        Z -8.37588423
+## 6: 2009-01-02        Z -2.24548401
 ```
 
 ---
@@ -847,9 +860,9 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 ```
 
 ```
-##          time         X          Y         Z
-## 1: 2009-01-01 1.2618511 -0.9801444 -5.080992
-## 2: 2009-01-02 0.3755926  6.8665222  2.315024
+##          time           X          Y         Z
+## 1: 2009-01-01 -0.04574093 -0.7862135 -8.375884
+## 2: 2009-01-02 -1.53513835  1.1168243 -2.245484
 ```
 
 

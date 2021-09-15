@@ -45,7 +45,12 @@ opts_chunk$set(
 ```
 # Table of contents
 
-1. [Introduction](#intro)
+1. [Checklist](#check)
+2. [Introduction](#intro)
+3. [data.table basics](#basics)
+4. [Working with rows][#rows]
+5. [Working with columns](#columns)
+6. [More useful things][#useful]
 
 
 
@@ -53,9 +58,11 @@ opts_chunk$set(
 
 # Checklist
 
+name:check
+
 We'll be using the following packages in today's lecture:
 - Already installed: **dplyr**, **ggplot2**, **nycflights13**
-- New: **data.table**, **tidyfast**, **dtplyr**, **microbenchmark**
+- New: **data.table**, **tidyfast**, **dtplyr**, **microbenchmark**, **gapminder**
 
 --
 
@@ -285,10 +292,10 @@ starwars_dt[
 
 ---
 class: inverse, center, middle
-name: i
+name: rows
 
 # Working with rows: DT[i, ]
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
 
 ---
 
@@ -347,7 +354,7 @@ starwars_dt[1:5, name:birth_year] ## Only print subset to stay on the slide
 
 ---
 class: inverse, center, middle
-name: j
+name: cols
 
 # Manipulating columns: DT[, j]
 <!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
@@ -599,6 +606,12 @@ setnames(starwars_dt, old = c("alias", "crib"), new = c("name", "homeworld"))
 ```
 
 ---
+class: inverse, center, middle
+name: useful
+
+# More useful things
+
+---
 
 # Creating a new data.table from a data.table
 
@@ -719,7 +732,7 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 
 # Some more exercises
 
-Let's use the gapminder dataset part of the gapminder package
+Let's use the gapminder dataset part of the gapminder package (it contains panel data on life expectancy, population size, and GDP per capita for 142 countries since the 1950s.)
 
 ```{r gp, eval = F}
   library(gapminder)

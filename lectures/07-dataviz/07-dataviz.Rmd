@@ -1,0 +1,319 @@
+---
+title: "MKT615: Data Storytelling for Marketers"
+subtitle: "Lecture 5.3: Data Visualization"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+# date: "08/25/2021" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      beforeInit: "libs/cols_macro.js"
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+
+---
+
+```{css, echo=FALSE}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.large4 { font-size: 400% }
+.large2 { font-size: 200% }
+.small90 { font-size: 90% }
+.small75 { font-size: 75% }
+```
+
+```{r setup, include=FALSE}
+library(hrbrthemes)
+library(fontawesome)
+library(xaringan)
+options(htmltools.dir.version = FALSE)
+
+library(knitr)
+opts_chunk$set(
+  fig.align="center", #fig.width=6, fig.height=4.5, 
+  # out.width="748px", #out.length="520.75px",
+  dpi=300, #fig.path='Figs/',
+  cache=F#, echo=F, warning=F, message=F
+  )
+```
+# Table of contents
+
+1. [Checklist](#check)
+2. [Introduction](#intro)
+
+
+---
+
+---
+
+# Install and load (cont.)
+
+Once the packages are installed, load them into your R session with the `library()` function.
+```{r pkg_load}
+library(ggplot2)
+library(gapminder) 
+```
+
+---
+
+# Elements of ggplot2
+
+[Hadley Wickham's](http://hadley.nz/) ggplot2 is one of the most popular packages in the entire R canon. 
+- It also happens to be built upon some deep visualization theory: i.e. Leland Wilkinson's [*The Grammar of Graphics*](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448).
+
+There's a lot to say about ggplot2's implementation of this "grammar of graphics" approach, but the three key elements are:
+
+1. Your plot ("the visualization") is linked to your variables ("the data") through various **aesthetic mappings**.
+
+2. Once the aesthetic mappings are defined, you can represent your data in different ways by choosing different **geoms** (i.e. "geometric objects" like points, lines or bars).
+
+3. You build your plot in **layers**.
+
+--
+
+</br>
+
+That's kind of abstract. Let's review each element in turn with some actual plots.
+
+---
+
+# 1. Aesthetic mappings
+
+```{r, dev = 'svg', fig.width=6,fig.height=4}
+p = ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) 
+p = p + geom_point(size = 0.2)
+p
+```
+
+
+---
+
+# 1. Aesthetic mappings (cont.)
+
+```{r aesthetics1, eval=FALSE}
+p = ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) 
+p = p + geom_point(size = 0.2) #size of the geom points
+p
+```
+
+Focus on the top line, which contains the initialising `ggplot()` function call. This function accepts various arguments, including:
+- Where the data come from (i.e. `data = gapminder`).
+- What the aesthetic mappings are (i.e. `mapping = aes(x = gdpPercap, y = lifeExp)`).
+
+--
+
+The aesthetic mappings here are pretty simple: They just define an x-axis (GDP per capita) and a y-axis (life expecancy).
+- To get a sense of the power and flexibility that comes with this approach, however, consider what happens if we add more aesthetics to the plot call...
+
+---
+
+# 1. Aesthetic mappings (cont.)
+
+```{r aesthetics2, dev='svg', fig.width=6, fig.height=3.7}
+p = ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, col = continent))
+p = p + geom_point(alpha = 0.3) ## "alpha" controls transparency. Takes a value between 0 and 1.
+p
+```
+
+--
+
+Note that I've dropped the "data =" and "mapping =" part of the ggplot call (`ggplot2` knows the order of the arguments.)
+
+---
+
+# 1. Aesthetic mappings (cont.)
+
+We can specify aesthetic mappings in the geom layer too.
+```{r aesthetics3, dev='svg', fig.width=6, fig.height=3.7}
+p = ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) ## Applicable to all geoms
+p = p + geom_point(aes(size = pop, col = continent), alpha = 0.3) ## Applicable to this geom only
+p
+```
+
+---
+
+# 1. Aesthetic mappings (cont.)
+
+Oops. What went wrong here?
+```{r aesthetics4, dev='svg', fig.width=5, fig.height=3}
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point(aes(size = "big", col="black"), alpha = 0.3)
+p
+```
+
+--
+
+**Answer: **Aesthetics must be mapped to variables, not descriptions!
+
+---
+
+# 2. Geoms
+
+Once your variable relationships have been defined by the aesthetic mappings, you can invoke and combine different geoms to generate different visulaizations.
+
+```{r geoms1, dev='svg', fig.width=5, fig.height=3}
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point(alpha = 0.3)
+p = p + geom_smooth(method = "loess")
+p
+```
+
+---
+
+# 2. Geoms (cont.)
+
+Aesthetics can be applied differentially across geoms.
+
+```{r geoms2, dev='svg', fig.width=5, fig.height=3}
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point(aes(size = pop, col = continent), alpha = 0.3)
+p = p + geom_smooth(method = "loess")
+p
+```
+
+---
+
+# 2. Geoms (cont.)
+
+The previous plot provides a good illustration of the power (or effect) that comes from assigning aesthetic mappings "globally" vs in the individual geom layers.
+- Compare: What happens if you run the below code chunk?
+
+```{r geoms3, eval=F, fig.width=5, fig.height=3}
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, col = continent))
+p = p +geom_point(alpha = 0.3)
+p = p + geom_smooth(method = "loess")
+p
+```
+
+---
+
+# 2. Geoms (cont.)
+
+Similarly, note that some geoms only accept a subset of mappings. E.g. `geom_density()` doesn't know what to do with the "y" aesthetic mapping.
+
+```{r geoms4, error=TRUE, dev='svg'}
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p + geom_density()
+```
+
+---
+
+# 2. Geoms (cont.)
+
+We can fix that by being more careful about how we build the plot.
+
+```{r geoms5, dev='svg', fig.width=6, fig.height=3.5}
+p = ggplot(data = gapminder) ## i.e. No "global" aesthetic mappings"
+p + geom_density(aes(x = gdpPercap, fill = continent), alpha=0.3)
+```
+
+---
+
+# 3. Build your plot in layers
+
+We've already seen how we can chain (or "layer") consecutive plot elements.
+
+But it bears repeating: You can build out some truly impressive complexity and transformation of your visualization through this simple layering process.
+- You don't have to transform your original data; ggplot2 takes care of all of that.
+- For example (see next slide for figure).
+
+```{r layers1}
+p2 =
+  ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(aes(size = pop, col = continent), alpha = 0.3) +
+  scale_color_brewer(name = "Continent", palette = "Set1") + ## Different color scale
+  scale_size(name = "Population", labels = scales::comma) + ## Different point (i.e. legend) scale
+  scale_x_log10(labels = scales::dollar) + ## Switch to logarithmic scale on x-axis. Use dollar units.
+  labs(x = "\n Log (GDP per capita)", y = "Life Expectancy\n") + ## Better axis titles
+  theme_minimal() ## Try a minimal (b&w) plot theme
+```
+
+---
+
+# 3. Build your plot in layers (cont.)
+
+```{r layers2, dependson=p2, echo=FALSE, dev='svg', fig.width=6.5, fig.height=4}
+p2
+```
+
+---
+
+# What else?
+
+We have barely scratched the surface of ggplot2's functionality... let alone talked about the entire ecosystem of packages that has been built around it.
+- Here's are two quick additional examples
+
+--
+
+Note that you will need to install and load some additional packages if you want to recreate the next two figures on your own machine. A quick way to do this:
+
+```{r pacinstall}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(hrbrthemes, gganimate)
+```
+
+---
+
+# What else? (cont.)
+
+Simple extension: Use an external package theme.
+```{r modern_rc_theme, dependson=p2, dev='svg', fig.width=6.5, fig.height=4}
+# library(hrbrthemes)
+p2 + theme_modern_rc() + geom_point(aes(size = pop, col = continent), alpha = 0.2)
+```
+
+---
+
+# What else? (cont.)
+
+Elaborate extension: Animation! (See the next slide for the resulting GIF.)
+```{r gganim1, eval=FALSE}
+# library(gganimate)
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+```
+
+---
+
+# What else? (cont.)
+
+```{r ggamin2, echo=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10(labels = scales::dollar) +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'Log (GDP per capita)', y = 'Life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+```
+
+--
+
+<!-- Note that this animated plot provides a much more intuitive understanding of the underlying data. Just as [Hans Rosling](https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen) intended. -->
+
+---
+# Readings
+
+I want you to do some reading and practice on your own. Pick either of the following (or choose among the litany of online resources) and work through their examples:
+- [Chapter 3](https://r4ds.had.co.nz/data-visualisation.html) of *R for Data Science* by Hadley Wickham and Garett Grolemund.
+- [*Data Visualization: A Practical Guide*](https://socviz.co/makeplot.html) by Kieran Healy.
+- [Designing ggplots](https://designing-ggplots.netlify.com) by Malcom Barrett.
+
