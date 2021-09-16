@@ -63,7 +63,7 @@ flights %>%
   filter(!is.na(tailnum) & unique_carriers>1)
 ```
 
-### Q3: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
+### Q6: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
 
 ```{r, eval= T}
 com_models <- fueleconomy::common %>% 

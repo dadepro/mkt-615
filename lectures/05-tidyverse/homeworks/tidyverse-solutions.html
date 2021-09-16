@@ -272,8 +272,8 @@ flights_weather %&gt;%
 ## 16 N990AT                2
 ## 17 N994AT                2</code></pre>
 </div>
-<div id="q3-combine-fueleconomyvehicles-and-fueleconomycommon-to-find-only-the-records-for-the-most-common-models." class="section level3">
-<h3>Q3: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.</h3>
+<div id="q6-combine-fueleconomyvehicles-and-fueleconomycommon-to-find-only-the-records-for-the-most-common-models." class="section level3">
+<h3>Q6: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.</h3>
 <pre class="r"><code>com_models &lt;- fueleconomy::common %&gt;% 
   semi_join(fueleconomy::vehicles)</code></pre>
 <pre><code>## Joining, by = c(&quot;make&quot;, &quot;model&quot;)</code></pre>
