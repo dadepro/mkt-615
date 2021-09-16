@@ -11,7 +11,8 @@ library(tidyverse)
 
 ### Q1: What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
 
-Looks like NA tailnums never departed though they were scheduled to
+Looks like NA tailnums never departed though they were scheduled to.
+
 American and Envoy airlines planes don’t have tail numbers.
 
 ```{r, eval= T}
@@ -30,6 +31,38 @@ flights %>%
   filter(n() > 100) 
 ```
 
+
+### Q3: Find the 48 hours by flight `origin` (over the course of the whole year) that have the worst delays. Cross-reference it with the `weather` data. Can you see any patterns? (Hint: look at the function difftime to compute hours from time_hours)
+
+```{r, eval= T}
+flights_weather = merge(flights, weather, by = c("year", "month", "day", "hour", 'time_hour', 'origin'), all.x = T)
+
+flights_weather %>% 
+  mutate(time = as.numeric(round(difftime(time_hour, as.Date("2013-01-01 00:00:00"), units = 'hours')/48))) %>%
+  group_by(time, origin) %>% summarize(mean_delay = mean(arr_delay, na.rm =T),
+                               mean_tmp = mean(temp, na.rm = T),
+                               mean_visib = mean(visib, na.rm = T),
+                               mean_sp = mean(wind_speed, na.rm = T)) %>% arrange(desc(mean_delay))
+```
+
+### Q4: What does anti_join(flights, airports, by = c(“dest” = “faa”)) tell you? What does anti_join(airports, flights, by = c(“faa” = “dest”)) tell you?
+
+`anti_join(flights, airports, by = c('dest' = 'faa'))` are flights that go to an airport that is not in FAA list of destinations, likely foreign airports.
+
+`anti_join(airports, flights, by = c('faa' = “dest'))` are US airports that dont have a flight in the data, meaning that there were no flights to that aiport from New York in 2013.
+
+### Q5: You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
+
+Is there a plane flown by more than 1 airline? Yes
+
+```{r, eval= T}
+flights %>%
+  group_by(tailnum, carrier) %>%
+  group_by(tailnum) %>%
+  summarize(unique_carriers = n_distinct(carrier)) %>%
+  filter(!is.na(tailnum) & unique_carriers>1)
+```
+
 ### Q3: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
 
 ```{r, eval= T}
@@ -37,36 +70,3 @@ com_models <- fueleconomy::common %>%
   semi_join(fueleconomy::vehicles)
 ```
 
-### Q4: Find the 48 hours by flight `origin` (over the course of the whole year) that have the worst delays. Cross-reference it with the `weather` data. Can you see any patterns? (Hint: look at the function difftime to compute hours from time_hours)
-
-```{r, eval= T}
-flights_weather = merge(flights, weather, by = c("year", "month", "day", "hour", 'time_hour', 'origin'), all.x = T)
-
-flights_weather %>% 
-  mutate(time = round(difftime(time_hour, as.Date("2013-01-01 00:00:00"), units = 'hours')/48) ) %>%
-  group_by(time, origin) %>% summarize(mean_delay = mean(arr_delay, na.rm =T),
-                               mean_tmp = mean(temp, na.rm = T),
-                               mean_visib = mean(visib, na.rm = T),
-                               mean_sp = mean(wind_speed, na.rm = T)) %>% arrange(desc(mean_delay))
-```
-
-### Q5: What does anti_join(flights, airports, by = c(“dest” = “faa”)) tell you? What does anti_join(airports, flights, by = c(“faa” = “dest”)) tell you?
-
-`anti_join(flights, airports, by = c('dest' = 'faa'))` are flights that go to an airport that is not in FAA list of destinations, likely foreign airports.
-
-`anti_join(airports, flights, by = c('faa' = “dest'))` are US airports that dont have a flight in the data, meaning that there were no flights to that aiport from New York in 2013.
-
-### Q6: You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
-
-Is there a plane flown by more than 1 airline? Nope.
-
-```{r, eval= T}
-flights %>%
-  group_by(tailnum, carrier) %>%
-  distinct() %>%  
-  distinct(tailnum) %>% 
-  group_by(tailnum) %>% 
-  count(carrier) %>% 
-  filter(n>1) %>% 
-  arrange(desc(n))
-```
