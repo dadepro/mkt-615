@@ -33,6 +33,10 @@ output:
 library(hrbrthemes)
 library(fontawesome)
 library(xaringan)
+library(ggplot2)
+library(gganimate)
+library(ggthemes)
+library(gapminder)
 options(htmltools.dir.version = FALSE)
 
 library(knitr)
@@ -46,22 +50,23 @@ opts_chunk$set(
 # Table of contents
 
 1. [Checklist](#check)
-2. [Introduction](#intro)
+2. [ggplot2](#ggplot2)
+3. [Aesthetic](#aesthetic)
+4. [Geoms](#geoms)
+5. [Layers](#layers)
+6. [More things](#more)
+7. [Readings](#readings)
+
+---
+name: check
+
+# Checklist
+
+We will need **ggplot2**, **gapminder**, **dplyr**, **data.table**
 
 
 ---
-
----
-
-# Install and load (cont.)
-
-Once the packages are installed, load them into your R session with the `library()` function.
-```{r pkg_load}
-library(ggplot2)
-library(gapminder) 
-```
-
----
+name:ggplot2
 
 # Elements of ggplot2
 
@@ -83,7 +88,7 @@ There's a lot to say about ggplot2's implementation of this "grammar of graphics
 That's kind of abstract. Let's review each element in turn with some actual plots.
 
 ---
-
+name: aesthetic
 # 1. Aesthetic mappings
 
 ```{r, dev = 'svg', fig.width=6,fig.height=4}
@@ -153,6 +158,7 @@ p
 **Answer: **Aesthetics must be mapped to variables, not descriptions!
 
 ---
+name: geoms
 
 # 2. Geoms
 
@@ -215,6 +221,7 @@ p + geom_density(aes(x = gdpPercap, fill = continent), alpha=0.3)
 ```
 
 ---
+name: build
 
 # 3. Build your plot in layers
 
@@ -244,8 +251,9 @@ p2
 ```
 
 ---
+name: more
 
-# What else?
+#More
 
 We have barely scratched the surface of ggplot2's functionality... let alone talked about the entire ecosystem of packages that has been built around it.
 - Here's are two quick additional examples
@@ -261,7 +269,7 @@ pacman::p_load(hrbrthemes, gganimate)
 
 ---
 
-# What else? (cont.)
+#More (cont.)
 
 Simple extension: Use an external package theme.
 ```{r modern_rc_theme, dependson=p2, dev='svg', fig.width=6.5, fig.height=4}
@@ -271,28 +279,28 @@ p2 + theme_modern_rc() + geom_point(aes(size = pop, col = continent), alpha = 0.
 
 ---
 
-<!-- # What else? (cont.) -->
+#More (cont.)
 
-<!-- Elaborate extension: Animation! (See the next slide for the resulting GIF.) -->
-<!-- ```{r gganim1, eval=FALSE} -->
-<!-- # library(gganimate) -->
-<!-- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) + -->
-<!--   geom_point(alpha = 0.7, show.legend = FALSE) + -->
-<!--   scale_colour_manual(values = country_colors) + -->
-<!--   scale_size(range = c(2, 12)) + -->
-<!--   scale_x_log10() + -->
-<!--   facet_wrap(~continent) + -->
-<!--   # Here comes the gganimate specific bits -->
-<!--   labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') + -->
-<!--   transition_time(year) + -->
-<!--   ease_aes('linear') -->
-<!-- ``` -->
+Elaborate extension: Animation!
+```{r gganim1, eval=FALSE}
+# library(gganimate)
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+```
 
 <!-- --- -->
 
-<!-- # What else? (cont.) -->
+<!-- #More (cont.) -->
 
-<!-- ```{r ggamin2, echo=FALSE} -->
+<!-- ```{r ggamin2, echo=FALSE, eval=TRUE} -->
 <!-- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) + -->
 <!--   geom_point(alpha = 0.7, show.legend = FALSE) + -->
 <!--   scale_colour_manual(values = country_colors) + -->
@@ -305,11 +313,9 @@ p2 + theme_modern_rc() + geom_point(aes(size = pop, col = continent), alpha = 0.
 <!--   ease_aes('linear') -->
 <!-- ``` -->
 
-<!-- -- -->
 
-<!-- Note that this animated plot provides a much more intuitive understanding of the underlying data. Just as [Hans Rosling](https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen) intended. -->
-
-<!-- --- -->
+---
+name: readings
 
 # Readings
 
