@@ -60,8 +60,18 @@ knitr::knit_hooks$set(chunk = function(x, options) {
 # Table of contents
 
 1. [Checklist](#check)
+
 2. [Basics](#basics)
 
+3. [Robust SE](#robust)
+
+4. [Clustered SE](#cluster)
+
+5. [Dummy variables](#dummy)
+
+6. [Interactions](#interactions)
+
+7. [Panel data](#fixed)
 ---
 name: check
 
@@ -70,14 +80,13 @@ name: check
 We will need  **data.table**, **tidyverse**, **ggplot2**
 ---
 class: inverse, center, middle
-name: aesthetic
+name: basics
 
 # Regression basics
 
 <!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
 
 ---
-name: basics
 # Linea models with `lm()`
 
 - `lm()` is the main command to run linear regressions 
@@ -111,7 +120,7 @@ You can apply operators to the variables, subset the data within `lm`, e.g.:
   ```
   
 ---
-
+name: robust
 # Robust standard errors
 
 - `lm()` does not produce heteroskedasticity-consistent (HC) “robust” standard errors
@@ -122,7 +131,7 @@ You can apply operators to the variables, subset the data within `lm`, e.g.:
   ```
 
 ---
-
+name: cluster
 # Clustered standard errors
 
 Useful when we have serial correlation (panel data). (Note that I am using a smaller dataset, starwars)
@@ -274,6 +283,10 @@ Note that fixed effect are not reported!
   
     `options(lfe.eps=1e-4) #faster results, less accurate`
 
-- By defaul `lfe` use all the available cores, to limit them: `options(lfe.threads = 2)`
+- By default `lfe` use all the available cores, to limit them: `options(lfe.threads = 2)`
 
 - If you are interested in learning more about `lfe`: https://cran.r-project.org/web/packages/lfe/lfe.pdf
+
+
+
+

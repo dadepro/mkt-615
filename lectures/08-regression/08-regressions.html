@@ -36,8 +36,18 @@ class: center, middle, inverse, title-slide
 # Table of contents
 
 1. [Checklist](#check)
+
 2. [Basics](#basics)
 
+3. [Robust SE](#robust)
+
+4. [Clustered SE](#cluster)
+
+5. [Dummy variables](#dummy)
+
+6. [Interactions](#interactions)
+
+7. [Panel data](#fixed)
 ---
 name: check
 
@@ -46,14 +56,13 @@ name: check
 We will need  **data.table**, **tidyverse**, **ggplot2**
 ---
 class: inverse, center, middle
-name: aesthetic
+name: basics
 
 # Regression basics
 
 &lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
-name: basics
 # Linea models with `lm()`
 
 - `lm()` is the main command to run linear regressions 
@@ -131,7 +140,7 @@ You can apply operators to the variables, subset the data within `lm`, e.g.:
   ```
   
 ---
-
+name: robust
 # Robust standard errors
 
 - `lm()` does not produce heteroskedasticity-consistent (HC) “robust” standard errors
@@ -159,7 +168,7 @@ You can apply operators to the variables, subset the data within `lm`, e.g.:
   ```
 
 ---
-
+name: cluster
 # Clustered standard errors
 
 Useful when we have serial correlation (panel data). (Note that I am using a smaller dataset, starwars)
@@ -545,7 +554,7 @@ Note that fixed effect are not reported!
   ## 
   ## Residuals:
   ##      Min       1Q   Median       3Q      Max 
-  ## -16813.5   -680.4   -197.6    466.4  10394.9 
+  ## -16813.5   -680.4   -197.7    466.4  10394.8 
   ## 
   ## Coefficients:
   ##       Estimate Cluster s.e. t value Pr(&gt;|t|)    
@@ -569,9 +578,13 @@ Note that fixed effect are not reported!
   
     `options(lfe.eps=1e-4) #faster results, less accurate`
 
-- By defaul `lfe` use all the available cores, to limit them: `options(lfe.threads = 2)`
+- By default `lfe` use all the available cores, to limit them: `options(lfe.threads = 2)`
 
 - If you are interested in learning more about `lfe`: https://cran.r-project.org/web/packages/lfe/lfe.pdf
+
+
+
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

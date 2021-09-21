@@ -51,12 +51,19 @@ opts_chunk$set(
 # Table of contents
 
 1. [Checklist](#check)
+
 2. [ggplot2](#ggplot2)
+
 3. [Aesthetic](#aesthetic)
+
 4. [Geoms](#geoms)
+
 5. [Layers](#layers)
+
 6. [More things](#more)
+
 7. [Exercises](#exe)
+
 8. [Readings](#readings)
 
 ---
@@ -502,30 +509,36 @@ Let's use the ggplot2 `mpg` dataset. What does it contain?
 
 2. Rename x-axis label to "Type of Car", and y-axis label to "Hwy Miles/Gallon"
 
-3. Create a bar plot of the number of cars by type of car (class)
+3. Now redo the plot but using geom_boxplot (in this case you don't need to summarize the data) and ordering the plot from low to high average hwy mileage per gallon
+  <!-- p = ggplot(data = mpg) -->
+  <!-- p = p + geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = mean), y = hwy)) -->
+  <!-- p -->
+
+4. Create a bar plot of the number of cars by type of car (class)
   <!-- p = ggplot(mpg, aes(x = class)) -->
   <!-- p = p + geom_bar() -->
   <!-- p -->
-4. Reorder the plot above by count (highest bar first)
+5. Reorder the plot above by count (highest bar first)
   <!-- p = ggplot(mpg, aes(x = fct_infreq(class))) -->
   <!-- p = p + geom_bar() -->
   <!-- p -->
 
-5. Create a scatter plot of highway per miles against (x_axis) engine displacement, color the dots by type of car (class)
+6. Create a scatter plot of highway per miles against (x_axis) engine displacement, color the dots by type of car (class)
   <!-- ggplot(data = mpg) +  -->
   <!-- geom_point(mapping = aes(x = displ, y = hwy, color = class)) -->
 
-6. Do the plot above but create a panel for each type of car (use facets)
+7. Do the plot above but create a panel for each type of car (use facets)
   <!-- ggplot(data = mpg) +  -->
   <!-- geom_point(mapping = aes(x = displ, y = hwy)) +  -->
   <!-- facet_wrap(~ class, nrow = 2) -->
+
 
 ---
 name: readings
 
 # Readings
 
-I want you to do some reading and practice on your own. Pick either of the following (or choose among the litany of online resources) and work through their examples:
+If you want to do some reading and practice on your own:
 - [Chapter 3](https://r4ds.had.co.nz/data-visualisation.html) of *R for Data Science* by Hadley Wickham and Garett Grolemund.
 - [*Data Visualization: A Practical Guide*](https://socviz.co/makeplot.html) by Kieran Healy.
 - [Designing ggplots](https://designing-ggplots.netlify.com) by Malcom Barrett.
