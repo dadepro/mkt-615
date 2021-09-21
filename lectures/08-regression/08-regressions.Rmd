@@ -1,6 +1,6 @@
 ---
 title: "MKT615: Data Storytelling for Marketers"
-subtitle: "Lecture 7: Regressions"
+subtitle: "Lecture 6: Regressions"
 author: "Davide Proserpio"
 institute: "Marshall School of Business"
 # date: "08/25/2021" #(updated: `r Sys.Date()`)"
