@@ -1,0 +1,77 @@
+---
+title: "MKT615: Data Storytelling for Marketers"
+subtitle: "Lecture 6: Regressions"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+# date: "08/25/2021" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      beforeInit: "libs/cols_macro.js"
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+
+---
+
+```{css, echo=FALSE}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.large4 { font-size: 400% }
+.large2 { font-size: 200% }
+.small90 { font-size: 90% }
+.small75 { font-size: 75% }
+```
+
+```{r setup, include=FALSE}
+library(hrbrthemes)
+library(fontawesome)
+library(xaringan)
+library(ggplot2)
+library(gganimate)
+library(ggthemes)
+library(gapminder)
+library(tidyverse)
+options(htmltools.dir.version = FALSE)
+
+library(knitr)
+opts_chunk$set(
+  fig.align="center", #fig.width=6, fig.height=4.5, 
+  # out.width="748px", #out.length="520.75px",
+  dpi=300, #fig.path='Figs/',
+  cache=F#, echo=F, warning=F, message=F
+  )
+```
+# Table of contents
+
+1. [Checklist](#check)
+2. [ggplot2](#ggplot2)
+3. [Aesthetic](#aesthetic)
+4. [Geoms](#geoms)
+5. [Layers](#layers)
+6. [More things](#more)
+7. [Exercises](#exe)
+8. [Readings](#readings)
+
+---
+name: check
+
+# Checklist
+
+We will need **ggplot2**, **gapminder**, **dplyr**, **data.table**, **ggthemes**, **gganimate**, **hrbrthemes**, **scales**, **tidyverse**
+
+---
+class: inverse, center, middle
+name: aesthetic
+
+# Aesthetics
+
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
+
+---
