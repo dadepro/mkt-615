@@ -177,7 +177,7 @@ pre code {
 flights %&gt;%
   anti_join(planes, by = &quot;tailnum&quot;) %&gt;%
   count(carrier, sort = TRUE)</code></pre>
-<pre><code>## # A tibble: 10 x 2
+<pre><code>## # A tibble: 10 × 2
 ##    carrier     n
 ##    &lt;chr&gt;   &lt;int&gt;
 ##  1 MQ      25397
@@ -196,21 +196,23 @@ flights %&gt;%
 <pre class="r"><code>flights %&gt;% 
   group_by(tailnum) %&gt;% 
   filter(n() &gt; 100) </code></pre>
-<pre><code>## # A tibble: 229,202 x 19
+<pre><code>## # A tibble: 229,202 × 19
 ## # Groups:   tailnum [1,201]
-##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time arr_delay carrier flight tailnum origin dest  air_time distance  hour minute
-##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-##  1  2013     1     1      517            515         2      830            819        11 UA        1545 N14228  EWR    IAH        227     1400     5     15
-##  2  2013     1     1      533            529         4      850            830        20 UA        1714 N24211  LGA    IAH        227     1416     5     29
-##  3  2013     1     1      544            545        -1     1004           1022       -18 B6         725 N804JB  JFK    BQN        183     1576     5     45
-##  4  2013     1     1      554            558        -4      740            728        12 UA        1696 N39463  EWR    ORD        150      719     5     58
-##  5  2013     1     1      555            600        -5      913            854        19 B6         507 N516JB  EWR    FLL        158     1065     6      0
-##  6  2013     1     1      557            600        -3      709            723       -14 EV        5708 N829AS  LGA    IAD         53      229     6      0
-##  7  2013     1     1      557            600        -3      838            846        -8 B6          79 N593JB  JFK    MCO        140      944     6      0
-##  8  2013     1     1      558            600        -2      849            851        -2 B6          49 N793JB  JFK    PBI        149     1028     6      0
-##  9  2013     1     1      558            600        -2      853            856        -3 B6          71 N657JB  JFK    TPA        158     1005     6      0
-## 10  2013     1     1      558            600        -2      923            937       -14 UA        1124 N53441  EWR    SFO        361     2565     6      0
-## # … with 229,192 more rows, and 1 more variable: time_hour &lt;dttm&gt;</code></pre>
+##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+##  1  2013     1     1      517            515         2      830            819
+##  2  2013     1     1      533            529         4      850            830
+##  3  2013     1     1      544            545        -1     1004           1022
+##  4  2013     1     1      554            558        -4      740            728
+##  5  2013     1     1      555            600        -5      913            854
+##  6  2013     1     1      557            600        -3      709            723
+##  7  2013     1     1      557            600        -3      838            846
+##  8  2013     1     1      558            600        -2      849            851
+##  9  2013     1     1      558            600        -2      853            856
+## 10  2013     1     1      558            600        -2      923            937
+## # … with 229,192 more rows, and 11 more variables: arr_delay &lt;dbl&gt;,
+## #   carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;,
+## #   air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
 </div>
 <div id="q3-find-the-48-hours-by-flight-origin-over-the-course-of-the-whole-year-that-have-the-worst-delays.-cross-reference-it-with-the-weather-data.-can-you-see-any-patterns-hint-look-at-the-function-difftime-to-compute-hours-from-time_hours" class="section level3">
 <h3>Q3: Find the 48 hours by flight <code>origin</code> (over the course of the whole year) that have the worst delays. Cross-reference it with the <code>weather</code> data. Can you see any patterns? (Hint: look at the function difftime to compute hours from time_hours)</h3>
@@ -222,7 +224,8 @@ flights_weather %&gt;%
                                mean_tmp = mean(temp, na.rm = T),
                                mean_visib = mean(visib, na.rm = T),
                                mean_sp = mean(wind_speed, na.rm = T)) %&gt;% arrange(desc(mean_delay))</code></pre>
-<pre><code>## # A tibble: 552 x 6
+<pre><code>## `summarise()` has grouped output by &#39;time&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 552 × 6
 ## # Groups:   time [184]
 ##     time origin mean_delay mean_tmp mean_visib mean_sp
 ##    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
@@ -251,7 +254,7 @@ flights_weather %&gt;%
   group_by(tailnum) %&gt;%
   summarize(unique_carriers = n_distinct(carrier)) %&gt;%
   filter(!is.na(tailnum) &amp; unique_carriers&gt;1)</code></pre>
-<pre><code>## # A tibble: 17 x 2
+<pre><code>## # A tibble: 17 × 2
 ##    tailnum unique_carriers
 ##    &lt;chr&gt;             &lt;int&gt;
 ##  1 N146PQ                2
@@ -274,7 +277,7 @@ flights_weather %&gt;%
 </div>
 <div id="q6-combine-fueleconomyvehicles-and-fueleconomycommon-to-find-only-the-records-for-the-most-common-models." class="section level3">
 <h3>Q6: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.</h3>
-<pre class="r"><code>com_models &lt;- fueleconomy::common %&gt;% 
+<pre class="r"><code>com_models = fueleconomy::common %&gt;% 
   semi_join(fueleconomy::vehicles)</code></pre>
 <pre><code>## Joining, by = c(&quot;make&quot;, &quot;model&quot;)</code></pre>
 </div>
