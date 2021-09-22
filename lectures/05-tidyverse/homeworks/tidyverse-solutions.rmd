@@ -72,7 +72,7 @@ flights_weather_dt[, time := as.numeric(round(difftime(time_hour, as.Date("2013-
 flights_weather_dt[, list(mean_delay = mean(arr_delay, na.rm =T),
                           mean_tmp = mean(temp, na.rm = T),
                           mean_visib = mean(visib, na.rm = T),
-                          mean_sp = mean(wind_speed, na.rm = T)) , by = list(time, origin)]
+                          mean_sp = mean(wind_speed, na.rm = T)) , by = list(time, origin)][order(-mean_delay)]
 ```
 
 ### Q4: What does anti_join(flights, airports, by = c(“dest” = “faa”)) tell you? What does anti_join(airports, flights, by = c(“faa” = “dest”)) tell you?
