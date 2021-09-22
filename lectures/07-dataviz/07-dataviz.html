@@ -36,27 +36,42 @@ class: center, middle, inverse, title-slide
 # Table of contents
 
 1. [Checklist](#check)
+
 2. [ggplot2](#ggplot2)
+
 3. [Aesthetic](#aesthetic)
+
 4. [Geoms](#geoms)
+
 5. [Layers](#layers)
+
 6. [More things](#more)
-7. [Readings](#readings)
+
+7. [Exercises](#exe)
+
+8. [Readings](#readings)
 
 ---
 name: check
 
 # Checklist
 
-We will need **ggplot2**, **gapminder**, **dplyr**, **data.table**
+We will need **ggplot2**, **gapminder**, **dplyr**, **data.table**, **ggthemes**, **gganimate**, **hrbrthemes**, **scales**, **tidyverse**
+
+---
+class: inverse, center, middle
+name:ggplot2
+
+# ggplot2
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 
 ---
-name:ggplot2
 
 # Elements of ggplot2
 
-[Hadley Wickham's](http://hadley.nz/) ggplot2 is one of the most popular packages in the entire R canon. 
+[Hadley Wickham's](http://hadley.nz/) ggplot2 is one of the most popular R packages. 
 - It also happens to be built upon some deep visualization theory: i.e. Leland Wilkinson's [*The Grammar of Graphics*](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448).
 
 There's a lot to say about ggplot2's implementation of this "grammar of graphics" approach, but the three key elements are:
@@ -69,18 +84,24 @@ There's a lot to say about ggplot2's implementation of this "grammar of graphics
 
 --
 
-&lt;/br&gt;
-
-That's kind of abstract. Let's review each element in turn with some actual plots.
+Let's review each element in turn with some actual plots.
 
 ---
+class: inverse, center, middle
 name: aesthetic
+
+# Aesthetics
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
 # 1. Aesthetic mappings
 
 
 ```r
 p = ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) 
-p = p + geom_point(size = 0.2)
+p = p + geom_point()
 p
 ```
 
@@ -94,27 +115,30 @@ p
 
 ```r
 p = ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) 
-p = p + geom_point(size = 0.2) #size of the geom points
+p = p + geom_point() 
 p
 ```
 
 Focus on the top line, which contains the initialising `ggplot()` function call. This function accepts various arguments, including:
 - Where the data come from (i.e. `data = gapminder`).
 - What the aesthetic mappings are (i.e. `mapping = aes(x = gdpPercap, y = lifeExp)`).
+- The `aes()` function gathers together each of the aesthetic mappings used by a layer and passes them to the layer’s mapping argument.
 
 --
 
-The aesthetic mappings here are pretty simple: They just define an x-axis (GDP per capita) and a y-axis (life expecancy).
-- To get a sense of the power and flexibility that comes with this approach, however, consider what happens if we add more aesthetics to the plot call...
+In this case, the aesthetic mappings here are pretty simple: They just define an x-axis (GDP per capita) and a y-axis (life expecancy).
+- However, aesthetics are a very powerful tool. To get a sense of the power and flexibility that comes with this approach, consider what happens if we add more aesthetics to the plot call.
 
 ---
 
 # 1. Aesthetic mappings (cont.)
 
+E.g., let's map **color** and point **size** to two variables:
+
 
 ```r
-p = ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, col = continent))
-p = p + geom_point(alpha = 0.3) ## "alpha" controls transparency. Takes a value between 0 and 1.
+p = ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, color = continent))
+p = p + geom_point()
 p
 ```
 
@@ -128,11 +152,22 @@ Note that I've dropped the "data =" and "mapping =" part of the ggplot call (`gg
 
 # 1. Aesthetic mappings (cont.)
 
-We can specify aesthetic mappings in the geom layer too.
+E.g., let's map **color** and point **size** to two variables:
+
+&lt;img src="07-dataviz_files/figure-html/aesthetics22-1.svg" style="display: block; margin: auto;" /&gt;
+
+- As you can see, ggplot automatically assigns *levels* to the aesthetics and creates a legend for each of them. 
+- (For `x` and `y` aesthetics, ggplot2 does not create a legend, but it creates an axis line with tick marks and a label.)
+
+---
+
+# 1. Aesthetic mappings (cont.)
+
+We can specify aesthetic mappings in the geom layer too. Doing so aesthetics are applied only locally (i.e., to the specific geometry).
 
 ```r
 p = ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) ## Applicable to all geoms
-p = p + geom_point(aes(size = pop, col = continent), alpha = 0.3) ## Applicable to this geom only
+p = p + geom_point(aes(size = pop, col = continent)) ## Applicable to this geom only
 p
 ```
 
@@ -146,7 +181,7 @@ Oops. What went wrong here?
 
 ```r
 p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
-p = p + geom_point(aes(size = "big", col="black"), alpha = 0.3)
+p = p + geom_point(aes(size = "big", col="black"))
 p
 ```
 
@@ -161,16 +196,39 @@ p
 **Answer: **Aesthetics must be mapped to variables, not descriptions!
 
 ---
-name: geoms
 
-# 2. Geoms
 
-Once your variable relationships have been defined by the aesthetic mappings, you can invoke and combine different geoms to generate different visulaizations.
+# 1. Aesthetic mappings (cont.)
+
+Note that outside of the `aes()` function, you can pass values and set the aesthetic **manually**, e.g.,
 
 
 ```r
 p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
-p = p + geom_point(alpha = 0.3)
+p = p + geom_point(size = 0.1, col = "blue")
+p
+```
+
+&lt;img src="07-dataviz_files/figure-html/aesthetics44-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, center, middle
+name: geoms
+
+# Geoms
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+# 2. Geoms
+
+Once your variable relationships have been defined by the aesthetic mappings, you can invoke and combine different geoms to generate different visualizations.
+
+
+```r
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point()
 p = p + geom_smooth(method = "loess")
 p
 ```
@@ -190,7 +248,7 @@ Aesthetics can be applied differentially across geoms.
 
 ```r
 p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
-p = p + geom_point(aes(size = pop, col = continent), alpha = 0.3)
+p = p + geom_point(aes(size = pop, col = continent))
 p = p + geom_smooth(method = "loess")
 p
 ```
@@ -205,16 +263,37 @@ p
 
 # 2. Geoms (cont.)
 
-The previous plot provides a good illustration of the power (or effect) that comes from assigning aesthetic mappings "globally" vs in the individual geom layers.
+The previous plot provides a good illustration of the power (or effect) that comes from assigning aesthetic mappings "globally" vs "locally" (i.e., in the individual geom layers.)
 - Compare: What happens if you run the below code chunk?
 
 
 ```r
 p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, col = continent))
-p = p +geom_point(alpha = 0.3)
+p = p + geom_point(alpha = 0.3)
 p = p + geom_smooth(method = "loess")
 p
 ```
+
+---
+
+# 2. Geoms (cont.)
+
+You can use the same idea to specify different data for each layer.
+
+
+```r
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point(aes(color = year))
+p = p + geom_smooth( data = subset(gapminder, year == 2002), se = F)
+p
+```
+
+```
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+```
+
+&lt;img src="07-dataviz_files/figure-html/geoms6-1.svg" style="display: block; margin: auto;" /&gt;
+
 
 ---
 
@@ -248,8 +327,24 @@ p + geom_density(aes(x = gdpPercap, fill = continent), alpha=0.3)
 
 &lt;img src="07-dataviz_files/figure-html/geoms5-1.svg" style="display: block; margin: auto;" /&gt;
 
+
+
 ---
+# 2. Geoms (cont.)
+
+- ggplot2 provides over 40 geoms, and extension packages provide even more (see https://exts.ggplot2.tidyverse.org/gallery/ for a sampling).
+- The best way to get a comprehensive overview is the ggplot2 cheatsheet, which you can find at http://rstudio.com/resources/cheatsheets. 
+- To learn more about any single geom, use help: ?geom_smooth.
+
+---
+class: inverse, center, middle
 name: build
+
+# Layers
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
 
 # 3. Build your plot in layers
 
@@ -278,9 +373,116 @@ p2 =
 &lt;img src="07-dataviz_files/figure-html/layers2-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
+class: inverse, center, middle
 name: more
 
-#More
+# More things
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+
+---
+
+# Facets
+
+One way to add additional variables is with aesthetics. Another way, particularly useful for categorical variables, is to split your plot into **facets**, subplots that each display one subset of the data.
+
+
+```r
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point()
+p = p + facet_wrap(~ continent, nrow = 2)
+p
+```
+
+&lt;img src="07-dataviz_files/figure-html/facet-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+# Facets (cont.)
+
+To facet your plot on the combination of two variables, add facet_grid() to your plot call.
+
+
+```r
+p = ggplot(data = subset(gapminder, year %in% c(2002,2007)), aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point()
+p = p + facet_grid( year ~ continent)
+p
+```
+
+&lt;img src="07-dataviz_files/figure-html/facetgrid-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Facets (cont.)
+
+If you prefer to not facet in the rows or columns dimension, use a . instead of a variable name, e.g. `+ facet_grid(. ~ cyl)` (the dot is optional).
+
+
+```r
+p = ggplot(data = subset(gapminder, year %in% c(2002,2007)), aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point()
+p = p + facet_grid( ~ continent)
+p
+```
+
+&lt;img src="07-dataviz_files/figure-html/facetgrid2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Statistical transformations
+
+`stat_summary` is very useful to create plots with summary stats w/o altering the original data
+
+
+```r
+p = ggplot(data = gapminder, aes(x = year))
+p = p + stat_summary(aes(y=gdpPercap), fun = "mean", geom = "point")
+p
+```
+
+&lt;img src="07-dataviz_files/figure-html/summary-1.svg" style="display: block; margin: auto;" /&gt;
+--
+
+In the exercises, we are going to see a few additional ways to do statistical transformations.
+
+---
+
+
+# Saving plots
+
+`ggsave` is very useful to save plots in any format. Note that for papers, the best format is pdf.
+
+
+```r
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point()
+p
+```
+
+```r
+ggsave("figures/test.pdf", p, h = 3, w = 5)
+```
+
+--
+
+Note that you can also combine more than one plot in one pdf, but you need the `patchwork` library:
+
+
+```r
+library(patchwork)
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p = p + geom_point()
+p1 = p
+p2 = p
+ggsave("figures/side-by-side.pdf", p1+p2, h = 3, w = 5)
+```
+
+
+
+---
+
+# There is much more
 
 We have barely scratched the surface of ggplot2's functionality... let alone talked about the entire ecosystem of packages that has been built around it.
 - Here's are two quick additional examples
@@ -292,19 +494,12 @@ Note that you will need to install and load some additional packages if you want
 
 ```r
 if (!require("pacman")) install.packages("pacman")
-```
-
-```
-## Loading required package: pacman
-```
-
-```r
 pacman::p_load(hrbrthemes, gganimate)
 ```
 
 ---
 
-#More (cont.)
+# There is much more (cont.)
 
 Simple extension: Use an external package theme.
 
@@ -317,7 +512,7 @@ p2 + theme_modern_rc() + geom_point(aes(size = pop, col = continent), alpha = 0.
 
 ---
 
-#More (cont.)
+# There is much more (cont.)
 
 Elaborate extension: Animation!
 
@@ -334,6 +529,9 @@ ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
   transition_time(year) +
   ease_aes('linear')
 ```
+
+---
+name: exe
 
 &lt;!-- --- --&gt;
 
@@ -353,12 +551,48 @@ ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
 &lt;!-- ``` --&gt;
 
 
+
+# Exercises 
+
+Let's use the ggplot2 `mpg` dataset. What does it contain?
+
+1. Plot the average highway miles per gallon (a dot) by type of car (class)
+  &lt;!-- p = ggplot(mpg, aes(x=class)) --&gt;
+  &lt;!-- p = p + stat_summary(aes(y = hwy), fun = 'mean', geom = 'point') --&gt;
+  &lt;!-- p --&gt;
+
+2. Rename x-axis label to "Type of Car", and y-axis label to "Hwy Miles/Gallon"
+
+3. Now redo the plot but using geom_boxplot (in this case you don't need to summarize the data) and ordering the plot from low to high average hwy mileage per gallon
+  &lt;!-- p = ggplot(data = mpg) --&gt;
+  &lt;!-- p = p + geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = mean), y = hwy)) --&gt;
+  &lt;!-- p --&gt;
+
+4. Create a bar plot of the number of cars by type of car (class)
+  &lt;!-- p = ggplot(mpg, aes(x = class)) --&gt;
+  &lt;!-- p = p + geom_bar() --&gt;
+  &lt;!-- p --&gt;
+5. Reorder the plot above by count (highest bar first)
+  &lt;!-- p = ggplot(mpg, aes(x = fct_infreq(class))) --&gt;
+  &lt;!-- p = p + geom_bar() --&gt;
+  &lt;!-- p --&gt;
+
+6. Create a scatter plot of highway per miles against (x_axis) engine displacement, color the dots by type of car (class)
+  &lt;!-- ggplot(data = mpg) +  --&gt;
+  &lt;!-- geom_point(mapping = aes(x = displ, y = hwy, color = class)) --&gt;
+
+7. Do the plot above but create a panel for each type of car (use facets)
+  &lt;!-- ggplot(data = mpg) +  --&gt;
+  &lt;!-- geom_point(mapping = aes(x = displ, y = hwy)) +  --&gt;
+  &lt;!-- facet_wrap(~ class, nrow = 2) --&gt;
+
+
 ---
 name: readings
 
 # Readings
 
-I want you to do some reading and practice on your own. Pick either of the following (or choose among the litany of online resources) and work through their examples:
+If you want to do some reading and practice on your own:
 - [Chapter 3](https://r4ds.had.co.nz/data-visualisation.html) of *R for Data Science* by Hadley Wickham and Garett Grolemund.
 - [*Data Visualization: A Practical Guide*](https://socviz.co/makeplot.html) by Kieran Healy.
 - [Designing ggplots](https://designing-ggplots.netlify.com) by Malcom Barrett.

@@ -1,0 +1,292 @@
+---
+title: "MKT615: Data Storytelling for Marketers"
+subtitle: "Lecture 6: Regressions"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+# date: "08/25/2021" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      beforeInit: "libs/cols_macro.js"
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+
+---
+
+```{css, echo=FALSE}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.large4 { font-size: 400% }
+.large2 { font-size: 200% }
+.small90 { font-size: 90% }
+.small75 { font-size: 75% }
+```
+
+```{r setup, include=FALSE}
+library(hrbrthemes)
+library(fontawesome)
+library(xaringan)
+library(ggplot2)
+library(gganimate)
+library(ggthemes)
+library(gapminder)
+library(tidyverse)
+library(estimatr)
+library(data.table)
+options(htmltools.dir.version = FALSE)
+
+library(knitr)
+opts_chunk$set(
+  fig.align="center", #fig.width=6, fig.height=4.5, 
+  # out.width="748px", #out.length="520.75px",
+  dpi=300, #fig.path='Figs/',
+  cache=F#, echo=F, warning=F, message=F
+  )
+
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\n \\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+
+```
+# Table of contents
+
+1. [Checklist](#check)
+
+2. [Basics](#basics)
+
+3. [Robust SE](#robust)
+
+4. [Clustered SE](#cluster)
+
+5. [Dummy variables](#dummy)
+
+6. [Interactions](#interactions)
+
+7. [Panel data](#fixed)
+---
+name: check
+
+# Checklist
+
+We will need  **data.table**, **tidyverse**, **ggplot2**
+---
+class: inverse, center, middle
+name: basics
+
+# Regression basics
+
+<!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
+
+---
+# Linea models with `lm()`
+
+- `lm()` is the main command to run linear regressions 
+- Syntax: lm(y ~ x_1 + x_2 + ... + x_n, data = yourdataset)
+- To summarize the output, you should use `summary`. Let's see an example the ggplot2's `diamonds` dataset.
+
+---
+# Linea models with `lm()` (cont.)
+
+  ```{r lm}
+  summary(lm(price ~ carat, data = diamonds))
+  ```
+---
+# Linea models with `lm()` (cont.)
+
+  ```{r lm1}
+  ols = lm(price ~ carat, data = diamonds) # save the model
+  summary(ols)
+  ```
+  
+
+---
+# Linea models with `lm()` (cont.)
+
+You can apply operators to the variables, subset the data within `lm`, e.g.:
+
+  ```{r lm2, eval = F}
+  summary(lm(log(price) ~ log(carat), data = diamonds))
+  summary(lm(log(price) ~ log(carat), data = diamonds %>% filter(cut == "Good")))
+  
+  ```
+  
+---
+name: robust
+# Robust standard errors
+
+- `lm()` does not produce heteroskedasticity-consistent (HC) “robust” standard errors
+- but `estimatr::lm_robust()` does:
+  ```{r lm_robust}
+  ols_robust = lm_robust(price ~ carat, data = diamonds) # save the model
+  summary(ols_robust)
+  ```
+
+---
+name: cluster
+# Clustered standard errors
+
+Useful when we have serial correlation (panel data). (Note that I am using a smaller dataset, starwars)
+
+  ```{r lm_cluster}
+  ols_cluster = lm_robust(mass ~ height, 
+                data = starwars %>% filter(!is.na(homeworld)), clusters = homeworld)
+  summary(ols_cluster)
+  ```
+---
+name: dummy
+# Dummy variables
+
+String are automatically converted to factors, else you need to use `factors()`, e.g.:
+
+  ```{r dummy}
+  diamonds_dt = data.table(diamonds)
+  diamonds_dt[, cut := as.character(cut)]
+  ols = lm(price ~ cut, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+---
+
+# Dummy variables (cont.)
+
+Change factor base level or levels order
+
+  ```{r dummy2}
+  diamonds_dt[, cut:=relevel(factor(cut), ref = "Ideal")]
+  ols = lm(price ~ cut, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+
+---
+
+# Dummy variables (cont.)
+
+Change factor base level or levels order
+
+  ```{r dummy3}
+  diamonds_dt[, cut := factor(cut, levels = c("Fair", "Good", "Very Good", "Premium", "Ideal"))]
+  ols = lm(price ~ cut, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+---
+name: interactions
+# Interactions
+
+- Full interaction: `*`
+- Given vars `a` and `b`, `*` creates 3 vars: `a, b, a x b`
+
+  ```{r interactions}
+  ols = lm(price ~ carat*depth, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+
+---
+# Interactions (cont.)
+
+- Simple interaction: `:`
+- Given vars `a` and `b`, `:` creates 1 var: `a x b`
+
+  ```{r interactions2}
+  ols = lm(price ~ carat:depth, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+
+---
+name: fixed
+
+# Panel data
+
+- If you have panel data (especially large ones) and want to run a regression with one (or multiple) fixed effects, `lm()` is not ideal and slow (it requires a dummy for each fixed effect)
+- There are packages dedicated to faster panel data analysis such as `lfe` and `fixest`
+- In this class, we are going to see how `lfe` works, so let's install it and load it:
+  ```{r lfe}
+  #install.packages("lfe")
+  library(lfe)
+  ```
+
+---
+
+# lfe::felm
+
+- The function `felm` fits a linear model with multiple group fixed effects
+- (It does additional things, such as Instrumental Variables regressions but we won't cover them)
+
+- Syntax:
+
+    `felm(formula | fixed effects | IV part | which var to cluster on)`
+  
+---
+
+# lfe::felm (cont.)
+
+1. Simple linear model w/o fixed effects:
+  ```{r felm1}
+  felm1 = felm(price ~ carat | 0 | 0 | 0, data = diamonds)
+  summary(felm1)
+  ```
+
+---
+
+# lfe::felm (cont.)
+
+2. Simple linear model w/o fixed effects and robust standard errors:
+  ```{r felm2}
+  felm2 = felm(price ~ carat | 0 | 0 | 0, data = diamonds)
+  summary(felm2, robust = T)
+  ```
+
+---
+# lfe::felm (cont.)
+
+3. Adding fixed effects:
+  ```{r felm3}
+  felm3 = felm(price ~ carat | cut | 0 | 0, data = diamonds)
+  summary(felm3, robust = T)
+  ```
+
+--
+Note that fixed effect are not reported!
+
+---
+# lfe::felm (cont.)
+
+4. Adding fixed effects and cluster standard errors:
+  ```{r felm4}
+  felm4 = felm(price ~ carat | cut | 0 | cut, data = diamonds)
+  summary(felm4) # we don't need robust = T in this case
+  ```
+
+---
+# lfe::felm (cont.)
+
+5. More fixed effects:
+  ```{r felm5}
+  felm5 = felm(price ~ carat | cut + color + clarity | 0 | cut, data = diamonds)
+  summary(felm5) # we don't need robust = T in this case
+  ```
+
+---
+# lfe:felm (cont.)
+
+- `felm` uses an approximation algorithm to estimate a model with many fixed effects. The centering on the means is done with a tolerance which by default is 1e-8.
+- So you can set the *tollerance* parameter epsilon (the smaller the epsilon, the more accurate are the estimates but the slower is the computation):
+  
+    `options(lfe.eps=1e-4) #faster results, less accurate`
+
+- By default `lfe` use all the available cores, to limit them: `options(lfe.threads = 2)`
+
+- If you are interested in learning more about `lfe`: https://cran.r-project.org/web/packages/lfe/lfe.pdf
+
+
+
+

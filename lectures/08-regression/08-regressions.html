@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT615: Data Storytelling for Marketers</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# MKT615: Data Storytelling for Marketers
+## Lecture 6: Regressions
+### Davide Proserpio
+### Marshall School of Business
+
+---
+
+
+&lt;style type="text/css"&gt;
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.large4 { font-size: 400% }
+.large2 { font-size: 200% }
+.small90 { font-size: 90% }
+.small75 { font-size: 75% }
+&lt;/style&gt;
+
+
+# Table of contents
+
+1. [Checklist](#check)
+
+2. [Basics](#basics)
+
+3. [Robust SE](#robust)
+
+4. [Clustered SE](#cluster)
+
+5. [Dummy variables](#dummy)
+
+6. [Interactions](#interactions)
+
+7. [Panel data](#fixed)
+---
+name: check
+
+# Checklist
+
+We will need  **data.table**, **tidyverse**, **ggplot2**
+---
+class: inverse, center, middle
+name: basics
+
+# Regression basics
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+# Linea models with `lm()`
+
+- `lm()` is the main command to run linear regressions 
+- Syntax: lm(y ~ x_1 + x_2 + ... + x_n, data = yourdataset)
+- To summarize the output, you should use `summary`. Let's see an example the ggplot2's `diamonds` dataset.
+
+---
+# Linea models with `lm()` (cont.)
+
+  
+  ```r
+  summary(lm(price ~ carat, data = diamonds))
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ carat, data = diamonds)
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -18585.3   -804.8    -18.9    537.4  12731.7 
+  ## 
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept) -2256.36      13.06  -172.8   &lt;2e-16 ***
+  ## carat        7756.43      14.07   551.4   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1549 on 53938 degrees of freedom
+  ## Multiple R-squared:  0.8493,	Adjusted R-squared:  0.8493 
+  ## F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+  ```
+---
+# Linea models with `lm()` (cont.)
+
+  
+  ```r
+  ols = lm(price ~ carat, data = diamonds) # save the model
+  summary(ols)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ carat, data = diamonds)
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -18585.3   -804.8    -18.9    537.4  12731.7 
+  ## 
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept) -2256.36      13.06  -172.8   &lt;2e-16 ***
+  ## carat        7756.43      14.07   551.4   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1549 on 53938 degrees of freedom
+  ## Multiple R-squared:  0.8493,	Adjusted R-squared:  0.8493 
+  ## F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+  ```
+  
+
+---
+# Linea models with `lm()` (cont.)
+
+You can apply operators to the variables, subset the data within `lm`, e.g.:
+
+  
+  ```r
+  summary(lm(log(price) ~ log(carat), data = diamonds))
+  summary(lm(log(price) ~ log(carat), data = diamonds %&gt;% filter(cut == "Good")))
+  ```
+  
+---
+name: robust
+# Robust standard errors
+
+- `lm()` does not produce heteroskedasticity-consistent (HC) “robust” standard errors
+- but `estimatr::lm_robust()` does:
+  
+  ```r
+  ols_robust = lm_robust(price ~ carat, data = diamonds) # save the model
+  summary(ols_robust)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm_robust(formula = price ~ carat, data = diamonds)
+  ## 
+  ## Standard error type:  HC2 
+  ## 
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(&gt;|t|) CI Lower CI Upper    DF
+  ## (Intercept)    -2256      16.13  -139.9        0    -2288    -2225 53938
+  ## carat           7756      25.40   305.3        0     7707     7806 53938
+  ## 
+  ## Multiple R-squared:  0.8493 ,	Adjusted R-squared:  0.8493 
+  ## F-statistic: 9.323e+04 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+  ```
+
+---
+name: cluster
+# Clustered standard errors
+
+Useful when we have serial correlation (panel data). (Note that I am using a smaller dataset, starwars)
+
+  
+  ```r
+  ols_cluster = lm_robust(mass ~ height, 
+                data = starwars %&gt;% filter(!is.na(homeworld)), clusters = homeworld)
+  summary(ols_cluster)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm_robust(formula = mass ~ height, data = starwars %&gt;% filter(!is.na(homeworld)), 
+  ##     clusters = homeworld)
+  ## 
+  ## Standard error type:  CR2 
+  ## 
+  ## Coefficients:
+  ##             Estimate Std. Error t value  Pr(&gt;|t|) CI Lower CI Upper    DF
+  ## (Intercept)  -9.3015   28.84436 -0.3225 0.7559159 -76.6201   58.017 7.486
+  ## height        0.6134    0.09912  6.1886 0.0002379   0.3858    0.841 8.195
+  ## 
+  ## Multiple R-squared:  0.01372 ,	Adjusted R-squared:  -0.004541 
+  ## F-statistic:  38.3 on 1 and 38 DF,  p-value: 3.138e-07
+  ```
+---
+name: dummy
+# Dummy variables
+
+String are automatically converted to factors, else you need to use `factors()`, e.g.:
+
+  
+  ```r
+  diamonds_dt = data.table(diamonds)
+  diamonds_dt[, cut := as.character(cut)]
+  ols = lm(price ~ cut, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ cut, data = diamonds_dt)
+  ## 
+  ## Residuals:
+  ##    Min     1Q Median     3Q    Max 
+  ##  -4258  -2741  -1494   1360  15348 
+  ## 
+  ## Coefficients:
+  ##              Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept)   4358.76      98.79  44.122  &lt; 2e-16 ***
+  ## cutGood       -429.89     113.85  -3.776 0.000160 ***
+  ## cutIdeal      -901.22     102.41  -8.800  &lt; 2e-16 ***
+  ## cutPremium     225.50     104.40   2.160 0.030772 *  
+  ## cutVery Good  -377.00     105.16  -3.585 0.000338 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 3964 on 53935 degrees of freedom
+  ## Multiple R-squared:  0.01286,	Adjusted R-squared:  0.01279 
+  ## F-statistic: 175.7 on 4 and 53935 DF,  p-value: &lt; 2.2e-16
+  ```
+  
+---
+
+# Dummy variables (cont.)
+
+Change factor base level or levels order
+
+  
+  ```r
+  diamonds_dt[, cut:=relevel(factor(cut), ref = "Ideal")]
+  ols = lm(price ~ cut, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ cut, data = diamonds_dt)
+  ## 
+  ## Residuals:
+  ##    Min     1Q Median     3Q    Max 
+  ##  -4258  -2741  -1494   1360  15348 
+  ## 
+  ## Coefficients:
+  ##              Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept)   3457.54      27.00 128.051  &lt; 2e-16 ***
+  ## cutFair        901.22     102.41   8.800  &lt; 2e-16 ***
+  ## cutGood        471.32      62.70   7.517  5.7e-14 ***
+  ## cutPremium    1126.72      43.22  26.067  &lt; 2e-16 ***
+  ## cutVery Good   524.22      45.05  11.636  &lt; 2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 3964 on 53935 degrees of freedom
+  ## Multiple R-squared:  0.01286,	Adjusted R-squared:  0.01279 
+  ## F-statistic: 175.7 on 4 and 53935 DF,  p-value: &lt; 2.2e-16
+  ```
+
+---
+
+# Dummy variables (cont.)
+
+Change factor base level or levels order
+
+  
+  ```r
+  diamonds_dt[, cut := factor(cut, levels = c("Fair", "Good", "Very Good", "Premium", "Ideal"))]
+  ols = lm(price ~ cut, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ cut, data = diamonds_dt)
+  ## 
+  ## Residuals:
+  ##    Min     1Q Median     3Q    Max 
+  ##  -4258  -2741  -1494   1360  15348 
+  ## 
+  ## Coefficients:
+  ##              Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept)   4358.76      98.79  44.122  &lt; 2e-16 ***
+  ## cutGood       -429.89     113.85  -3.776 0.000160 ***
+  ## cutVery Good  -377.00     105.16  -3.585 0.000338 ***
+  ## cutPremium     225.50     104.40   2.160 0.030772 *  
+  ## cutIdeal      -901.22     102.41  -8.800  &lt; 2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 3964 on 53935 degrees of freedom
+  ## Multiple R-squared:  0.01286,	Adjusted R-squared:  0.01279 
+  ## F-statistic: 175.7 on 4 and 53935 DF,  p-value: &lt; 2.2e-16
+  ```
+  
+---
+name: interactions
+# Interactions
+
+- Full interaction: `*`
+- Given vars `a` and `b`, `*` creates 3 vars: `a, b, a x b`
+
+  
+  ```r
+  ols = lm(price ~ carat*depth, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ carat * depth, data = diamonds_dt)
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -15039.2   -799.3    -18.1    539.6  12666.5 
+  ## 
+  ## Coefficients:
+  ##              Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept) -7823.738    592.049 -13.215   &lt;2e-16 ***
+  ## carat       20742.600    567.672  36.540   &lt;2e-16 ***
+  ## depth          90.043      9.588   9.391   &lt;2e-16 ***
+  ## carat:depth  -210.075      9.187 -22.868   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1534 on 53936 degrees of freedom
+  ## Multiple R-squared:  0.8521,	Adjusted R-squared:  0.8521 
+  ## F-statistic: 1.036e+05 on 3 and 53936 DF,  p-value: &lt; 2.2e-16
+  ```
+
+---
+# Interactions (cont.)
+
+- Simple interaction: `:`
+- Given vars `a` and `b`, `:` creates 1 var: `a x b`
+
+  
+  ```r
+  ols = lm(price ~ carat:depth, data = diamonds_dt) # save the model
+  summary(ols)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ## lm(formula = price ~ carat:depth, data = diamonds_dt)
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -20696.6   -802.8    -21.7    529.0  12805.6 
+  ## 
+  ## Coefficients:
+  ##               Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept) -2215.1687    13.3261  -166.2   &lt;2e-16 ***
+  ## carat:depth   124.7268     0.2323   537.0   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1584 on 53938 degrees of freedom
+  ## Multiple R-squared:  0.8424,	Adjusted R-squared:  0.8424 
+  ## F-statistic: 2.883e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+  ```
+
+---
+name: fixed
+
+# Panel data
+
+- If you have panel data (especially large ones) and want to run a regression with one (or multiple) fixed effects, `lm()` is not ideal and slow (it requires a dummy for each fixed effect)
+- There are packages dedicated to faster panel data analysis such as `lfe` and `fixest`
+- In this class, we are going to see how `lfe` works, so let's install it and load it:
+  
+  ```r
+  #install.packages("lfe")
+  library(lfe)
+  ```
+
+---
+
+# lfe::felm
+
+- The function `felm` fits a linear model with multiple group fixed effects
+- (It does additional things, such as Instrumental Variables regressions but we won't cover them)
+
+- Syntax:
+
+    `felm(formula | fixed effects | IV part | which var to cluster on)`
+  
+---
+
+# lfe::felm (cont.)
+
+1. Simple linear model w/o fixed effects:
+  
+  ```r
+  felm1 = felm(price ~ carat | 0 | 0 | 0, data = diamonds)
+  summary(felm1)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ##    felm(formula = price ~ carat | 0 | 0 | 0, data = diamonds) 
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -18585.3   -804.8    -18.9    537.4  12731.7 
+  ## 
+  ## Coefficients:
+  ##             Estimate Std. Error t value Pr(&gt;|t|)    
+  ## (Intercept) -2256.36      13.06  -172.8   &lt;2e-16 ***
+  ## carat        7756.43      14.07   551.4   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1549 on 53938 degrees of freedom
+  ## Multiple R-squared(full model): 0.8493   Adjusted R-squared: 0.8493 
+  ## Multiple R-squared(proj model): 0.8493   Adjusted R-squared: 0.8493 
+  ## F-statistic(full model):3.041e+05 on 1 and 53938 DF, p-value: &lt; 2.2e-16 
+  ## F-statistic(proj model): 3.041e+05 on 1 and 53938 DF, p-value: &lt; 2.2e-16
+  ```
+
+---
+
+# lfe::felm (cont.)
+
+2. Simple linear model w/o fixed effects and robust standard errors:
+  
+  ```r
+  felm2 = felm(price ~ carat | 0 | 0 | 0, data = diamonds)
+  summary(felm2, robust = T)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ##    felm(formula = price ~ carat | 0 | 0 | 0, data = diamonds) 
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -18585.3   -804.8    -18.9    537.4  12731.7 
+  ## 
+  ## Coefficients:
+  ##             Estimate Robust s.e t value Pr(&gt;|t|)    
+  ## (Intercept) -2256.36      16.13  -139.9   &lt;2e-16 ***
+  ## carat        7756.43      25.40   305.4   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1549 on 53938 degrees of freedom
+  ## Multiple R-squared(full model): 0.8493   Adjusted R-squared: 0.8493 
+  ## Multiple R-squared(proj model): 0.8493   Adjusted R-squared: 0.8493 
+  ## F-statistic(full model, *iid*):3.041e+05 on 1 and 53938 DF, p-value: &lt; 2.2e-16 
+  ## F-statistic(proj model): 9.326e+04 on 1 and 53938 DF, p-value: &lt; 2.2e-16
+  ```
+
+---
+# lfe::felm (cont.)
+
+3. Adding fixed effects:
+  
+  ```r
+  felm3 = felm(price ~ carat | cut | 0 | 0, data = diamonds)
+  summary(felm3, robust = T)
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ##    felm(formula = price ~ carat | cut | 0 | 0, data = diamonds) 
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -17540.7   -791.6    -37.6    522.1  12721.4 
+  ## 
+  ## Coefficients:
+  ##       Estimate Robust s.e t value Pr(&gt;|t|)    
+  ## carat  7871.08      24.88   316.3   &lt;2e-16 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1511 on 53934 degrees of freedom
+  ## Multiple R-squared(full model): 0.8565   Adjusted R-squared: 0.8565 
+  ## Multiple R-squared(proj model): 0.8546   Adjusted R-squared: 0.8546 
+  ## F-statistic(full model, *iid*):6.437e+04 on 5 and 53934 DF, p-value: &lt; 2.2e-16 
+  ## F-statistic(proj model): 1.001e+05 on 1 and 53934 DF, p-value: &lt; 2.2e-16
+  ```
+
+--
+Note that fixed effect are not reported!
+
+---
+# lfe::felm (cont.)
+
+4. Adding fixed effects and cluster standard errors:
+  
+  ```r
+  felm4 = felm(price ~ carat | cut | 0 | cut, data = diamonds)
+  summary(felm4) # we don't need robust = T in this case
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ##    felm(formula = price ~ carat | cut | 0 | cut, data = diamonds) 
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -17540.7   -791.6    -37.6    522.1  12721.4 
+  ## 
+  ## Coefficients:
+  ##       Estimate Cluster s.e. t value Pr(&gt;|t|)    
+  ## carat   7871.1        154.8   50.85 8.95e-07 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1511 on 53934 degrees of freedom
+  ## Multiple R-squared(full model): 0.8565   Adjusted R-squared: 0.8565 
+  ## Multiple R-squared(proj model): 0.8546   Adjusted R-squared: 0.8546 
+  ## F-statistic(full model, *iid*):6.437e+04 on 5 and 53934 DF, p-value: &lt; 2.2e-16 
+  ## F-statistic(proj model):  2586 on 1 and 4 DF, p-value: 8.949e-07
+  ```
+
+---
+# lfe::felm (cont.)
+
+5. More fixed effects:
+  
+  ```r
+  felm5 = felm(price ~ carat | cut + color + clarity | 0 | cut, data = diamonds)
+  summary(felm5) # we don't need robust = T in this case
+  ```
+  
+  ```
+  ## 
+  ## Call:
+  ##    felm(formula = price ~ carat | cut + color + clarity | 0 | cut,      data = diamonds) 
+  ## 
+  ## Residuals:
+  ##      Min       1Q   Median       3Q      Max 
+  ## -16813.5   -680.4   -197.7    466.4  10394.8 
+  ## 
+  ## Coefficients:
+  ##       Estimate Cluster s.e. t value Pr(&gt;|t|)    
+  ## carat   8886.1        169.7   52.38 7.95e-07 ***
+  ## ---
+  ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+  ## 
+  ## Residual standard error: 1157 on 53921 degrees of freedom
+  ## Multiple R-squared(full model): 0.9159   Adjusted R-squared: 0.9159 
+  ## Multiple R-squared(proj model):  0.91   Adjusted R-squared:  0.91 
+  ## F-statistic(full model, *iid*):3.264e+04 on 18 and 53921 DF, p-value: &lt; 2.2e-16 
+  ## F-statistic(proj model):  2743 on 1 and 4 DF, p-value: 7.954e-07 
+  ## *** Standard errors may be too high due to more than 2 groups and exactDOF=FALSE
+  ```
+
+---
+# lfe:felm (cont.)
+
+- `felm` uses an approximation algorithm to estimate a model with many fixed effects. The centering on the means is done with a tolerance which by default is 1e-8.
+- So you can set the *tollerance* parameter epsilon (the smaller the epsilon, the more accurate are the estimates but the slower is the computation):
+  
+    `options(lfe.eps=1e-4) #faster results, less accurate`
+
+- By default `lfe` use all the available cores, to limit them: `options(lfe.threads = 2)`
+
+- If you are interested in learning more about `lfe`: https://cran.r-project.org/web/packages/lfe/lfe.pdf
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="libs/cols_macro.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
