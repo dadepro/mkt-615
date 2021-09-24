@@ -177,7 +177,7 @@ pre code {
 flights %&gt;%
   anti_join(planes, by = &quot;tailnum&quot;) %&gt;%
   count(carrier, sort = TRUE)</code></pre>
-<pre><code>## # A tibble: 10 × 2
+<pre><code>## # A tibble: 10 x 2
 ##    carrier     n
 ##    &lt;chr&gt;   &lt;int&gt;
 ##  1 MQ      25397
@@ -190,29 +190,33 @@ flights %&gt;%
 ##  8 DL        110
 ##  9 F9         50
 ## 10 WN         38</code></pre>
+<p>data.table solution:</p>
+<pre class="r"><code>flights_dt = data.table(flights)
+planes_dt = data.table(planes)
+test = merge(flights_dt, planes_dt, by = &quot;tailnum&quot;, all.x = T)
+test = test[is.na(seats)]
+test[, list(count=.N), by = carrier][order(-count)]</code></pre>
+<pre><code>##     carrier count
+##  1:      MQ 25397
+##  2:      AA 22558
+##  3:      UA  1693
+##  4:      9E  1044
+##  5:      B6   830
+##  6:      US   699
+##  7:      FL   187
+##  8:      DL   110
+##  9:      F9    50
+## 10:      WN    38</code></pre>
 </div>
 <div id="q2-filter-flights-to-only-show-flights-with-planes-that-have-flown-at-least-100-flights." class="section level3">
 <h3>Q2: Filter flights to only show flights with planes that have flown at least 100 flights.</h3>
-<pre class="r"><code>flights %&gt;% 
+<pre class="r"><code>out = flights %&gt;% 
   group_by(tailnum) %&gt;% 
   filter(n() &gt; 100) </code></pre>
-<pre><code>## # A tibble: 229,202 × 19
-## # Groups:   tailnum [1,201]
-##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
-##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
-##  1  2013     1     1      517            515         2      830            819
-##  2  2013     1     1      533            529         4      850            830
-##  3  2013     1     1      544            545        -1     1004           1022
-##  4  2013     1     1      554            558        -4      740            728
-##  5  2013     1     1      555            600        -5      913            854
-##  6  2013     1     1      557            600        -3      709            723
-##  7  2013     1     1      557            600        -3      838            846
-##  8  2013     1     1      558            600        -2      849            851
-##  9  2013     1     1      558            600        -2      853            856
-## 10  2013     1     1      558            600        -2      923            937
-## # … with 229,192 more rows, and 11 more variables: arr_delay &lt;dbl&gt;,
-## #   carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;,
-## #   air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+<p>data.table solution:</p>
+<pre class="r"><code>out_dt = flights_dt[, total_flights:=.N, by = tailnum][total_flights &gt; 100][, total_flights:=NULL]
+isTRUE(all_equal(data.table(out),out_dt))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="q3-find-the-48-hours-by-flight-origin-over-the-course-of-the-whole-year-that-have-the-worst-delays.-cross-reference-it-with-the-weather-data.-can-you-see-any-patterns-hint-look-at-the-function-difftime-to-compute-hours-from-time_hours" class="section level3">
 <h3>Q3: Find the 48 hours by flight <code>origin</code> (over the course of the whole year) that have the worst delays. Cross-reference it with the <code>weather</code> data. Can you see any patterns? (Hint: look at the function difftime to compute hours from time_hours)</h3>
@@ -225,7 +229,7 @@ flights_weather %&gt;%
                                mean_visib = mean(visib, na.rm = T),
                                mean_sp = mean(wind_speed, na.rm = T)) %&gt;% arrange(desc(mean_delay))</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;time&#39;. You can override using the `.groups` argument.</code></pre>
-<pre><code>## # A tibble: 552 × 6
+<pre><code>## # A tibble: 552 x 6
 ## # Groups:   time [184]
 ##     time origin mean_delay mean_tmp mean_visib mean_sp
 ##    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
@@ -240,6 +244,26 @@ flights_weather %&gt;%
 ##  9   110 EWR          46.4     78.8       9.52    9.64
 ## 10   110 LGA          46.2     78.8       9.57   10.7 
 ## # … with 542 more rows</code></pre>
+<p>data.table solution:</p>
+<pre class="r"><code>weather_dt = data.table(weather)
+flights_weather_dt = merge(flights_dt, weather_dt, by = c(&quot;year&quot;, &quot;month&quot;, &quot;day&quot;, &quot;hour&quot;, &#39;time_hour&#39;, &#39;origin&#39;), all.x = T)
+flights_weather_dt[, time := as.numeric(round(difftime(time_hour, as.Date(&quot;2013-01-01 00:00:00&quot;), units = &#39;hours&#39;)/48))]
+flights_weather_dt[, list(mean_delay = mean(arr_delay, na.rm =T),
+                          mean_tmp = mean(temp, na.rm = T),
+                          mean_visib = mean(visib, na.rm = T),
+                          mean_sp = mean(wind_speed, na.rm = T)) , by = list(time, origin)][order(-mean_delay)]</code></pre>
+<pre><code>##      time origin mean_delay mean_tmp mean_visib   mean_sp
+##   1:   33    EWR   60.32447 36.12345   5.913869 17.797611
+##   2:   89    JFK   51.84734 77.12643   8.847244 11.968112
+##   3:   71    LGA   51.56371 69.86159   6.760797 10.072192
+##   4:  171    EWR   50.26381 33.42023   5.785246  9.034566
+##   5:  110    JFK   49.09375 75.87560   8.265230 14.098337
+##  ---                                                     
+## 548:  118    LGA  -17.29569 75.03325  10.000000  8.712040
+## 549:  137    JFK  -17.32746 73.59014   9.941901  9.656017
+## 550:  137    LGA  -17.38073 74.69205  10.000000  7.678873
+## 551:  124    LGA  -17.39571 69.54447  10.000000  9.227388
+## 552:  125    EWR  -18.79151 74.39466  10.000000 10.798778</code></pre>
 </div>
 <div id="q4-what-does-anti_joinflights-airports-by-cdest-faa-tell-you-what-does-anti_joinairports-flights-by-cfaa-dest-tell-you" class="section level3">
 <h3>Q4: What does anti_join(flights, airports, by = c(“dest” = “faa”)) tell you? What does anti_join(airports, flights, by = c(“faa” = “dest”)) tell you?</h3>
@@ -254,7 +278,7 @@ flights_weather %&gt;%
   group_by(tailnum) %&gt;%
   summarize(unique_carriers = n_distinct(carrier)) %&gt;%
   filter(!is.na(tailnum) &amp; unique_carriers&gt;1)</code></pre>
-<pre><code>## # A tibble: 17 × 2
+<pre><code>## # A tibble: 17 x 2
 ##    tailnum unique_carriers
 ##    &lt;chr&gt;             &lt;int&gt;
 ##  1 N146PQ                2
@@ -274,12 +298,37 @@ flights_weather %&gt;%
 ## 15 N989AT                2
 ## 16 N990AT                2
 ## 17 N994AT                2</code></pre>
+<p>data.table solution:</p>
+<pre class="r"><code>flights_dt[, list(unique_carriers = length(unique(carrier))), by = list(tailnum)][unique_carriers &gt; 1 &amp; !is.na(tailnum)]</code></pre>
+<pre><code>##     tailnum unique_carriers
+##  1:  N978AT               2
+##  2:  N977AT               2
+##  3:  N935AT               2
+##  4:  N232PQ               2
+##  5:  N933AT               2
+##  6:  N990AT               2
+##  7:  N146PQ               2
+##  8:  N153PQ               2
+##  9:  N981AT               2
+## 10:  N979AT               2
+## 11:  N181PQ               2
+## 12:  N989AT               2
+## 13:  N176PQ               2
+## 14:  N228PQ               2
+## 15:  N994AT               2
+## 16:  N200PQ               2
+## 17:  N197PQ               2</code></pre>
 </div>
 <div id="q6-combine-fueleconomyvehicles-and-fueleconomycommon-to-find-only-the-records-for-the-most-common-models." class="section level3">
 <h3>Q6: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.</h3>
-<pre class="r"><code>com_models = fueleconomy::common %&gt;% 
-  semi_join(fueleconomy::vehicles)</code></pre>
-<pre><code>## Joining, by = c(&quot;make&quot;, &quot;model&quot;)</code></pre>
+<pre class="r"><code>com_models = vehicles %&gt;% 
+  semi_join(common, by = c(&quot;make&quot;, &quot;model&quot;))</code></pre>
+<p>data.table solution:</p>
+<pre class="r"><code>vehicles_dt = data.table(vehicles)
+common_dt = data.table(common)
+com_models_dt = merge(vehicles_dt, common_dt[, .(make, model)], by = c(&quot;make&quot;, &quot;model&quot;))
+isTRUE(all_equal(data.table(com_models),com_models_dt))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 
 

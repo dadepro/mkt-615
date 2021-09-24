@@ -7,6 +7,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(nycflights13)
 library(tidyverse)
+library(data.table)
+library(fueleconomy)
 ```
 
 ### Q1: What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
@@ -23,14 +25,30 @@ flights %>%
   count(carrier, sort = TRUE)
 ```
 
+data.table solution:
+
+```{r, eval= T}
+flights_dt = data.table(flights)
+planes_dt = data.table(planes)
+test = merge(flights_dt, planes_dt, by = "tailnum", all.x = T)
+test = test[is.na(seats)]
+test[, list(count=.N), by = carrier][order(-count)]
+```
+
 ### Q2: Filter flights to only show flights with planes that have flown at least 100 flights.
 
 ```{r, eval= T}
-flights %>% 
+out = flights %>% 
   group_by(tailnum) %>% 
   filter(n() > 100) 
 ```
 
+data.table solution:
+
+```{r, eval= T}
+out_dt = flights_dt[, total_flights:=.N, by = tailnum][total_flights > 100][, total_flights:=NULL]
+isTRUE(all_equal(data.table(out),out_dt))
+```
 
 ### Q3: Find the 48 hours by flight `origin` (over the course of the whole year) that have the worst delays. Cross-reference it with the `weather` data. Can you see any patterns? (Hint: look at the function difftime to compute hours from time_hours)
 
@@ -43,6 +61,18 @@ flights_weather %>%
                                mean_tmp = mean(temp, na.rm = T),
                                mean_visib = mean(visib, na.rm = T),
                                mean_sp = mean(wind_speed, na.rm = T)) %>% arrange(desc(mean_delay))
+```
+
+data.table solution:
+
+```{r, eval= T}
+weather_dt = data.table(weather)
+flights_weather_dt = merge(flights_dt, weather_dt, by = c("year", "month", "day", "hour", 'time_hour', 'origin'), all.x = T)
+flights_weather_dt[, time := as.numeric(round(difftime(time_hour, as.Date("2013-01-01 00:00:00"), units = 'hours')/48))]
+flights_weather_dt[, list(mean_delay = mean(arr_delay, na.rm =T),
+                          mean_tmp = mean(temp, na.rm = T),
+                          mean_visib = mean(visib, na.rm = T),
+                          mean_sp = mean(wind_speed, na.rm = T)) , by = list(time, origin)][order(-mean_delay)]
 ```
 
 ### Q4: What does anti_join(flights, airports, by = c(“dest” = “faa”)) tell you? What does anti_join(airports, flights, by = c(“faa” = “dest”)) tell you?
@@ -63,10 +93,23 @@ flights %>%
   filter(!is.na(tailnum) & unique_carriers>1)
 ```
 
+data.table solution:
+```{r, eval= T}
+flights_dt[, list(unique_carriers = length(unique(carrier))), by = list(tailnum)][unique_carriers > 1 & !is.na(tailnum)]
+```
+
+
 ### Q6: Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
 
 ```{r, eval= T}
-com_models = fueleconomy::common %>% 
-  semi_join(fueleconomy::vehicles)
+com_models = vehicles %>% 
+  semi_join(common, by = c("make", "model"))
 ```
 
+data.table solution:
+```{r, eval= T}
+vehicles_dt = data.table(vehicles)
+common_dt = data.table(common)
+com_models_dt = merge(vehicles_dt, common_dt[, .(make, model)], by = c("make", "model"))
+isTRUE(all_equal(data.table(com_models),com_models_dt))
+```
