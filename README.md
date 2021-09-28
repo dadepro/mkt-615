@@ -16,4 +16,4 @@ For more information about this class, take a look at the **[Syllabus](https://g
     2. [data.table](https://raw.githack.com/dadepro/mkt-615/main/lectures/06-datatable/06-datatable.html)
     3. [ggplot](https://raw.githack.com/dadepro/mkt-615/main/lectures/07-dataviz/07-dataviz.html)
 6. Lecture 6: [Regressions](https://raw.githack.com/dadepro/mkt-615/main/lectures/08-regression/08-regressions.html)
-7. Lecture 7: Data storage using MySQL
+7. Lecture 7: [Data storage using MySQL](#https://raw.githack.com/dadepro/mkt-615/main/lectures/09-mysql/09-mysql.html)
