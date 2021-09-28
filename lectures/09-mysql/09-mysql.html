@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT615: Data Storytelling for Marketers</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# MKT615: Data Storytelling for Marketers
+## Lecture 7: MySQL
+### Davide Proserpio
+### Marshall School of Business
+
+---
+
+
+&lt;style type="text/css"&gt;
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.large4 { font-size: 400% }
+.large2 { font-size: 200% }
+.small90 { font-size: 90% }
+.small75 { font-size: 75% }
+&lt;/style&gt;
+
+
+# Table of contents
+
+1. [Checklist](#check)
+
+2. [Databases](#db)
+
+3. [MySQL](#mysql)
+
+4. [MySQL Commands](#commands)
+
+5. [MySQL Operators](#operators)
+
+6. [Connect to a DB using R](#R)
+
+---
+name: check
+
+# Checklist
+
+- GUI for MySQL: [Sequel Pro](https://www.sequelpro.com/) (Mac) or [MySQL Workbench](https://www.mysql.com/products/workbench/) (Windows)
+
+- R libraries: **RMySQL**, **ggplot2**, **dplyr**, **data.table**, **ggthemes**, **tidyverse**
+
+---
+class: inverse, center, middle
+name:db
+
+# Database
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+
+---
+
+# What is a database?
+
+- A database is an application that stores a collection of data in the form of tables
+
+- Each database has one or more distinct APIs for creating, accessing, managing, searching and replicating the data it holds.
+
+- Nowadays, we use Relational Database Management Systems (RDBMS) to store and manage huge volume of data. They are called relational database because all the data is stored into different tables and relations are established using keys (Primary or Foreign.
+
+- RDBMS makes it possible to analyze data in different ways while simultaneously keeping it organized in a systematic fashion, with minimal redundancy.
+
+---
+name:mysql
+
+# MySQL
+
+- MySQL is a fast, easy-to-use RDBMS being used for many small and big businesses. MySQL is presently developed, distributed, and supported by Oracle Corporation.
+
+- MySQL is becoming so popular because of many good reasons:
+  - MySQL is released under an open-source license. So you have nothing to pay to use it.
+
+  - MySQL used for both small and large applications.
+
+  - MySQL is fast, reliable, and flexible and easy to use.
+  
+  - MySQL supports standard SQL (Structured Query Language).
+  
+  - MySQL Handles large databases.
+
+---
+
+# Some important notions
+
+
+- **Database connection**
+  - A database typically resides on a remote PC (host)
+  
+  - Before being able to do any operations on a DB, the client needs to connect to the PC hosting MySQL server using username and password.
+
+---
+
+# Some important notions (cont.)
+  
+- **Primary Key** 
+  - Uniquely identify a row in a Table.
+  
+  - Every table should have a primary key
+  
+  - Useful to avoid duplicates when updating the table
+---
+
+# Some important notions (cont.)
+
+- **Indexes (extremely important!)** 
+  
+  - Are used to find rows with specific column values quickly. Without an index, MySQL must begin with the first row and then read through the entire table to find the relevant rows. The larger the table, the more this costs. 
+
+  - If the table has an index for the columns in question, MySQL can quickly determine the position to seek to in the middle of the data file without having to look at all the data. This is much faster than reading every row sequentially.
+
+  - So it is important to set indexes for the variables on which we are going to make some operation (join, filter, etc.)
+
+  - Note that Primary Keys are indexes so there is no need to create an index for the column that is the Primary Key
+
+---
+
+# Data types
+
+MySQL uses many different data types broken into three categories:
+
+1. Numeric (int, float, decimal, etc)
+
+2. Date and Time (date, datetime, timestamp, etc.)
+
+3. String Types (varchar, text, etc.)
+
+[Here](https://www.tutorialspoint.com/mysql/mysql-data-types.htm) you can find a description of each of them
+
+---
+# Database for today's practice
+
+- List of Yelp restaurant available in LA county
+
+- Three tables:
+  - yelp_lacounty_businesses: list of restaurants, PK=business_id
+  - yelp_lacounty_reviews: list of all restaurant reviews, PK= review_id
+  - yelp_lacounty_users: list of all Yelp users that wrote the reviews in yelp_lacounty_reviews, PK=user_id
+
+- Note that I alredy create a bunch of indexes that are going to be useful today.
+
+---
+class: inverse, center, middle
+name:commands
+
+# MySQL Commands
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+
+---
+
+# Basic syntax
+
+- MySQL is case insensitive but usually MySQL commands/operators/functions are upper case: SELECT, DROP, etc.
+
+- Comments are preceeded by `#` or `--` .
+
+- `NULL` means that there is not value for a specif row or rows (PKs cannot be `NULL`).
+
+- Equality is `=` (not double equal).
+
+- You can create tables and columns aliases: `column1 AS c1`; `table1 as t1`.
+
+- Queries end with `;`.
+---
+
+# Data Definition Language
+
+- CREATE
+
+- DROP
+
+- TRUNCATE
+
+- ALTER
+
+---
+
+# Data Definition Language (cont.)
+
+**CREATE** - to create a database and its objects like table, index, primary key, etc.
+
+Examples
+
+- CREATE DATABASE: creates a new database
+  
+  
+  ```sql
+  CREATE DATABASE databasename;`
+  ```
+  
+- CREATE TABLE: creates a new table
+  
+  ```sql
+  CREATE TABLE table_name (
+  column_1 datatype,
+  column_2 datatype,
+  column_3 datatype
+  );
+  ```
+
+- CREATE INDEX — creates an index
+  
+  ```sql
+  CREATE INDEX index_name
+  ON table_name (column_name1, column_name2…);
+  ```
+
+---
+# Data Definition Language (cont.)
+
+**DROP** - deletes objects from the database
+
+Examples
+
+- DROP DATABASE - delete a database
+  
+  ```sql
+  DROP DATABASE database_name;
+  ```
+  
+- DROP TABLE — deletes a table
+  
+  ```sql
+  DROP TABLE table_name;
+  ```
+
+---
+# Data Definition Language (cont.)
+
+**TRUNCATE** - remove all records from a table
+  
+  ```sql
+  TRUNCATE table_name;
+  ```
+---
+# Data Definition Language (cont.)
+
+- ALTER TABLE — modifies a table (add column, drop index, etc.)
+  
+  ```sql
+  # Add a column
+  ALTER TABLE table_name
+  ADD column_name datatype;
+  
+  # Drop a column
+  ALTER TABLE table_name
+  DROP COLUMN column_name;
+  
+  # Drop an index
+  ALTER TABLE table_name
+  DROP INDEX index_name;
+  ```
+
+
+---
+
+# Data Manipulation Language
+
+- SELECT
+
+- INSERT
+
+- UPDATE
+
+- DELETE
+---
+
+# Data Manipulation Language (cont.)
+
+- SELECT - Extracts data from a database
+
+  
+  ```sql
+  SELECT colum_name(s)
+  FROM table_name
+  ```
+
+  P.S.: `SELECT *` selects all the rows
+
+---
+# Data Manipulation Language (cont.)
+
+- INSERT - Insert data into a table
+  
+  ```sql
+  INSERT INTO table_name (column_1, column_2, column_3)
+  VALUES (value_1, ‘value_2’, value_3);
+  ```
+---
+# Data Manipulation Language (cont.)
+
+- UPDATE - updates existing data within a table
+  
+  ```sql
+  UPDATE table_name
+  SET some_column = some_value
+  WHERE some_column = some_value;
+  ```
+
+---
+# Data Manipulation Language (cont.)
+
+- DELETE - deletes data from a database
+  
+  ```sql
+  DELETE FROM table_name
+  WHERE some_column = some_value;
+  ```
+
+---
+class: inverse, center, middle
+name:operators
+
+# MySQL Operators
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+
+---
+
+# Operators and functions
+
+Most of data manipulation function can be combined with a MySQL operators and functions. We already saw `WHERE`, but there are many more.
+Let's see some of them.
+
+---
+# Sorting the data
+
+- ORDER BY - order the data in ascending (ASC) or descending order (DESC)
+
+---
+# Filtering the data
+
+- WHERE - filter rows based on specified conditions
+
+- DISTINCT - return distinct row values (eliminate duplicated records)
+
+- AND, OR - Boolean operators
+
+- IN, NOT IN - check if rows are (NOT) in a set of values.
+
+- BETWEEN - query data based on a range.
+
+- LIKE - query data based on a pattern.
+
+- LIMIT - limit the number of rows returned by a query.
+
+- IS NULL - test whether a value is NULL.
+
+---
+# Filtering the data (cont.)
+
+Let's practice with what we have learned so far.
+
+1. Create a query that returns all restaurant in the city of Los Angeles
+
+2. Create a query that returns 1-star and 5-stars reviews.
+
+3. Create a query that returns a list of unique restaurant cities.
+
+4. Create a query that returns all Italian restaurants
+
+---
+# Grouping the data
+
+- GROUP BY - group data by some variables.
+  
+  ```sql
+  SELECT col1, max(col2), min(col3) 
+  FROM table_name
+  GROUP BY col1;
+  ```
+P.S.: You can use variables "position" in the group by operator, e.g.:
+  
+  ```sql
+  SELECT col1, max(col2), min(col3) 
+  FROM table_name
+  GROUP BY 1; # means group by the first colum
+  ```
+
+- HAVING - filter the groups by a specific condition. 
+
+  
+  ```sql
+  SELECT col1, max(col2) AS a, min(col3) AS b # Note the cols aliases 
+  FROM table_name
+  GROUP BY col1
+  HAVING a &gt; 30
+  ```
+---
+# Grouping the data (count.)
+
+Let's practice these two operators.
+
+1. Create a query that returns the number of restaurants by city in descending order (Hint.: use `count(*)` to count records in a group)
+
+2. As above, but exclude cities with less that 1000 restaurants
+
+
+---
+# Set operators
+
+- UNION - combine two or more results set into one. By default it returns only distinct values. To allow duplicates use UNION ALL.
+  
+  ```sql
+  SELECT col1, col2 
+  FROM table1
+  UNION
+  SELECT col1, col2
+  from table2
+  ```
+- INTERSECT - return the intersection of two or more results set.
+  
+  ```sql
+  SELECT col1, col2 
+  FROM table1
+  INTERSECT
+  SELECT col1, col2
+  from table2
+  ```
+
+Note that columns types (not names) need to match
+---
+
+# Joining tables
+
+- JOIN - returns common records.
+  
+  ```sql
+  SELECT f.col1, f.col2, s.col1 
+  FROM table1 f # note the table alias
+  JOIN table2 s on f.col2 = s.col2 
+  
+  ```
+Note that if the joining column name is the same you can replace `ON` with `USING(colname)`.
+
+- LEFT JOIN - returns all records of the first table.
+
+- RIGHT JOIN - return all records of the second table.
+
+---
+# Conditional statements
+
+
+```sql
+IF(condition, 
+   what to do if condition is TRUE, 
+   what to do if condition is FALSE)
+```
+
+Example:
+  
+  ```sql
+  SELECT col1, IF(col2&gt;5,1,0)
+  from table1
+  ```
+
+
+---
+
+
+# Mathematical operators
+
+- count()
+
+- sum()
+
+- avg()
+
+- min()
+
+- max()
+
+---
+
+# String functions
+
+There are a ton of string manipulation functions, some of them are:
+
+- CHAR_LENGTH (LENGTH) - return length of a string in characters (bytes)
+
+- SUBSTRING_INDEX - split a string using a delimiter and return a subset of it
+
+- SUBSTR - return a subset of a string
+  
+- CONCAT - concatenates two strings
+
+- REPLACE - replace a string pattern with another one
+
+For more, see https://dev.mysql.com/doc/refman/8.0/en/string-functions.html
+
+
+---
+
+# More practice exercises
+
+1. Create a query that returns count the average length of a review and average number of photos by star-rating
+
+2. Count the number of reviews containing the word "sorry" by star-rating
+
+---
+
+class: inverse, center, middle
+name:R
+
+# Use R to connect to my MySQL
+
+&lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
+
+---
+
+
+# RMySQL
+
+Connect to the DB:
+
+```sql
+library(data.table)
+library(RMySQL)
+
+mydb = dbConnect(MySQL(), 
+                 user='proserpi', 
+                 password= rstudioapi::askForPassword("Database password"), 
+                 dbname='mkt615', 
+                 host='mshresearch.marshall.usc.edu')
+```
+
+--
+
+Execute a query:
+
+```sql
+rs = dbSendQuery(mydb, query_string)
+data = data.table(fetch(rs, n=-1))
+```
+
+---
+
+# RMySQL
+
+Let's practice. Open Rstudio, connect to the practice DB and:
+
+1. Create a query that returns the average ratings by city. Create a barplot of the top-10 cites by average rating in descending order.
+
+2. Create a query that for each review, returns the restaurant ID, review ID, star-rating, review length, number of photos, review_date. Regress star-rating against review length and photos. Plot review length and photos by star-rating using a boxplot.
+
+3. Plot average number of reviews by (1) year-month and (2) by month
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="libs/cols_macro.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
