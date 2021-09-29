@@ -47,12 +47,14 @@ class: center, middle, inverse, title-slide
 
 6. [Connect to a DB using R](#R)
 
+7. [Import CSV files][#csv]
+
 ---
 name: check
 
 # Checklist
 
-- GUI for MySQL: [Sequel Pro](https://www.sequelpro.com/) (Mac) or [MySQL Workbench](https://www.mysql.com/products/workbench/) (Windows)
+- Database management application for MySQL: [Sequel Pro](https://www.sequelpro.com/) (Mac) or [MySQL Workbench](https://www.mysql.com/products/workbench/) (Windows)
 
 - R libraries: **RMySQL**, **ggplot2**, **dplyr**, **data.table**, **ggthemes**, **tidyverse**
 
@@ -104,6 +106,8 @@ name:mysql
   - A database typically resides on a remote PC (host)
   
   - Before being able to do any operations on a DB, the client needs to connect to the PC hosting MySQL server using username and password.
+  
+  - Let's see how to do it with a database management application such as Sequel Pro or MySQL Workbench
 
 ---
 
@@ -153,7 +157,7 @@ MySQL uses many different data types broken into three categories:
   - yelp_lacounty_reviews: list of all restaurant reviews, PK= review_id
   - yelp_lacounty_users: list of all Yelp users that wrote the reviews in yelp_lacounty_reviews, PK=user_id
 
-- Note that I alredy create a bunch of indexes that are going to be useful today.
+- Note that I already created a bunch of indexes that are going to be useful today.
 
 ---
 class: inverse, center, middle
@@ -528,9 +532,8 @@ name:R
 ---
 
 
-# RMySQL
+# RMySQL: Connect to DB
 
-Connect to the DB:
 
 ```sql
 library(data.table)
@@ -543,8 +546,9 @@ mydb = dbConnect(MySQL(),
                  host='mshresearch.marshall.usc.edu')
 ```
 
---
+---
 
+# RMySQL: Query DB
 Execute a query:
 
 ```sql
@@ -554,7 +558,18 @@ data = data.table(fetch(rs, n=-1))
 
 ---
 
-# RMySQL
+# RMySQL: Write to DB
+
+
+```sql
+dbWriteTable(db_connection, 
+             value = data.table or data.fram, 
+             name = "MyTable", 
+             append = TRUE, 
+             row.names=FALSE) 
+```
+---
+
 
 Let's practice. Open Rstudio, connect to the practice DB and:
 
@@ -563,6 +578,36 @@ Let's practice. Open Rstudio, connect to the practice DB and:
 2. Create a query that for each review, returns the restaurant ID, review ID, star-rating, review length, number of photos, review_date. Regress star-rating against review length and photos. Plot review length and photos by star-rating using a boxplot.
 
 3. Plot average number of reviews by (1) year-month and (2) by month
+
+---
+name:csv
+
+# Import CSV files to DB
+
+- Extremely easy using a database management application
+
+- Also possible using a query
+
+  Step 1: Create Table:
+    
+    ```sql
+    CREATE TABLE discounts (
+    id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+    );
+    ```
+  Step 2: Import file:
+    
+    ```sql
+    LOAD DATA INFILE 'c:/tmp/discounts.csv' 
+    INTO TABLE discounts 
+    FIELDS TERMINATED BY ',' 
+    ENCLOSED BY '"'
+    LINES TERMINATED BY '\n'
+    IGNORE 1 ROWS; # skip headers
+    ```
+  
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
