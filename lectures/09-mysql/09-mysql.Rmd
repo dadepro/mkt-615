@@ -62,7 +62,7 @@ opts_chunk$set(
 
 6. [Connect to a DB using R](#R)
 
-7. [Import CSV files][#csv]
+7. [Import CSV files](#csv)
 
 ---
 name: check
@@ -90,7 +90,7 @@ name:db
 
 - Each database has one or more distinct APIs for creating, accessing, managing, searching and replicating the data it holds.
 
-- Nowadays, we use Relational Database Management Systems (RDBMS) to store and manage huge volume of data. They are called relational database because all the data is stored into different tables and relations are established using keys (Primary or Foreign.
+- Nowadays, we use Relational Database Management Systems (RDBMS) to store and manage huge volume of data. They are called relational database because all the data is stored into different tables and relations are established using keys (Primary or Foreign).
 
 - RDBMS makes it possible to analyze data in different ways while simultaneously keeping it organized in a systematic fashion, with minimal redundancy.
 
@@ -110,7 +110,7 @@ name:mysql
   
   - MySQL supports standard SQL (Structured Query Language).
   
-  - MySQL Handles large databases.
+  - MySQL handles large databases.
 
 ---
 
@@ -143,6 +143,8 @@ name:mysql
   - Are used to find rows with specific column values quickly. Without an index, MySQL must begin with the first row and then read through the entire table to find the relevant rows. The larger the table, the more this costs. 
 
   - If the table has an index for the columns in question, MySQL can quickly determine the position to seek to in the middle of the data file without having to look at all the data. This is much faster than reading every row sequentially.
+  
+  - Indexes can be create with one or more columns
 
   - So it is important to set indexes for the variables on which we are going to make some operation (join, filter, etc.)
 
@@ -168,11 +170,14 @@ MySQL uses many different data types broken into three categories:
 - List of Yelp restaurant available in LA county
 
 - Three tables:
-  - yelp_lacounty_businesses: list of restaurants, PK=business_id
-  - yelp_lacounty_reviews: list of all restaurant reviews, PK= review_id
-  - yelp_lacounty_users: list of all Yelp users that wrote the reviews in yelp_lacounty_reviews, PK=user_id
+  1. yelp_lacounty_businesses: list of restaurants, PK=business_id
+  
+  2. yelp_lacounty_reviews: list of all restaurant reviews, PK= review_id
+  
+  3. yelp_lacounty_users: list of all Yelp users that wrote the reviews in yelp_lacounty_reviews, PK=user_id
 
 - Note that I already created a bunch of indexes that are going to be useful today.
+- Let's get familiar with the application...
 
 ---
 class: inverse, center, middle
@@ -189,7 +194,7 @@ name:commands
 
 - MySQL is case insensitive but usually MySQL commands/operators/functions are upper case: SELECT, DROP, etc.
 
-- Comments are preceeded by `#` or `--` .
+- Comments are preceded by `#` or `--` .
 
 - `NULL` means that there is not value for a specif row or rows (PKs cannot be `NULL`).
 
@@ -233,7 +238,7 @@ Examples
   );
   ```
 
-- CREATE INDEX — creates an index
+- CREATE INDEX: creates an index
   ```{sql createidx, eval=FALSE}
   CREATE INDEX index_name
   ON table_name (column_name1, column_name2…);
@@ -346,7 +351,7 @@ name:operators
 
 # Operators and functions
 
-Most of data manipulation function can be combined with a MySQL operators and functions. We already saw `WHERE`, but there are many more.
+Most of the data manipulation function can be combined with a MySQL operators and functions. We already saw `WHERE`, but there are many more.
 Let's see some of them.
 
 ---
@@ -403,7 +408,6 @@ P.S.: You can use variables "position" in the group by operator, e.g.:
   ```
 
 - HAVING - filter the groups by a specific condition. 
-
   ```{sql having, eval=FALSE}
   SELECT col1, max(col2) AS a, min(col3) AS b # Note the cols aliases 
   FROM table_name
@@ -535,9 +539,9 @@ library(data.table)
 library(RMySQL)
 
 mydb = dbConnect(MySQL(), 
-                 user='proserpi', 
+                 user='username', 
                  password= rstudioapi::askForPassword("Database password"), 
-                 dbname='mkt615', 
+                 dbname='database-name', 
                  host='mshresearch.marshall.usc.edu')
 ```
 
