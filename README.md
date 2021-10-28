@@ -9,7 +9,7 @@ For more information about this class, take a look at the **[Syllabus](https://g
 
 1. Lecture 1: [Introduction](https://raw.githack.com/dadepro/mkt-615/main/lectures/01-intro/01-intro.html)
 2. Lecture 2: [Git](https://raw.githack.com/dadepro/mkt-615/main/lectures/02-git/02-git.html)
-3. Lecture 3: [Shell](https://raw.githack.com/dadepro/mkt-615/main/lectures/03-shell/03-shell.html)
+3. Lecture 3: [Shell](https://rawcdn.githack.com/dadepro/mkt-615/3aa17b2e6e0c1bec0533a852554238a6914f16da/lectures/03-shell/03-shell.html)
 4. Lecture 4: [Introduction to R](https://raw.githack.com/dadepro/mkt-615/main/lectures/04-rbasics/04-rbasics.html)
 5. Lecture 5: Data manipulation and visualization
     1. [tidyverse](https://raw.githack.com/dadepro/mkt-615/main/lectures/05-tidyverse/05-tidyverse.html)
