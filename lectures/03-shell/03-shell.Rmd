@@ -15,6 +15,7 @@ output:
       ratio: "16:9"
 
 ---
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(hrbrthemes)
