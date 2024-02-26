@@ -3,7 +3,7 @@ title: "MKT615: Data Storytelling for Marketers"
 subtitle: "Lecture 1: Introduction"
 author: "Davide Proserpio"
 institute: "Marshall School of Business"
-date: "08/25/2021" #(updated: `r Sys.Date()`)"
+date: "03/04/2024" #(updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -27,7 +27,7 @@ library(scales)
 
 ### About me
 
-`r fa('graduation-cap')` Assistant Professor of Marketing
+`r fa('graduation-cap')` Associate Professor of Marketing
 
 `r fa('address-book')` [Davide Proserpio](https://dadepro.github.io/)
 
@@ -48,7 +48,7 @@ class: inverse, center, middle
 
 # Course: Data Storytelling for Marketing
 
-I will teach the first **seven weeks** (then Dinesh will take over), so our last class will be October 6.
+<!-- I will teach the first **seven weeks** (then Dinesh will take over), so our last class will be October 6. -->
 
 --
 
@@ -66,7 +66,7 @@ What will we learn?
 - We will focus on practical skill and tools that will benfit your research process
   1. Project management
   2. Version control (Git and GitHub)
-  3. Accessing computing resources at USC (Shell)
+  3. Accessing computing resources (Shell)
   3. Data manipulation, cleaning, visualization (R)
   4. Data storage (MySQL)
 
@@ -253,7 +253,7 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
   - Check R version from RStudio: 
       ```{r eval=FALSE}
       version$version.string
-    ```
+      ```
   - Check RStudio version: 
       ```{r eval=FALSE}
         RStudio.Version()$version
