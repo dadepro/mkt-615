@@ -108,7 +108,7 @@ The starting point for our workflow is to link a GitHub repository (i.e. "repo")
 5. Paste your copied link into the "Repository URL:" box.
 6. Choose the project path ("Create project as subdirectory of:") and click **Create Project**
 
-.footnote[<sup>1</sup> It's easiest to start with HTTPS, but <a href="http://happygitwithr.com/ssh-keys.html#ssh-keys" target="_blank">SSH</a> is advised for more advanced users.]
+.footnote[<sup>1</sup> It's easier to start with HTTPS, but <a href="http://happygitwithr.com/ssh-keys.html#ssh-keys" target="_blank">SSH</a> is advised for more advanced users.]
 
 --
 
@@ -195,7 +195,7 @@ NB aside: Always pull from the upstream repo *before* you push any changes. Seri
 
 --
 
-PS — You were likely challenged for your GitHub credentials at some point. Learn how to cache these and how to use a personal access token (we discussed this in the [previous lecture](https://raw.githack.com/dadepro/mkt-615/main/lectures/01-intro/01-intro.html#20)) [here](https://happygitwithr.com/credential-caching.html)
+<!-- PS — You were likely challenged for your GitHub credentials at some point. Learn how to cache these and how to use a personal access token (we discussed this in the [previous lecture](https://raw.githack.com/dadepro/mkt-615/main/lectures/01-intro/01-intro.html#20)) [here](https://happygitwithr.com/credential-caching.html) -->
 
 <!-- -- -->
 
@@ -477,7 +477,7 @@ Once that's done, you should be able to stage, commit, pull and finally push you
 
 Caveats
 - P1 gets to decide what to keep because they fixed the merge conflict.
-- OTOH, the full commit history is preserved, so P2 can always recover their changes if desired.
+- The full commit history is preserved, so P2 can always recover their changes if desired.
 - A more elegant and democratic solution to merge conflicts (and repo changes in general) is provided by Git **branches**. We'll get there next
 
 ---

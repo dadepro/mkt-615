@@ -159,12 +159,12 @@ Some topics for the short presentations:
 
 Other points:
 - You will be submitting all of your assignments as R Markdown documents.
-- My lecture slides and notes are all written in R Markdown too. (E.g. This slide deck is built using the [**xaringan**](https://github.com/yihui/xaringan/wiki))
+- My lecture slides and notes are all written in R Markdown too. (E.g., This slide deck is built using the [**xaringan**](https://github.com/yihui/xaringan/wiki))
 
 Resources:
 - Website: https://rmarkdown.rstudio.com
 - Cheatsheat: 
-  - https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf
+  - https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf
   - https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
 - Book: [*R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown) (Yihui Xie, JJ Allaire, and Garrett Grolemund)
 
@@ -254,11 +254,12 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
   - Check R version from RStudio: 
       ```{r eval=FALSE}
       version$version.string
+      # I am using "R version 4.3.2 (2023-10-31)""
       ```
   - Check RStudio version: 
       ```{r eval=FALSE}
         RStudio.Version()$version
-        #Requires an interactive session but should return something like "[1] 1.4.1106"
+        #Requires an interactive session but should return something like "2023.12.0.369"
       ```
   
 2. Update all R Packages: 
