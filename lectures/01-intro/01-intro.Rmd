@@ -127,12 +127,13 @@ p
 
 | Component                           | Weight |
 |:-|-:|
-| 2 × homework assignments (20% each) | 40% |
+| 2 × homework assignments | 20% |
 | 1 × project 		| 40% |
 | 1 x short presentation | 20% |
+| Participation | 20% |
 
 The project involves the analysis of a dataset of your choice using the tools we learned in class
-- You will present your data analysis on **October 6**
+- You will present your data analysis at the end of the semester
 - Where can I find datasets? 
   - [Google dataset search engine](https://datasetsearch.research.google.com/)
   - [Kaggle](https://www.kaggle.com/competitions)
@@ -184,7 +185,7 @@ All of you should have received an email to setup your mshresearch.marshall.usc 
 Software installed
 - Rstudio sever: http://mshresearch.marshall.usc.edu:8787/ (you can access with the same mshresearch user and pwd)
 - Stata 16 
-- Matlab 2021
+- Matlab 2023
 - Python 3.7
 - MySQL
 
