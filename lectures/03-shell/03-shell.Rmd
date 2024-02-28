@@ -125,7 +125,7 @@ There are many shell variants, but we're going to focus on [**Bash**](https://ww
 
 - Running scripts (Python, Bash scripts, R, etc.)
 
-- Managing mshresearch (creating users, monitoring resources, etc.)
+- Managing my server (creating users, monitoring resources, etc.)
 
 - Installing software
 
