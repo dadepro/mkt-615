@@ -89,7 +89,7 @@ name: intro
 
 ☑ [**tidyverse**](https://www.tidyverse.org/)
 
-☑ [**nycflights13**](hhttps://github.com/hadley/nycflights13)
+☑ [**nycflights13**](https://github.com/hadley/nycflights13)
 
 --
 
@@ -757,7 +757,7 @@ name: pivot_wider
 
 # 2) tidyr::pivot_wider
 
-```{r pivot_wider1, dependson=tidy_stocks}
+```{r pivot_wider1}
 tidy_stocks %>% pivot_wider(names_from=stock, values_from=price)
 tidy_stocks %>% pivot_wider(names_from=time, values_from=price)
 ```

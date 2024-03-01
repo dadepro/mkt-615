@@ -12,10 +12,18 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # MKT615: Data Storytelling for Marketers
+]
+.subtitle[
 ## Lecture 6: Regressions
+]
+.author[
 ### Davide Proserpio
+]
+.institute[
 ### Marshall School of Business
+]
 
 ---
 
@@ -190,11 +198,11 @@ Useful when we have serial correlation (panel data). (Note that I am using a sma
   ## 
   ## Coefficients:
   ##             Estimate Std. Error t value  Pr(&gt;|t|) CI Lower CI Upper    DF
-  ## (Intercept)  -9.3015   28.84436 -0.3225 0.7559159 -76.6201   58.017 7.486
-  ## height        0.6134    0.09912  6.1886 0.0002379   0.3858    0.841 8.195
+  ## (Intercept)   -6.457    30.4271 -0.2122 0.8376016 -77.4712   64.557 7.485
+  ## height         0.596     0.1066  5.5899 0.0004845   0.3509    0.841 8.144
   ## 
-  ## Multiple R-squared:  0.01372 ,	Adjusted R-squared:  -0.004541 
-  ## F-statistic:  38.3 on 1 and 38 DF,  p-value: 3.138e-07
+  ## Multiple R-squared:  0.01295 ,	Adjusted R-squared:  -0.005328 
+  ## F-statistic: 31.25 on 1 and 38 DF,  p-value: 2.079e-06
   ```
 ---
 name: dummy
@@ -390,6 +398,21 @@ name: fixed
   #install.packages("lfe")
   library(lfe)
   ```
+  
+  ```
+  ## Loading required package: Matrix
+  ```
+  
+  ```
+  ## 
+  ## Attaching package: 'Matrix'
+  ```
+  
+  ```
+  ## The following objects are masked from 'package:tidyr':
+  ## 
+  ##     expand, pack, unpack
+  ```
 
 ---
 
@@ -554,7 +577,7 @@ Note that fixed effect are not reported!
   ## 
   ## Residuals:
   ##      Min       1Q   Median       3Q      Max 
-  ## -16813.5   -680.4   -197.7    466.4  10394.8 
+  ## -16813.5   -680.4   -197.6    466.4  10394.9 
   ## 
   ## Coefficients:
   ##       Estimate Cluster s.e. t value Pr(&gt;|t|)    
@@ -635,6 +658,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
