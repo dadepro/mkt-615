@@ -166,7 +166,7 @@ You should see something like:
  username@hostname:~$
 ```
 
-This is shell-speak for: "Who am I and where am I?"0
+This is shell-speak for: "Who am I and where am I?"
 
 --
 
