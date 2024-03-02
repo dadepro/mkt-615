@@ -248,7 +248,7 @@ Let me know if you need help, one place to start is https://happygitwithr.com/
 
 ---
 
-# Checklist
+# Checklist 
 
 1. Do you have the most recent version of R and Rstudio?
   - Check R version from RStudio: 

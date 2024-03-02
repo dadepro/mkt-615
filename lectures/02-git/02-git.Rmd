@@ -195,7 +195,7 @@ NB aside: Always pull from the upstream repo *before* you push any changes. Seri
 
 --
 
-<!-- PS — You were likely challenged for your GitHub credentials at some point. Learn how to cache these and how to use a personal access token (we discussed this in the [previous lecture](https://raw.githack.com/dadepro/mkt-615/main/lectures/01-intro/01-intro.html#20)) [here](https://happygitwithr.com/credential-caching.html) -->
+<!-- PS — You were likely challenged for your GitHub credentials at some point. Learn how to cache these and how to use a personal access token (we discussed this in the [previous lecture](https://raw.githack.com/dadepro/mkt-615/main/lectures/01-intro/01-intro.html#21)) [here](https://happygitwithr.com/credential-caching.html) -->
 
 <!-- -- -->
 
