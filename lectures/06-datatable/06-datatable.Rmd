@@ -195,7 +195,7 @@ data.table functions only work on objects that have been converted to data.table
 To create a data.table, we have a couple of options:
 - `fread('mydata.csv')` reads a CSV into R as a data.table (and is very fast).
 - `data.table(x = 1:10)` creates a new data.table from scratch
-- `as.data.table(d)` od `data.table(d)` coerces an existing data frame (`d`) to a data.table.
+- `as.data.table(d)` or `data.table(d)` coerces an existing data frame (`d`) to a data.table.
 - `setDT(d)` coerces an existing data frame to a data.table *by reference*; i.e. we don't have to (re)assign it.
 
 ---
