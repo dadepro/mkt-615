@@ -1,3 +1,5 @@
+#!/usr/local/bin/Rscript
+
 args = commandArgs(trailingOnly = TRUE)
 i = args[1]; j = args[2]
 

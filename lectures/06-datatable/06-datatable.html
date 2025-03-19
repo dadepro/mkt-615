@@ -69,30 +69,7 @@ The following code chunk will install (if necessary) and load everything for you
 
 ```r
 if (!require(pacman)) install.packages('pacman', repos = 'https://cran.rstudio.com')
-```
-
-```
-## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
-## logical.return = TRUE, : there is no package called 'pacman'
-```
-
-```
-## 
-## The downloaded binary packages are in
-## 	/var/folders/l9/g7f07wg50x5f5vss90h_jjbc0000gn/T//RtmpsGN8vA/downloaded_packages
-```
-
-```r
 pacman::p_load(dplyr, data.table, dtplyr, tidyfast, microbenchmark, ggplot2, nycflights13)
-```
-
-```
-## 
-## The downloaded binary packages are in
-## 	/var/folders/l9/g7f07wg50x5f5vss90h_jjbc0000gn/T//RtmpsGN8vA/downloaded_packages
-```
-
-```r
 options(dplyr.summarise.inform = FALSE) ## Turn off annoying dplyr group_by messages (optional)
 ```
 
@@ -182,8 +159,8 @@ microbenchmark(collapse_dplyr(), collapse_dt(), times = 1)
 ```
 ## Unit: milliseconds
 ##              expr       min        lq      mean    median        uq       max
-##  collapse_dplyr() 82.804994 82.804994 82.804994 82.804994 82.804994 82.804994
-##     collapse_dt()  6.672832  6.672832  6.672832  6.672832  6.672832  6.672832
+##  collapse_dplyr() 87.222826 87.222826 87.222826 87.222826 87.222826 87.222826
+##     collapse_dt()  7.113664  7.113664  7.113664  7.113664  7.113664  7.113664
 ##  neval
 ##      1
 ##      1
@@ -215,7 +192,7 @@ data.table functions only work on objects that have been converted to data.table
 To create a data.table, we have a couple of options:
 - `fread('mydata.csv')` reads a CSV into R as a data.table (and is very fast).
 - `data.table(x = 1:10)` creates a new data.table from scratch
-- `as.data.table(d)` od `data.table(d)` coerces an existing data frame (`d`) to a data.table.
+- `as.data.table(d)` or `data.table(d)` coerces an existing data frame (`d`) to a data.table.
 - `setDT(d)` coerces an existing data frame to a data.table *by reference*; i.e. we don't have to (re)assign it.
 
 ---
@@ -921,10 +898,10 @@ stocks
 ```
 
 ```
-##          time        X         Y          Z
-##        &lt;Date&gt;    &lt;num&gt;     &lt;num&gt;      &lt;num&gt;
-## 1: 2009-01-01 1.777639 -2.449132  0.6269859
-## 2: 2009-01-02 1.702684 -2.864414 -0.9301674
+##          time        X          Y        Z
+##        &lt;Date&gt;    &lt;num&gt;      &lt;num&gt;    &lt;num&gt;
+## 1: 2009-01-01 0.870211 -2.2472386 4.117511
+## 2: 2009-01-02 0.407793  0.6812328 2.927533
 ```
 --
 
@@ -936,12 +913,12 @@ melt(stocks, id = "time", measure = c("X", "Y", "Z"), value.name = "price")
 ```
 ##          time variable      price
 ##        &lt;Date&gt;   &lt;fctr&gt;      &lt;num&gt;
-## 1: 2009-01-01        X  1.7776391
-## 2: 2009-01-02        X  1.7026838
-## 3: 2009-01-01        Y -2.4491322
-## 4: 2009-01-02        Y -2.8644144
-## 5: 2009-01-01        Z  0.6269859
-## 6: 2009-01-02        Z -0.9301674
+## 1: 2009-01-01        X  0.8702110
+## 2: 2009-01-02        X  0.4077930
+## 3: 2009-01-01        Y -2.2472386
+## 4: 2009-01-02        Y  0.6812328
+## 5: 2009-01-01        Z  4.1175113
+## 6: 2009-01-02        Z  2.9275330
 ```
 
 ---
@@ -961,10 +938,10 @@ dcast(stocks_long, time ~ variable, value.var = "price")
 
 ```
 ## Key: &lt;time&gt;
-##          time        X         Y          Z
-##        &lt;Date&gt;    &lt;num&gt;     &lt;num&gt;      &lt;num&gt;
-## 1: 2009-01-01 1.777639 -2.449132  0.6269859
-## 2: 2009-01-02 1.702684 -2.864414 -0.9301674
+##          time        X          Y        Z
+##        &lt;Date&gt;    &lt;num&gt;      &lt;num&gt;    &lt;num&gt;
+## 1: 2009-01-01 0.870211 -2.2472386 4.117511
+## 2: 2009-01-02 0.407793  0.6812328 2.927533
 ```
 
 
