@@ -145,7 +145,7 @@ Useful when we have serial correlation (panel data). (Note that I am using a sma
 name: dummy
 # Dummy variables
 
-String are automatically converted to factors, else you need to use `factors()`, e.g.:
+Strings are automatically converted to factors; otherwise you need to use `factors()`, e.g.:
 
   ```{r dummy}
   diamonds_dt = data.table(diamonds)
