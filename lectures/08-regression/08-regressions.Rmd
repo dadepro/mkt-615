@@ -87,20 +87,20 @@ name: basics
 <!-- <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html> -->
 
 ---
-# Linea models with `lm()`
+# Linear models with `lm()`
 
 - `lm()` is the main command to run linear regressions 
 - Syntax: lm(y ~ x_1 + x_2 + ... + x_n, data = yourdataset)
 - To summarize the output, you should use `summary`. Let's see an example the ggplot2's `diamonds` dataset.
 
 ---
-# Linea models with `lm()` (cont.)
+# Linear models with `lm()` (cont.)
 
   ```{r lm}
   summary(lm(price ~ carat, data = diamonds))
   ```
 ---
-# Linea models with `lm()` (cont.)
+# Linear models with `lm()` (cont.)
 
   ```{r lm1}
   ols = lm(price ~ carat, data = diamonds) # save the model
@@ -109,7 +109,7 @@ name: basics
   
 
 ---
-# Linea models with `lm()` (cont.)
+# Linear models with `lm()` (cont.)
 
 You can apply operators to the variables, subset the data within `lm`, e.g.:
 

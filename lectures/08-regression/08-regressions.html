@@ -71,14 +71,14 @@ name: basics
 &lt;!-- &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt; --&gt;
 
 ---
-# Linea models with `lm()`
+# Linear models with `lm()`
 
 - `lm()` is the main command to run linear regressions 
 - Syntax: lm(y ~ x_1 + x_2 + ... + x_n, data = yourdataset)
 - To summarize the output, you should use `summary`. Let's see an example the ggplot2's `diamonds` dataset.
 
 ---
-# Linea models with `lm()` (cont.)
+# Linear models with `lm()` (cont.)
 
   
   ```r
@@ -106,7 +106,7 @@ name: basics
   ## F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
   ```
 ---
-# Linea models with `lm()` (cont.)
+# Linear models with `lm()` (cont.)
 
   
   ```r
@@ -137,7 +137,7 @@ name: basics
   
 
 ---
-# Linea models with `lm()` (cont.)
+# Linear models with `lm()` (cont.)
 
 You can apply operators to the variables, subset the data within `lm`, e.g.:
 
@@ -208,7 +208,7 @@ Useful when we have serial correlation (panel data). (Note that I am using a sma
 name: dummy
 # Dummy variables
 
-String are automatically converted to factors, else you need to use `factors()`, e.g.:
+Strings are automatically converted to factors; otherwise you need to use `factors()`, e.g.:
 
   
   ```r
